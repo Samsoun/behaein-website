@@ -21,6 +21,8 @@ import { ContactForm } from "@/components/ContactForm";
 import { PortraitFrame } from "@/components/PortraitFrame";
 import { useLanguage } from "@/context/LanguageContext";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { Logo } from "@/components/Logo";
+import { BarandeVideoScroll } from "@/components/BarandeVideoScroll";
 
 export default function Home() {
   const { t, isRtl } = useLanguage();
@@ -82,10 +84,9 @@ export default function Home() {
         <nav className="glass-panel rounded-full px-4 sm:px-6 py-3 flex justify-between items-center shadow-lg border border-white/5 backdrop-blur-md">
           <div 
             onClick={() => handleScroll("hero")} 
-            className="flex items-center gap-2 cursor-pointer font-display font-extrabold tracking-tight group"
+            className="cursor-pointer group"
           >
-            <span className="text-[#00F0FF] text-lg font-black group-hover:neon-text-glow transition-all">S</span>
-            <span className="text-white text-sm tracking-widest uppercase hidden sm:inline">Behaein</span>
+            <Logo size={28} />
           </div>
           
           <div className="flex gap-3 sm:gap-6 md:gap-8 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
@@ -221,6 +222,9 @@ export default function Home() {
 
           <BentoGrid />
         </section>
+
+        {/* INTERACTIVE VIDEO SCROLL CASE STUDY (BARANDE) — Title is rendered inside the component */}
+        <BarandeVideoScroll />
 
         {/* SECTION 3: FEATURED PROJECTS (DEEP CASE STUDIES) */}
         <section id="projects" className="py-24 relative overflow-hidden bg-slate-950/20">
@@ -393,10 +397,13 @@ export default function Home() {
       <footer className="relative border-t border-slate-900 bg-slate-950/80 py-12 z-20">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-start select-none">
           
-          <div className="flex flex-col gap-2">
-            <span className="text-white font-display font-extrabold text-lg tracking-tight flex items-center justify-center md:justify-start gap-1">
-              Samsoun Behaein <ShieldCheck className="w-4 h-4 text-[#00F0FF]" />
-            </span>
+          <div className="flex flex-col gap-2.5 items-center md:items-start">
+            <div 
+              onClick={() => handleScroll("hero")} 
+              className="cursor-pointer"
+            >
+              <Logo size={26} />
+            </div>
             <span className="text-slate-500 text-xs font-mono uppercase tracking-wider">
               {t("footerJobTitle")}
             </span>

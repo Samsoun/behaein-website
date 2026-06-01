@@ -132,6 +132,23 @@ export interface Translations {
   mockupBrowserSeoPractices: string;
   mockupBrowserFooterNote: string;
 
+  // Video Scroll Section
+  videoScrollTagline: string;
+  videoScrollTitle: string;
+  videoScrollSubtitle: string;
+  videoScrollPhase1Title: string;
+  videoScrollPhase1Desc: string;
+  videoScrollPhase1Bullets: string[];
+  videoScrollPhase2Title: string;
+  videoScrollPhase2Desc: string;
+  videoScrollPhase2Bullets: string[];
+  videoScrollPhase3Title: string;
+  videoScrollPhase3Desc: string;
+  videoScrollPhase3Bullets: string[];
+  videoScrollPhase4Title: string;
+  videoScrollPhase4Desc: string;
+  videoScrollPhase4Bullets: string[];
+
   // Footer & Metadata
   footerJobTitle: string;
   footerMadeWith: string;
@@ -276,6 +293,22 @@ const translations: Record<Locale, Translations> = {
     mockupBrowserSeoPractices: "SEO Best Practices",
     mockupBrowserFooterNote: "* Next.js App Router dynamic sitemap.xml & robot.txt loaded successfully.",
 
+    videoScrollTagline: "02 / INTERACTIVE DECONSTRUCTION",
+    videoScrollTitle: "Barande – Scrollytelling Case Study",
+    videoScrollSubtitle: "An ultra-high-performance canvas frame-scrubbing engine mapping scroll velocity to video playback. Scroll to deconstruct the system architecture.",
+    videoScrollPhase1Title: "Phase 1: React Native Core",
+    videoScrollPhase1Desc: "Constructing standard-compliant mobile codebases with Expo. Architecting ultra-smooth native transitions and 60fps gesture interfaces.",
+    videoScrollPhase1Bullets: ["React Native Navigation", "Expo Development Workflow", "Custom Gesture Handlers", "Safe Hardware Integration"],
+    videoScrollPhase2Title: "Phase 2: UI Deconstruction",
+    videoScrollPhase2Desc: "Breaking down complex interfaces into atomic components. Converting abstract custom Figma layouts into functional native elements.",
+    videoScrollPhase2Bullets: ["Atomic Design Principles", "High-fidelity Wireframes", "Adaptive Responsive Layouts", "Pixel-Perfect Layout Specs"],
+    videoScrollPhase3Title: "Phase 3: Supabase & Escrow",
+    videoScrollPhase3Desc: "Constructing robust cloud services backed by secure Postgres schemas. Implementing Row Level Security policies and transaction vaults.",
+    videoScrollPhase3Bullets: ["PostgreSQL Schema Design", "Row Level Security (RLS)", "Transactional Escrow API", "Realtime Synced States"],
+    videoScrollPhase4Title: "Phase 4: Flawless Verification",
+    videoScrollPhase4Desc: "Executing thorough automated tests and Lighthouse diagnostics. Ensuring secure token handshakes and top organic search indexing.",
+    videoScrollPhase4Bullets: ["PIN Handshake Verification", "Google Lighthouse Audits", "Automated Playwright Suite", "Optimized Search Indexing"],
+
     footerJobTitle: "Creative Technologist & Full-Stack Engineer",
     footerMadeWith: "Made with {icon} in Berlin",
     footerRights: "© {year} Samsoun Behaein. All rights compiled.",
@@ -416,6 +449,22 @@ const translations: Record<Locale, Translations> = {
     mockupBrowserPerformance: "Leistung",
     mockupBrowserSeoPractices: "SEO Best Practices",
     mockupBrowserFooterNote: "* Next.js App Router dynamische sitemap.xml & robot.txt erfolgreich geladen.",
+
+    videoScrollTagline: "02 / INTERAKTIVE DEKONSTRUKTION",
+    videoScrollTitle: "Barande – Scrollytelling Case-Study",
+    videoScrollSubtitle: "Eine ultra-performante Canvas-Bildscrubbing-Engine, die die Scrollgeschwindigkeit direkt an die Videowiedergabe koppelt. Scrolle, um die Systemarchitektur zu dekonstruieren.",
+    videoScrollPhase1Title: "Phase 1: React Native Core",
+    videoScrollPhase1Desc: "Aufbau standardkonformer mobiler Codebases mit Expo. Entwicklung extrem flüssiger nativer Übergänge und Gestensteuerungen bei 60fps.",
+    videoScrollPhase1Bullets: ["React Native Navigation", "Expo-Entwicklungs-Workflow", "Benutzerdefinierte Gesten", "Sichere Hardware-Anbindung"],
+    videoScrollPhase2Title: "Phase 2: UI-Dekonstruktion",
+    videoScrollPhase2Desc: "Zerlegung komplexer Schnittstellen in atomare Komponenten. Übersetzung abstrakter Figma-Entwürfe in funktionale native UI-Bausteine.",
+    videoScrollPhase2Bullets: ["Atomare Design-Prinzipien", "High-Fidelity Wireframes", "Adaptive responsive Layouts", "Pixelgenaue Spezifikationen"],
+    videoScrollPhase3Title: "Phase 3: Supabase & Treuhand",
+    videoScrollPhase3Desc: "Entwicklung robuster Cloud-Services geschützt durch sichere Postgres-Schemata. Implementierung von Row Level Security und Transaktions-Tresoren.",
+    videoScrollPhase3Bullets: ["PostgreSQL Schema-Design", "Row Level Security (RLS)", "Treuhand-Schnittstelle", "Echtzeit-Synchronisierung"],
+    videoScrollPhase4Title: "Phase 4: Flawless Verifizierung",
+    videoScrollPhase4Desc: "Durchführung gründlicher automatisierter Tests und Lighthouse-Audits. Absicherung der PIN-Übergabeprotokolle und Top-Suchmaschinenplatzierung.",
+    videoScrollPhase4Bullets: ["PIN-Handshake-Verifizierung", "Lighthouse Performance-Audits", "Automatisierte Test-Suiten", "Optimierte Suchmaschinen-Indizierung"],
 
     footerJobTitle: "Creative Technologist & Full-Stack-Entwickler",
     footerMadeWith: "Mit {icon} in Berlin gemacht",
@@ -558,6 +607,22 @@ const translations: Record<Locale, Translations> = {
     mockupBrowserSeoPractices: "رعایت اصول سئو",
     mockupBrowserFooterNote: "* فایل‌های sitemap.xml و robot.txt با موفقیت روی نکست‌جی‌اس لود شدند.",
 
+    videoScrollTagline: "۰۲ / مهندسی معکوس تعاملی",
+    videoScrollTitle: "برنده – نمونه‌پژوهی تعاملی (Scrollytelling)",
+    videoScrollSubtitle: "یک موتور پردازش فریم کانواس فوق‌سریع که سرعت اسکرول را مستقیماً به فریم‌های ویدیو متصل می‌کند. برای مهندسی معکوس معماری سیستم به پایین بکشید.",
+    videoScrollPhase1Title: "فاز ۱: هسته ری‌اکت نیتیو",
+    videoScrollPhase1Desc: "ساخت مخازن کد موبایل استاندارد با Expo. مهندسی انیمیشن‌های فوق‌ روان بومی و رابط‌های کاربری تعاملی ۶۰ فریم بر ثانیه.",
+    videoScrollPhase1Bullets: ["مسیریابی ری‌اکت نیتیو", "فرآیند توسعه با Expo", "مدیریت ژست‌های حرکتی اختصاصی", "ادغام سخت‌افزاری امن"],
+    videoScrollPhase2Title: "فاز ۲: مهندسی معکوس UI",
+    videoScrollPhase2Desc: "تجزیه و تحلیل رابط‌های کاربری پیچیده به کامپوننت‌های اتمیک. تبدیل طرح‌های انتزاعی فیگما به اجزای کاربردی بومی.",
+    videoScrollPhase2Bullets: ["اصول طراحی اتمیک", "وایرفریم‌های دقیق و باکیفیت", "قالب‌های واکنش‌گرا و سازگار", "انطباق صددرصدی با مشخصات پیکسل‌ها"],
+    videoScrollPhase3Title: "فاز ۳: بک‌اند سوپابیس و حساب امانی",
+    videoScrollPhase3Desc: "ساخت سرویس‌های ابری قدرتمند با جداول بهینه‌شده پستگرس. اعمال قوانین امنیت سطح سطر (RLS) و صندوق‌های تراکنش‌های مالی.",
+    videoScrollPhase3Bullets: ["طراحی طرحواره‌های PostgreSQL", "امنیت سطح سطر (RLS)", "ای‌پی‌آی حساب امانی تراکنش‌ها", "همگام‌سازی آنی وضعیت‌ها"],
+    videoScrollPhase4Title: "فاز ۴: تاییدیه و بهینه‌سازی",
+    videoScrollPhase4Desc: "اجرای تست‌های خودکار دقیق و سنجش‌های کیفی Lighthouse. تضمین امنیت دست‌دهی دوطرفه پین‌کد و سئوی عالی برای جستجوی گوگل.",
+    videoScrollPhase4Bullets: ["تاییدیه دست‌دهی با پین‌کد", "بررسی‌های کیفی Lighthouse گوگل", "تست‌های خودکار Playwright", "بهینه‌سازی نمایه‌سازی موتورهای جستجو"],
+
     footerJobTitle: "فناور خلاق و مهندس فول‌استک",
     footerMadeWith: "ساخته شده با {icon} در برلین",
     footerRights: "© {year} سامسون بهائین. تمامی حقوق محفوظ است.",
@@ -653,6 +718,9 @@ export const useLanguage = () => {
 };
 
 // Helper for components needing direct array retrieval
-export const getBulletsForLocale = (locale: Locale, key: "processStep1Bullets" | "processStep2Bullets" | "processStep3Bullets"): string[] => {
+export const getBulletsForLocale = (
+  locale: Locale,
+  key: "processStep1Bullets" | "processStep2Bullets" | "processStep3Bullets" | "videoScrollPhase1Bullets" | "videoScrollPhase2Bullets" | "videoScrollPhase3Bullets" | "videoScrollPhase4Bullets"
+): string[] => {
   return translations[locale][key] as string[];
 };

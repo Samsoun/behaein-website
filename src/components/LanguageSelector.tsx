@@ -8,8 +8,9 @@ import { useLanguage, Locale } from "@/context/LanguageContext";
 const languages: { code: Locale; label: string; flag: string }[] = [
   { code: "en", label: "English", flag: "🇺🇸" },
   { code: "de", label: "Deutsch", flag: "🇩🇪" },
-  { code: "fa", label: "فارسی", flag: "🇮🇷" },
+  { code: "fa", label: "فارسی", flag: "/iranflag.jpg" },
 ];
+
 
 export const LanguageSelector: React.FC = () => {
   const { locale, setLocale, isRtl } = useLanguage();
@@ -72,7 +73,15 @@ export const LanguageSelector: React.FC = () => {
                 } ${isRtl ? "flex-row-reverse text-right" : "flex-row"}`}
               >
                 <span>{lang.label}</span>
-                <span className="text-base select-none font-sans leading-none">{lang.flag}</span>
+                {lang.flag.startsWith("/") ? (
+                  <img
+                    src={lang.flag}
+                    alt={`${lang.label} flag`}
+                    className="w-5 h-3.5 object-cover rounded-sm border border-slate-700/50 select-none pointer-events-none"
+                  />
+                ) : (
+                  <span className="text-base select-none font-sans leading-none">{lang.flag}</span>
+                )}
               </button>
             ))}
           </motion.div>
