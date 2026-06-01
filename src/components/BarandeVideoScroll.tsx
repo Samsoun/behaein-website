@@ -372,7 +372,11 @@ export const BarandeVideoScroll: React.FC = () => {
   return (
     <div 
       ref={containerRef} 
-      className="relative w-full bg-slate-950/20 overflow-hidden transition-all duration-300 h-auto py-12 md:py-20 lg:h-[500vh] lg:py-0"
+      className={`relative w-full bg-slate-950/20 overflow-hidden transition-all duration-300 ${
+        isMounted && isMobile 
+          ? "h-auto py-12 md:py-20" 
+          : "h-auto py-12 md:py-20 lg:h-[500vh] lg:py-0"
+      }`}
       id="barande-interactive"
     >
       {/* Grid lines background matching the portfolio showcase section */}
@@ -430,14 +434,18 @@ export const BarandeVideoScroll: React.FC = () => {
         This sticks 100% reliably in all browsers, bypassing overflow limits!
       */}
       <div 
-        className={`w-full select-none z-10 flex flex-col justify-center items-center px-4 md:px-8 py-4 relative h-auto min-h-screen lg:h-screen lg:overflow-hidden ${
-          isMounted && !isMobile 
-            ? (pinState === "sticky" 
-                ? "lg:fixed lg:top-0 lg:left-0" 
-                : pinState === "after" 
-                  ? "lg:absolute lg:bottom-0 lg:left-0" 
-                  : "lg:absolute lg:top-0 lg:left-0")
-            : "lg:absolute lg:top-0 lg:left-0"
+        className={`w-full select-none z-10 flex flex-col justify-center items-center px-4 md:px-8 py-4 ${
+          isMounted && isMobile 
+            ? "relative h-auto min-h-screen" 
+            : `relative h-auto min-h-screen lg:h-screen lg:overflow-hidden ${
+                isMounted && !isMobile 
+                  ? (pinState === "sticky" 
+                      ? "lg:fixed lg:top-0 lg:left-0" 
+                      : pinState === "after" 
+                        ? "lg:absolute lg:bottom-0 lg:left-0" 
+                        : "lg:absolute lg:top-0 lg:left-0")
+                  : "lg:absolute lg:top-0 lg:left-0"
+              }`
         }`}
         style={{ backgroundColor: "transparent" }}
       >
