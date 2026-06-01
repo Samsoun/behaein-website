@@ -40,6 +40,9 @@ const localTranslations = {
     queryCache: "Query Cache API",
     cachedLabel: "8ms (Cached)",
     dbLabel: "ms (DB)",
+    clientLabel: "Client",
+    cacheLabel: "Query Cache",
+    databaseLabel: "Postgres DB",
     seoStructured: "SEO Structured Data",
     cicdPipelines: "CI/CD Agile Pipelines",
     seoScore: "SEO Score",
@@ -66,6 +69,9 @@ const localTranslations = {
     queryCache: "Abfrage-Cache-API",
     cachedLabel: "8ms (Cache)",
     dbLabel: "ms (DB)",
+    clientLabel: "Client",
+    cacheLabel: "Query-Cache",
+    databaseLabel: "Postgres-DB",
     seoStructured: "SEO-strukturierte Daten",
     cicdPipelines: "Agile CI/CD-Pipelines",
     seoScore: "SEO-Score",
@@ -92,6 +98,9 @@ const localTranslations = {
     queryCache: "ای‌پی‌آی کش دیتابیس",
     cachedLabel: "۸ میلی‌ثانیه (کش شده)",
     dbLabel: "میلی‌ثانیه (دیتابیس)",
+    clientLabel: "کاربر",
+    cacheLabel: "حافظه کش",
+    databaseLabel: "پایگاه داده",
     seoStructured: "ساختارهای داده سئو",
     cicdPipelines: "خطوط لوله چابک CI/CD",
     seoScore: "امتیاز سئو",
@@ -117,19 +126,63 @@ export const BentoGrid: React.FC = () => {
     return () => clearInterval(timer);
   }, [steps.length]);
 
-  // Database cached query latency graph data
-  const [latencyData, setLatencyData] = useState([110, 95, 120, 8, 8, 8, 8, 8]);
+  // Database cache query simulation state machine
+  const [packetState, setPacketState] = useState<"idle" | "to-cache" | "cache-hit" | "to-db" | "db-hit">("idle");
+  const [latencyValue, setLatencyValue] = useState(8);
+  const [isCached, setIsCached] = useState(true);
+
   useEffect(() => {
-    const timer = setInterval(() => {
-      // Simulate raw query vs cached query changes
-      setLatencyData((prev) => {
-        const next = [...prev.slice(1)];
-        const isCached = Math.random() > 0.15;
-        next.push(isCached ? 8 : Math.floor(Math.random() * 40) + 80);
-        return next;
-      });
-    }, 2000);
-    return () => clearInterval(timer);
+    let active = true;
+
+    const runCycle = async () => {
+      if (!active) return;
+
+      // Determine cache hit (80% chance) vs DB query (20% chance)
+      const hitCache = Math.random() > 0.20;
+      setIsCached(hitCache);
+
+      if (hitCache) {
+        // --- Cache Hit Animation Flow ---
+        setPacketState("to-cache");
+        await new Promise((resolve) => setTimeout(resolve, 350));
+        if (!active) return;
+
+        setPacketState("cache-hit");
+        setLatencyValue(8);
+        await new Promise((resolve) => setTimeout(resolve, 350));
+        if (!active) return;
+
+        setPacketState("idle");
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+      } else {
+        // --- Cache Miss / DB Query Flow ---
+        setPacketState("to-db");
+        await new Promise((resolve) => setTimeout(resolve, 700));
+        if (!active) return;
+
+        setPacketState("db-hit");
+        setLatencyValue(Math.floor(Math.random() * 30) + 85);
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        if (!active) return;
+
+        setPacketState("idle");
+        await new Promise((resolve) => setTimeout(resolve, 1200));
+      }
+
+      if (active) {
+        runCycle();
+      }
+    };
+
+    // Run cycle with a small initial delay
+    const initialTimer = setTimeout(() => {
+      runCycle();
+    }, 1000);
+
+    return () => {
+      active = false;
+      clearTimeout(initialTimer);
+    };
   }, []);
 
   return (
@@ -254,29 +307,129 @@ export const BentoGrid: React.FC = () => {
           <div className="mt-4 p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 relative h-[120px] flex flex-col justify-between">
             <div className="flex justify-between items-center text-[10px]">
               <span className="font-mono text-slate-500">{t.queryCache}</span>
-              <span className="flex items-center gap-1 font-mono font-semibold text-[#00F0FF]">
+              <motion.span 
+                key={latencyValue}
+                initial={{ opacity: 0, y: -2 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`flex items-center gap-1 font-mono font-semibold ${
+                  isCached ? "text-[#00F0FF]" : "text-orange-400"
+                }`}
+              >
                 <Cpu className="w-3 h-3" /> 
-                {latencyData[latencyData.length - 1] === 8 ? t.cachedLabel : `${latencyData[latencyData.length - 1]}${t.dbLabel}`}
-              </span>
+                {isCached ? t.cachedLabel : `${latencyValue}${t.dbLabel}`}
+              </motion.span>
             </div>
 
-            {/* Latency Bars Graph */}
-            <div className="flex items-end gap-1.5 h-[65px] pt-2">
-              {latencyData.map((val, idx) => (
-                <div key={idx} className="flex-1 flex flex-col justify-end h-full">
-                  <motion.div
-                    initial={{ height: 0 }}
-                    animate={{ height: `${(val / 130) * 100}%` }}
-                    transition={{ type: "spring", stiffness: 100 }}
-                    className={`rounded-t-sm w-full ${
-                      val <= 10 
-                        ? "bg-gradient-to-t from-cyan-500 to-[#00F0FF] opacity-90 shadow-[0_0_8px_#00F0FF]" 
-                        : "bg-slate-700"
-                    }`}
-                  />
-                  <span className="text-[8px] text-center font-mono text-slate-600 mt-1">{val}</span>
+            {/* Futuristic Node connection graph */}
+            <div className="flex justify-between items-center relative w-full h-[65px] px-6 mt-1">
+              {/* Dash track path */}
+              <div className="absolute left-[40px] right-[40px] top-1/2 -translate-y-1/2 h-[2px] border-t-2 border-dashed border-slate-800/80 -z-10" />
+
+              {/* Glowing active query path overlay */}
+              <div className="absolute left-[40px] right-[40px] top-1/2 -translate-y-1/2 h-[2px] -z-10 overflow-hidden">
+                <motion.div
+                  initial={{ left: "-100%", right: "100%" }}
+                  animate={
+                    packetState === "to-cache" ? { left: "0%", right: "50%", backgroundColor: "#00F0FF", opacity: 0.8 } :
+                    packetState === "cache-hit" ? { left: "0%", right: "50%", backgroundColor: "#00F0FF", opacity: 0.8 } :
+                    packetState === "to-db" ? { left: "0%", right: "0%", backgroundColor: "#f97316", opacity: 0.8 } :
+                    packetState === "db-hit" ? { left: "0%", right: "0%", backgroundColor: "#f97316", opacity: 0.8 } :
+                    { left: "-100%", right: "100%", opacity: 0 }
+                  }
+                  transition={{ duration: 0.4 }}
+                  className="absolute top-0 bottom-0 rounded-full"
+                />
+              </div>
+
+              {/* CLIENT NODE */}
+              <div className="flex flex-col items-center gap-1 relative">
+                <div className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-700/80 flex items-center justify-center relative shadow-inner">
+                  <Smartphone className="w-4 h-4 text-slate-400" />
+                  {/* Green client signal status */}
+                  <span className="absolute top-0 right-0 w-2 h-2 bg-emerald-500 rounded-full border border-slate-950 animate-pulse" />
                 </div>
-              ))}
+                <span className="text-[8px] font-mono text-slate-500 font-bold">{t.clientLabel}</span>
+              </div>
+
+              {/* QUERY CACHE NODE */}
+              <div className="flex flex-col items-center gap-1 relative">
+                <motion.div 
+                  animate={packetState === "cache-hit" ? { scale: [1, 1.15, 1] } : {}}
+                  transition={{ duration: 0.3 }}
+                  className={`w-8 h-8 rounded-full bg-slate-900 border ${
+                    packetState === "cache-hit" ? "border-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.3)]" : "border-slate-800"
+                  } flex items-center justify-center relative shadow-inner`}
+                >
+                  <Cpu className={`w-4 h-4 ${packetState === "cache-hit" ? "text-cyan-400 animate-pulse" : "text-cyan-600"}`} />
+                  
+                  {/* Cache Shield Glow Pulse */}
+                  <AnimatePresence>
+                    {packetState === "cache-hit" && (
+                      <motion.div
+                        initial={{ scale: 0.8, opacity: 0.8 }}
+                        animate={{ scale: 2.2, opacity: 0 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        className="absolute inset-0 rounded-full border border-cyan-400 pointer-events-none"
+                      />
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+                <span className={`text-[8px] font-mono font-bold ${packetState === "cache-hit" ? "text-cyan-400" : "text-slate-500"}`}>
+                  {t.cacheLabel}
+                </span>
+              </div>
+
+              {/* DATABASE NODE */}
+              <div className="flex flex-col items-center gap-1 relative">
+                <motion.div 
+                  animate={packetState === "db-hit" ? { scale: [1, 1.15, 1] } : {}}
+                  transition={{ duration: 0.3 }}
+                  className={`w-8 h-8 rounded-lg bg-slate-900 border ${
+                    packetState === "db-hit" ? "border-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.3)]" : "border-slate-800"
+                  } flex items-center justify-center relative shadow-inner`}
+                >
+                  <Database className={`w-4 h-4 ${packetState === "db-hit" ? "text-orange-400 animate-bounce" : "text-orange-600"}`} />
+                  
+                  {/* Database Glow Pulse */}
+                  <AnimatePresence>
+                    {packetState === "db-hit" && (
+                      <motion.div
+                        initial={{ scale: 0.8, opacity: 0.8 }}
+                        animate={{ scale: 2.2, opacity: 0 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        className="absolute inset-0 rounded-lg border border-orange-500 pointer-events-none"
+                      />
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+                <span className={`text-[8px] font-mono font-bold ${packetState === "db-hit" ? "text-orange-400" : "text-slate-500"}`}>
+                  {t.databaseLabel}
+                </span>
+              </div>
+
+              {/* GLOWING QUERY PACKET */}
+              <div className="absolute left-[40px] right-[40px] top-1/2 -translate-y-1/2 h-[2px] -z-5 pointer-events-none">
+                <motion.div
+                  variants={{
+                    idle: { left: "0%", scale: 0, opacity: 0, backgroundColor: "#00F0FF", boxShadow: "0 0 8px #00F0FF" },
+                    "to-cache": { left: "50%", scale: 1.2, opacity: 1, backgroundColor: "#00F0FF", boxShadow: "0 0 12px #00F0FF" },
+                    "cache-hit": { left: "0%", scale: 1, opacity: 1, backgroundColor: "#00F0FF", boxShadow: "0 0 8px #00F0FF" },
+                    "to-db": { left: "100%", scale: 1.2, opacity: 1, backgroundColor: "#f97316", boxShadow: "0 0 12px #f97316" },
+                    "db-hit": { left: "0%", scale: 1, opacity: 1, backgroundColor: "#f97316", boxShadow: "0 0 8px #f97316" }
+                  }}
+                  animate={packetState}
+                  transition={
+                    packetState === "to-cache" ? { duration: 0.35, ease: "easeOut" } :
+                    packetState === "cache-hit" ? { duration: 0.35, ease: "easeIn" } :
+                    packetState === "to-db" ? { duration: 0.7, ease: "easeInOut" } :
+                    packetState === "db-hit" ? { duration: 0.9, ease: "easeInOut" } :
+                    { duration: 0.2 }
+                  }
+                  className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full"
+                />
+              </div>
             </div>
           </div>
         </div>

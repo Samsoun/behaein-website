@@ -68,7 +68,7 @@ export const Logo: React.FC<LogoProps> = ({ className = "", size = 38 }) => {
       initial="rest"
       whileHover="hover"
       animate="rest"
-      className={`flex items-center gap-3.5 select-none ${className}`}
+      className={`flex items-center gap-2 sm:gap-3.5 select-none ${className}`}
       style={{ perspective: 600 }}
     >
       {/* Interactive 3D SVG Monogram */}
@@ -136,13 +136,13 @@ export const Logo: React.FC<LogoProps> = ({ className = "", size = 38 }) => {
       </motion.div>
 
       {/* Brand-Typography Text */}
-      <div className="hidden sm:flex flex-col justify-center">
+      <div className="flex flex-col justify-center">
         <motion.span
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.15 }}
           dir="ltr"
-          className="font-sans text-sm sm:text-base font-black tracking-[0.25em] text-white leading-none uppercase flex items-center"
+          className="font-sans text-xs sm:text-base font-black tracking-[0.25em] text-white leading-none uppercase flex items-center"
         >
           BEHAEIN
           <motion.span 

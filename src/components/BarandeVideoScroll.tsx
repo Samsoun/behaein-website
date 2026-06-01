@@ -21,6 +21,7 @@ export const BarandeVideoScroll: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
+  const [isMounted, setIsMounted] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [extractedFrames, setExtractedFrames] = useState<ImageBitmap[]>([]);
@@ -157,7 +158,7 @@ export const BarandeVideoScroll: React.FC = () => {
   }, [extractedFrames, drawFrame]);
 
   // Perform highly-optimized on-the-fly GPU-backed frame extraction on mount
-  const extractVideoFrames = async (video: HTMLVideoElement) => {
+  const extractVideoFrames = async (video: HTMLVideoElement, checkCancelled: () => boolean) => {
     const duration = video.duration;
     if (!duration || isNaN(duration)) return;
 
@@ -170,6 +171,11 @@ export const BarandeVideoScroll: React.FC = () => {
 
     // Sequentially extract frames using seek triggers
     for (let i = 0; i < TOTAL_FRAMES; i++) {
+      if (checkCancelled()) {
+        frameList.forEach((bitmap) => bitmap.close());
+        return;
+      }
+
       const targetTime = (i / (TOTAL_FRAMES - 1)) * duration;
       video.currentTime = targetTime;
 
@@ -181,6 +187,11 @@ export const BarandeVideoScroll: React.FC = () => {
         };
         video.addEventListener("seeked", onSeeked);
       });
+
+      if (checkCancelled()) {
+        frameList.forEach((bitmap) => bitmap.close());
+        return;
+      }
 
       // Capture frame to highly-performant, GPU-backed ImageBitmap
       try {
@@ -198,6 +209,11 @@ export const BarandeVideoScroll: React.FC = () => {
       }
 
       setLoadingProgress(Math.round(((i + 1) / TOTAL_FRAMES) * 100));
+    }
+
+    if (checkCancelled()) {
+      frameList.forEach((bitmap) => bitmap.close());
+      return;
     }
 
     setExtractedFrames(frameList);
@@ -223,6 +239,8 @@ export const BarandeVideoScroll: React.FC = () => {
 
   // Setup video loading and triggers
   useEffect(() => {
+    if (!isMounted) return;
+
     const video = videoRef.current;
     if (!video) return;
 
@@ -231,14 +249,15 @@ export const BarandeVideoScroll: React.FC = () => {
     video.muted = true;
     video.controls = false;
 
+    let isCancelled = false;
+
     const handleLoadedMetadata = () => {
       if (isMobile) {
         setIsLoaded(true);
         setLoadingProgress(100);
-        // Explicitly trigger play to bypass auto-play restrictions on low-power modes
-        video.play().catch((e) => console.log("Autoplay prevented:", e));
+        // Playback will be managed strictly by the IntersectionObserver once scrolled to
       } else {
-        extractVideoFrames(video);
+        extractVideoFrames(video, () => isCancelled);
       }
     };
 
@@ -246,34 +265,79 @@ export const BarandeVideoScroll: React.FC = () => {
     video.load();
 
     return () => {
+      isCancelled = true;
       video.removeEventListener("loadedmetadata", handleLoadedMetadata);
     };
-  }, [isMobile]); // Re-bind whenever isMobile state changes or resolves on mount
+  }, [isMounted, isMobile]);
 
-  // Window resize observer and mobile state checker
+  // Window resize observer and mobile state checker on mount
   useEffect(() => {
+    setIsMounted(true);
+
     const checkMobile = () => {
-      // Strictly detect touch mobile/tablet devices via User-Agent to avoid disabling parallax on resized desktop browsers
       const hasMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      
-      // Also check for touch devices with maxTouchPoints (like iPads requesting desktop sites)
       const isTouchDevice = typeof navigator !== "undefined" && (
         navigator.maxTouchPoints > 0 || 
         "ontouchstart" in window
       );
-
-      // Mobile layout is active ONLY if it has mobile UA or is a handheld touch device under tablet size (1024px)
       setIsMobile(hasMobileUA || (isTouchDevice && window.innerWidth < 1024));
     };
+
     checkMobile();
-    resizeCanvas();
     window.addEventListener("resize", checkMobile);
-    window.addEventListener("resize", resizeCanvas);
     return () => {
       window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
+
+  // Separate effect to handle canvas resize strictly on desktop when mounted
+  useEffect(() => {
+    if (!isMounted || isMobile) return;
+
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+    return () => {
       window.removeEventListener("resize", resizeCanvas);
     };
-  }, [resizeCanvas]);
+  }, [isMounted, isMobile, resizeCanvas]);
+
+  // Clean up extracted high-res frames from GPU/CPU memory on unmount
+  useEffect(() => {
+    return () => {
+      extractedFrames.forEach((bitmap) => bitmap.close());
+    };
+  }, [extractedFrames]);
+
+  // IntersectionObserver to pause/play the mobile video when in/out of viewport
+  useEffect(() => {
+    if (!isMounted || !isMobile) return;
+
+    const video = videoRef.current;
+    if (!video) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Reset to beginning and play exactly when scrolled to
+            video.currentTime = 0;
+            video.play().catch((e) => console.log("Playback prevented:", e));
+          } else {
+            // Pause and reset when scrolled away
+            video.pause();
+            video.currentTime = 0;
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(video);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isMounted, isMobile]);
 
   // Retrieve active bullets list for current phase
   const activePhase = phases[activePhaseIndex];
@@ -307,16 +371,14 @@ export const BarandeVideoScroll: React.FC = () => {
   return (
     <div 
       ref={containerRef} 
-      className={`relative w-full bg-slate-950/20 overflow-hidden transition-all duration-300 ${
-        isMobile ? "h-auto py-12 md:py-20" : "h-[500vh]"
-      }`}
+      className="relative w-full bg-slate-950/20 overflow-hidden transition-all duration-300 h-auto py-12 md:py-20 lg:h-[500vh] lg:py-0"
       id="barande-interactive"
     >
       {/* Grid lines background matching the portfolio showcase section */}
       <div className="absolute inset-0 bg-grid-pattern opacity-60 pointer-events-none z-0" />
 
-      {/* Invisible HTML5 video preloader (Desktop only) */}
-      {!isMobile && (
+      {/* Invisible HTML5 video preloader (Desktop only - loaded after mount to save mobile bandwidth) */}
+      {isMounted && !isMobile && (
         <video
           ref={videoRef}
           src="/videos/barande-full.mp4"
@@ -367,16 +429,14 @@ export const BarandeVideoScroll: React.FC = () => {
         This sticks 100% reliably in all browsers, bypassing overflow limits!
       */}
       <div 
-        className={`w-full select-none z-10 flex flex-col justify-center items-center px-4 md:px-8 py-4 ${
-          isMobile 
-            ? "relative h-auto min-h-screen" 
-            : `h-screen overflow-hidden ${
-                pinState === "sticky" 
-                  ? "fixed top-0 left-0" 
-                  : pinState === "after" 
-                    ? "absolute bottom-0 left-0" 
-                    : "absolute top-0 left-0"
-              }`
+        className={`w-full select-none z-10 flex flex-col justify-center items-center px-4 md:px-8 py-4 relative h-auto min-h-screen lg:h-screen lg:overflow-hidden ${
+          isMounted && !isMobile 
+            ? (pinState === "sticky" 
+                ? "lg:fixed lg:top-0 lg:left-0" 
+                : pinState === "after" 
+                  ? "lg:absolute lg:bottom-0 lg:left-0" 
+                  : "lg:absolute lg:top-0 lg:left-0")
+            : "lg:absolute lg:top-0 lg:left-0"
         }`}
         style={{ backgroundColor: "transparent" }}
       >
@@ -405,24 +465,30 @@ export const BarandeVideoScroll: React.FC = () => {
         */}
         <div className="relative w-full max-w-4xl h-[38vh] md:h-[42vh] rounded-3xl border border-white/10 bg-[#121826] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] overflow-hidden z-10 flex items-center justify-center">
           
-          {/* Visual Canvas Element (Desktop only) */}
-          {!isMobile ? (
-            <canvas
-              ref={canvasRef}
-              className="absolute inset-0 w-full h-full bg-[#0B0F19]/20"
+          {!isMounted ? (
+            /* Premium static fallback image before mounting (instant LCP and zero layout shift) */
+            <img
+              src="/barande.jpg"
+              alt="Barande"
+              className="absolute inset-0 w-full h-full object-cover opacity-80"
             />
-          ) : (
+          ) : isMobile ? (
             /* Direct HTML5 video viewport (Mobile only - 100% memory-safe & instant loading) */
             <video
               ref={videoRef}
               src="/videos/barande-full.mp4"
-              autoPlay
-              loop
+              poster="/barande.jpg"
               playsInline
               muted
               controls={false}
               preload="auto"
               className="absolute inset-0 w-full h-full object-cover bg-[#0B0F19]/20 pointer-events-none"
+            />
+          ) : (
+            /* Visual Canvas Element (Desktop only) */
+            <canvas
+              ref={canvasRef}
+              className="absolute inset-0 w-full h-full bg-[#0B0F19]/20"
             />
           )}
 

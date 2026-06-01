@@ -24,6 +24,8 @@ import { useLanguage } from "@/context/LanguageContext";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { Logo } from "@/components/Logo";
 import { BarandeVideoScroll } from "@/components/BarandeVideoScroll";
+import { TechTicker } from "@/components/TechTicker";
+
 
 // Premium animated Hamburger Menu Icon component using Framer Motion
 const HamburgerIcon: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
@@ -330,7 +332,7 @@ export default function Home() {
           {/* Mouse scroll affordance */}
           <div 
             onClick={() => handleScroll("stack")}
-            className="absolute bottom-8 cursor-pointer animate-bounce flex flex-col items-center gap-1.5 text-slate-500 hover:text-[#00F0FF] transition-colors"
+            className="hidden md:flex absolute bottom-8 cursor-pointer animate-bounce flex-col items-center gap-1.5 text-slate-500 hover:text-[#00F0FF] transition-colors"
           >
             <span className="text-[10px] font-mono font-bold tracking-widest uppercase">{t("heroScrollDown")}</span>
             <div className="w-5 h-8 rounded-full border-2 border-current flex justify-center p-1.5">
@@ -683,6 +685,10 @@ export default function Home() {
           />
         </motion.div>
       </div>
+
+      {/* Floating Interactive Tech Stack Loop Ticker */}
+      <TechTicker />
     </>
   );
 }
+
