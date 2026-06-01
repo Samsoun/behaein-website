@@ -280,7 +280,8 @@ export const BarandeVideoScroll: React.FC = () => {
         navigator.maxTouchPoints > 0 || 
         "ontouchstart" in window
       );
-      setIsMobile(hasMobileUA || (isTouchDevice && window.innerWidth < 1024));
+      // Treat all touch devices (like iPads, tablets, and mobile UA) as mobile for ultra-smooth rendering & zero OOM crashes
+      setIsMobile(hasMobileUA || isTouchDevice || window.innerWidth < 1024);
     };
 
     checkMobile();
