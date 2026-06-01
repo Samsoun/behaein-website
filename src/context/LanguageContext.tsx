@@ -155,6 +155,8 @@ export interface Translations {
   footerRights: string;
   metaTitle: string;
   metaDesc: string;
+  footerImpressum: string;
+  footerDatenschutz: string;
 }
 
 const translations: Record<Locale, Translations> = {
@@ -314,6 +316,8 @@ const translations: Record<Locale, Translations> = {
     footerRights: "© {year} Samsoun Behaein. All rights compiled.",
     metaTitle: "Samsoun Behaein | Creative Technologist & Full-Stack Engineer",
     metaDesc: "Elite Full-Stack and Mobile Developer specializing in premium Next.js web applications, cross-platform React Native / Expo apps, scalable Cloud backends, and flawless SEO architectures.",
+    footerImpressum: "Legal Notice",
+    footerDatenschutz: "Privacy Policy",
   },
   de: {
     navStack: "expertise",
@@ -471,6 +475,8 @@ const translations: Record<Locale, Translations> = {
     footerRights: "© {year} Samsoun Behaein. Alle Rechte zusammengestellt.",
     metaTitle: "Samsoun Behaein | Creative Technologist & Full-Stack-Entwickler",
     metaDesc: "Erstklassiger Full-Stack- und Mobile-Entwickler, spezialisiert auf Premium-Next.js-Webanwendungen, plattformübergreifende React-Native-/Expo-Apps, skalierbare Cloud-Backends und makellose SEO-Architekturen.",
+    footerImpressum: "Impressum",
+    footerDatenschutz: "Datenschutzerklärung",
   },
   fa: {
     navStack: "مهارت‌ها",
@@ -628,6 +634,8 @@ const translations: Record<Locale, Translations> = {
     footerRights: "© {year} سامسون بهائین. تمامی حقوق محفوظ است.",
     metaTitle: "سامسون بهائین | فناور خلاق و مهندس فول‌استک",
     metaDesc: "توسعه‌دهنده فول‌استک و موبایل ارشد، متخصص در ساخت برنامه‌های تحت وب نکست‌جی‌اس لوکس، اپلیکیشن‌های اکسپو و ری‌اکت نیتیو، بک‌اند ابری مقیاس‌پذیر و سئو بی‌نقص.",
+    footerImpressum: "اطلاعات حقوقی",
+    footerDatenschutz: "حریم خصوصی",
   },
 };
 

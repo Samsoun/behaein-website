@@ -135,7 +135,7 @@ export const BentoGrid: React.FC = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto px-4">
       {/* CARD 1: FRONTEND CORE - Large Bento Card (col-span-2) */}
-      <TiltCard className="md:col-span-2 h-[340px] relative overflow-hidden group">
+      <TiltCard className="md:col-span-2 min-h-[340px] md:h-[340px] h-auto relative overflow-hidden group">
         <div className="flex flex-col justify-between h-full z-10 relative">
           <div>
             <div className="flex items-center gap-3 mb-4">
@@ -185,7 +185,7 @@ export const BentoGrid: React.FC = () => {
       </TiltCard>
 
       {/* CARD 2: MOBILE APP DEV - Tall Bento Card (row-span-1) */}
-      <TiltCard className="col-span-1 h-[340px] overflow-hidden group">
+      <TiltCard className="col-span-1 min-h-[340px] md:h-[340px] h-auto overflow-hidden group">
         <div className="flex flex-col justify-between h-full">
           <div>
             <div className="flex items-center gap-3 mb-4">
@@ -236,7 +236,7 @@ export const BentoGrid: React.FC = () => {
       </TiltCard>
 
       {/* CARD 3: BACKEND & CLOUD - Tall Bento Card */}
-      <TiltCard className="col-span-1 h-[340px] overflow-hidden group">
+      <TiltCard className="col-span-1 min-h-[340px] md:h-[340px] h-auto overflow-hidden group">
         <div className="flex flex-col justify-between h-full">
           <div>
             <div className="flex items-center gap-3 mb-4">
@@ -283,7 +283,7 @@ export const BentoGrid: React.FC = () => {
       </TiltCard>
 
       {/* CARD 4: TOOLS & WORKFLOW - Large Bento Card (col-span-2) */}
-      <TiltCard className="md:col-span-2 h-[340px] overflow-hidden group">
+      <TiltCard className="md:col-span-2 min-h-[340px] md:h-[340px] h-auto overflow-hidden group">
         <div className="flex flex-col md:flex-row justify-between h-full gap-6">
           <div className="flex-1 flex flex-col justify-between h-full">
             <div>

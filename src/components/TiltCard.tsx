@@ -113,7 +113,10 @@ export const TiltCard: React.FC<TiltCardProps> = ({
         />
 
         {/* Card Content - elevated in 3D space */}
-        <div style={{ transform: "translateZ(30px)", transformStyle: "preserve-3d" }}>
+        <div 
+          className="w-full h-full flex flex-col justify-between"
+          style={{ transform: "translateZ(30px)", transformStyle: "preserve-3d" }}
+        >
           {children}
         </div>
       </motion.div>

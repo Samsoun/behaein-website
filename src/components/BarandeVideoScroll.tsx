@@ -24,6 +24,7 @@ export const BarandeVideoScroll: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [extractedFrames, setExtractedFrames] = useState<ImageBitmap[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
   
   // Custom, bulletproof pinning engine states (independent of parent overflow-x hidden rules)
   const [pinState, setPinState] = useState<"before" | "sticky" | "after">("before");
@@ -88,6 +89,11 @@ export const BarandeVideoScroll: React.FC = () => {
 
   // Monitor scroll progress to update custom pinning and active text index states
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (isMobile) {
+      // Bypassed on mobile - mobile relies strictly on direct tap triggers, no pinning/scrolling changes
+      return;
+    }
+
     // 1. Update pinning state
     if (latest <= 0) {
       setPinState("before");
@@ -201,12 +207,17 @@ export const BarandeVideoScroll: React.FC = () => {
     drawFrame(0, frameList);
   };
 
-  // Synchronize canvas painting directly on scroll changes (0 lag / 60fps)
+  // Synchronize canvas painting or video seeking directly on scroll changes (0 lag / 60fps)
   useMotionValueEvent(frameIndex, "change", (latestIdx) => {
     const idx = Math.round(latestIdx);
-    if (idx !== currentFrameRef.current && extractedFrames.length > 0) {
-      currentFrameRef.current = idx;
-      requestAnimationFrame(() => drawFrame(idx, extractedFrames));
+    if (isMobile) {
+      // Mobile relies on smooth native autoplay + looping background video
+      // No scroll scrubbing of video currentTime to preserve perfect smoothness
+    } else {
+      if (idx !== currentFrameRef.current && extractedFrames.length > 0) {
+        currentFrameRef.current = idx;
+        requestAnimationFrame(() => drawFrame(idx, extractedFrames));
+      }
     }
   });
 
@@ -221,7 +232,14 @@ export const BarandeVideoScroll: React.FC = () => {
     video.controls = false;
 
     const handleLoadedMetadata = () => {
-      extractVideoFrames(video);
+      if (isMobile) {
+        setIsLoaded(true);
+        setLoadingProgress(100);
+        // Explicitly trigger play to bypass auto-play restrictions on low-power modes
+        video.play().catch((e) => console.log("Autoplay prevented:", e));
+      } else {
+        extractVideoFrames(video);
+      }
     };
 
     video.addEventListener("loadedmetadata", handleLoadedMetadata);
@@ -230,13 +248,31 @@ export const BarandeVideoScroll: React.FC = () => {
     return () => {
       video.removeEventListener("loadedmetadata", handleLoadedMetadata);
     };
-  }, []);
+  }, [isMobile]); // Re-bind whenever isMobile state changes or resolves on mount
 
-  // Window resize observer
+  // Window resize observer and mobile state checker
   useEffect(() => {
+    const checkMobile = () => {
+      // Strictly detect touch mobile/tablet devices via User-Agent to avoid disabling parallax on resized desktop browsers
+      const hasMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      // Also check for touch devices with maxTouchPoints (like iPads requesting desktop sites)
+      const isTouchDevice = typeof navigator !== "undefined" && (
+        navigator.maxTouchPoints > 0 || 
+        "ontouchstart" in window
+      );
+
+      // Mobile layout is active ONLY if it has mobile UA or is a handheld touch device under tablet size (1024px)
+      setIsMobile(hasMobileUA || (isTouchDevice && window.innerWidth < 1024));
+    };
+    checkMobile();
     resizeCanvas();
+    window.addEventListener("resize", checkMobile);
     window.addEventListener("resize", resizeCanvas);
-    return () => window.removeEventListener("resize", resizeCanvas);
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+      window.removeEventListener("resize", resizeCanvas);
+    };
   }, [resizeCanvas]);
 
   // Retrieve active bullets list for current phase
@@ -271,19 +307,23 @@ export const BarandeVideoScroll: React.FC = () => {
   return (
     <div 
       ref={containerRef} 
-      className="relative w-full h-[500vh] bg-slate-950/20 overflow-hidden"
+      className={`relative w-full bg-slate-950/20 overflow-hidden transition-all duration-300 ${
+        isMobile ? "h-auto py-12 md:py-20" : "h-[500vh]"
+      }`}
       id="barande-interactive"
     >
       {/* Grid lines background matching the portfolio showcase section */}
       <div className="absolute inset-0 bg-grid-pattern opacity-60 pointer-events-none z-0" />
 
-      {/* Invisible HTML5 video preloader */}
-      <video
-        ref={videoRef}
-        src="/videos/barande-full.mp4"
-        style={{ display: "none" }}
-        className="pointer-events-none absolute"
-      />
+      {/* Invisible HTML5 video preloader (Desktop only) */}
+      {!isMobile && (
+        <video
+          ref={videoRef}
+          src="/videos/barande-full.mp4"
+          style={{ display: "none" }}
+          className="pointer-events-none absolute"
+        />
+      )}
 
       {/* Premium Circular Loading Screen Overlay */}
       {!isLoaded && (
@@ -327,12 +367,16 @@ export const BarandeVideoScroll: React.FC = () => {
         This sticks 100% reliably in all browsers, bypassing overflow limits!
       */}
       <div 
-        className={`w-full h-screen overflow-hidden select-none z-10 flex flex-col justify-center items-center px-4 md:px-8 py-4 ${
-          pinState === "sticky" 
-            ? "fixed top-0 left-0" 
-            : pinState === "after" 
-              ? "absolute bottom-0 left-0" 
-              : "absolute top-0 left-0"
+        className={`w-full select-none z-10 flex flex-col justify-center items-center px-4 md:px-8 py-4 ${
+          isMobile 
+            ? "relative h-auto min-h-screen" 
+            : `h-screen overflow-hidden ${
+                pinState === "sticky" 
+                  ? "fixed top-0 left-0" 
+                  : pinState === "after" 
+                    ? "absolute bottom-0 left-0" 
+                    : "absolute top-0 left-0"
+              }`
         }`}
         style={{ backgroundColor: "transparent" }}
       >
@@ -361,11 +405,26 @@ export const BarandeVideoScroll: React.FC = () => {
         */}
         <div className="relative w-full max-w-4xl h-[38vh] md:h-[42vh] rounded-3xl border border-white/10 bg-[#121826] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] overflow-hidden z-10 flex items-center justify-center">
           
-          {/* Visual Canvas Element */}
-          <canvas
-            ref={canvasRef}
-            className="absolute inset-0 w-full h-full bg-[#0B0F19]/20"
-          />
+          {/* Visual Canvas Element (Desktop only) */}
+          {!isMobile ? (
+            <canvas
+              ref={canvasRef}
+              className="absolute inset-0 w-full h-full bg-[#0B0F19]/20"
+            />
+          ) : (
+            /* Direct HTML5 video viewport (Mobile only - 100% memory-safe & instant loading) */
+            <video
+              ref={videoRef}
+              src="/videos/barande-full.mp4"
+              autoPlay
+              loop
+              playsInline
+              muted
+              controls={false}
+              preload="auto"
+              className="absolute inset-0 w-full h-full object-cover bg-[#0B0F19]/20 pointer-events-none"
+            />
+          )}
 
           {/* Cinematic Vignette inner overlay */}
           <div
@@ -380,7 +439,16 @@ export const BarandeVideoScroll: React.FC = () => {
           2. Floating Glassmorphic Information Card (UI-UX Pro Max legibility standard)
           Placed beautifully below the video framed viewport, with a solid high-contrast dark blur background 
         */}
-        <div className="w-full max-w-2xl min-h-[210px] md:min-h-[240px] mt-4 md:mt-5 glass-panel rounded-2xl p-5 md:p-6.5 border border-[#00F0FF]/20 bg-slate-950/95 backdrop-blur-xl shadow-2xl relative z-20 flex flex-col justify-between overflow-hidden">
+        <div 
+          onClick={() => {
+            if (isMobile) {
+              setActivePhaseIndex((prev) => (prev + 1) % 4);
+            }
+          }}
+          className={`w-full max-w-2xl min-h-[210px] md:min-h-[240px] mt-4 md:mt-5 glass-panel rounded-2xl p-5 md:p-6.5 border border-[#00F0FF]/20 bg-slate-950/95 backdrop-blur-xl shadow-2xl relative z-20 flex flex-col justify-between overflow-hidden ${
+            isMobile ? "cursor-pointer active:scale-[0.99] transition-transform duration-200" : ""
+          }`}
+        >
           
           {/* Subtle neon corner accents for tech premium detail */}
           <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-[#00F0FF]/30 rounded-tl-xl" />
@@ -420,17 +488,22 @@ export const BarandeVideoScroll: React.FC = () => {
                 <div 
                   key={idx} 
                   className="flex flex-col items-center z-10 relative cursor-pointer group"
-                  onClick={() => {
-                    const container = containerRef.current;
-                    if (container) {
-                      const containerHeight = container.getBoundingClientRect().height;
-                      const rect = container.getBoundingClientRect();
-                      const scrollTop = window.scrollY + rect.top;
-                      const targetScroll = scrollTop + (idx / 4) * containerHeight;
-                      window.scrollTo({
-                        top: targetScroll + 15,
-                        behavior: "smooth"
-                      });
+                  onClick={(e) => {
+                    e.stopPropagation(); // Avoid triggering card click handler
+                    if (isMobile) {
+                      setActivePhaseIndex(idx);
+                    } else {
+                      const container = containerRef.current;
+                      if (container) {
+                        const containerHeight = container.getBoundingClientRect().height;
+                        const rect = container.getBoundingClientRect();
+                        const scrollTop = window.scrollY + rect.top;
+                        const targetScroll = scrollTop + (idx / 4) * containerHeight;
+                        window.scrollTo({
+                          top: targetScroll + 15,
+                          behavior: "smooth"
+                        });
+                      }
                     }
                   }}
                 >
@@ -493,9 +566,20 @@ export const BarandeVideoScroll: React.FC = () => {
                     </span>
                     
                     {/* Glowing localized badge communicating remaining phases left */}
-                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[8.5px] font-mono font-bold border bg-[#00F0FF]/5 border-[#00F0FF]/25 text-[#00F0FF] shadow-[0_0_8px_rgba(0,240,255,0.12)]">
-                      <span className="w-1 h-1 rounded-full bg-[#00F0FF] animate-ping" />
-                      <span>{remainingText}</span>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[8.5px] font-mono font-bold border bg-[#00F0FF]/5 border-[#00F0FF]/25 text-[#00F0FF] shadow-[0_0_8px_rgba(0,240,255,0.12)]">
+                        <span className="w-1 h-1 rounded-full bg-[#00F0FF] animate-ping" />
+                        <span>{remainingText}</span>
+                      </div>
+                      {isMobile && (
+                        <span className="text-[7.5px] font-mono font-black text-slate-500 uppercase tracking-widest animate-pulse">
+                          {locale === "fa" 
+                            ? "ضربه روی کارت = فاز بعدی" 
+                            : (locale === "de" 
+                              ? "Tippen für nächste Phase" 
+                              : "Tap card for next phase")}
+                        </span>
+                      )}
                     </div>
                   </div>
                   
@@ -539,44 +623,46 @@ export const BarandeVideoScroll: React.FC = () => {
           </div>
         </div>
 
-        {/* Scroll Hint Mouse Animation (Fades away once user scrolls) */}
-        <motion.div 
-          style={{ opacity: scrollHelperOpacity }}
-          className="absolute bottom-6 left-1/2 z-30 -translate-x-1/2 pointer-events-none"
-        >
-          <div className="flex flex-col items-center gap-2">
-            <span
-              className="text-[9px] uppercase tracking-[0.25em] text-slate-500 font-mono font-bold"
-            >
-              Scroll to Explore
-            </span>
-            <svg
-              width="16"
-              height="24"
-              viewBox="0 0 16 24"
-              fill="none"
-              className="text-[#00F0FF] opacity-60"
-            >
-              <rect
-                x="1"
-                y="1"
-                width="14"
-                height="22"
-                rx="7"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              />
-              <circle cx="8" cy="8" r="2" fill="currentColor">
-                <animate
-                  attributeName="cy"
-                  values="8;16;8"
-                  dur="1.5s"
-                  repeatCount="indefinite"
+        {/* Scroll Hint Mouse Animation (Fades away once user scrolls, desktop only) */}
+        {!isMobile && (
+          <motion.div 
+            style={{ opacity: scrollHelperOpacity }}
+            className="absolute bottom-6 left-1/2 z-30 -translate-x-1/2 pointer-events-none"
+          >
+            <div className="flex flex-col items-center gap-2">
+              <span
+                className="text-[9px] uppercase tracking-[0.25em] text-slate-500 font-mono font-bold"
+              >
+                Scroll to Explore
+              </span>
+              <svg
+                width="16"
+                height="24"
+                viewBox="0 0 16 24"
+                fill="none"
+                className="text-[#00F0FF] opacity-60"
+              >
+                <rect
+                  x="1"
+                  y="1"
+                  width="14"
+                  height="22"
+                  rx="7"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
                 />
-              </circle>
-            </svg>
-          </div>
-        </motion.div>
+                <circle cx="8" cy="8" r="2" fill="currentColor">
+                  <animate
+                    attributeName="cy"
+                    values="8;16;8"
+                    dur="1.5s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+              </svg>
+            </div>
+          </motion.div>
+        )}
 
       </div>
     </div>

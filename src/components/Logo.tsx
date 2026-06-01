@@ -136,7 +136,7 @@ export const Logo: React.FC<LogoProps> = ({ className = "", size = 38 }) => {
       </motion.div>
 
       {/* Brand-Typography Text */}
-      <div className="flex flex-col justify-center">
+      <div className="hidden sm:flex flex-col justify-center">
         <motion.span
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}

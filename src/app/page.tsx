@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
 import { 
   ArrowUpRight, 
   Mail, 
@@ -24,14 +25,87 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 import { Logo } from "@/components/Logo";
 import { BarandeVideoScroll } from "@/components/BarandeVideoScroll";
 
+// Premium animated Hamburger Menu Icon component using Framer Motion
+const HamburgerIcon: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
+  return (
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" className="text-current overflow-visible">
+      <motion.path
+        animate={isOpen ? { d: "M 3 17 L 17 3" } : { d: "M 2 5 L 18 5" }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+      <motion.path
+        animate={isOpen ? { opacity: 0, scale: 0 } : { opacity: 1, scale: 1 }}
+        transition={{ duration: 0.2, ease: "easeInOut" }}
+        d="M 2 10 L 18 10"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+      <motion.path
+        animate={isOpen ? { d: "M 3 3 L 17 17" } : { d: "M 2 15 L 18 15" }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+};
+
 export default function Home() {
   const { t, isRtl } = useLanguage();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Buttery-smooth scroll progress setup for sidebar motion
+  const { scrollYProgress } = useScroll();
+  const smoothScrollProgress = useSpring(scrollYProgress, {
+    stiffness: 80,
+    damping: 25,
+    restDelta: 0.001
+  });
+
+  // 1. Dynamic Parallax Elastic Translations for each social icon on scroll
+  const githubY = useTransform(smoothScrollProgress, [0, 1], [0, -32]);
+  const emailY = useTransform(smoothScrollProgress, [0, 1], [0, 32]);
   
-  // Custom navigation handler for smooth section scrolling
+  // 2. Continuous rotating effect on scroll (one full rotation across page)
+  const iconRotate = useTransform(smoothScrollProgress, [0, 1], [0, 360]);
+
+  // 3. Shifting border and glow colors during scroll (Cyan -> Purple -> Hot Pink)
+  const iconGlowColor = useTransform(
+    smoothScrollProgress,
+    [0, 0.5, 1],
+    [
+      "rgba(0, 240, 255, 0.12)",
+      "rgba(189, 0, 255, 0.20)",
+      "rgba(255, 0, 128, 0.20)"
+    ]
+  );
+  const iconBorderColor = useTransform(
+    smoothScrollProgress,
+    [0, 0.5, 1],
+    [
+      "rgba(0, 240, 255, 0.25)",
+      "rgba(189, 0, 255, 0.35)",
+      "rgba(255, 0, 128, 0.35)"
+    ]
+  );
+  
+  // Custom navigation handler for smooth section scrolling (compensates for fixed header offset)
   const handleScroll = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      const headerOffset = 90; // Fixed header height + spacing
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
     }
   };
 
@@ -89,7 +163,7 @@ export default function Home() {
             <Logo size={28} />
           </div>
           
-          <div className="flex gap-3 sm:gap-6 md:gap-8 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
+          <div className="hidden md:flex gap-3 sm:gap-6 md:gap-8 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
             {[
               { id: "stack", key: "navStack" },
               { id: "projects", key: "navProjects" },
@@ -110,12 +184,69 @@ export default function Home() {
             <LanguageSelector />
             <button
               onClick={() => handleScroll("contact")}
-              className="px-3 sm:px-4 py-2 rounded-full bg-[#00F0FF]/10 hover:bg-[#00F0FF]/20 border border-[#00F0FF]/25 text-[10px] sm:text-xs font-black text-[#00F0FF] tracking-wider uppercase transition-all duration-300 shadow-[0_0_10px_rgba(0,240,255,0.05)] cursor-pointer active:scale-95"
+              className="hidden md:block px-3 sm:px-4 py-2 rounded-full bg-[#00F0FF]/10 hover:bg-[#00F0FF]/20 border border-[#00F0FF]/25 text-[10px] sm:text-xs font-black text-[#00F0FF] tracking-wider uppercase transition-all duration-300 shadow-[0_0_10px_rgba(0,240,255,0.05)] cursor-pointer active:scale-95"
             >
               {t("navLetsBuild")}
             </button>
+
+            {/* Mobile Hamburger Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="flex md:hidden p-2.5 rounded-full bg-slate-900/40 hover:bg-[#00F0FF]/15 border border-[#00F0FF]/25 text-slate-300 hover:text-[#00F0FF] transition-all cursor-pointer active:scale-95"
+              aria-label="Toggle mobile menu"
+            >
+              <HamburgerIcon isOpen={mobileMenuOpen} />
+            </button>
           </div>
         </nav>
+
+        {/* Mobile Dropdown Menu Overlay */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0, y: -20 }}
+              animate={{ opacity: 1, height: "auto", y: 0 }}
+              exit={{ opacity: 0, height: 0, y: -20 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="absolute top-full left-0 right-0 mt-3 glass-panel rounded-3xl p-6 border border-white/10 bg-slate-950/95 backdrop-blur-xl shadow-2xl z-40 overflow-hidden flex flex-col gap-6 md:hidden"
+            >
+              <div className="flex flex-col gap-4 text-center">
+                {[
+                  { id: "stack", key: "navStack" },
+                  { id: "projects", key: "navProjects" },
+                  { id: "process", key: "navProcess" },
+                  { id: "contact", key: "navContact" }
+                ].map((section) => (
+                  <button
+                    key={section.id}
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      // Slight delay to allow layout settlement before smooth scrolling is initiated
+                      setTimeout(() => {
+                        handleScroll(section.id);
+                      }, 150);
+                    }}
+                    className="py-2.5 text-sm font-bold uppercase tracking-wider text-slate-300 hover:text-[#00F0FF] transition-colors cursor-pointer border-b border-white/5 active:bg-[#00F0FF]/5 rounded-lg"
+                  >
+                    {t(section.key as any)}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setTimeout(() => {
+                    handleScroll("contact");
+                  }, 150);
+                }}
+                className="w-full py-3.5 rounded-xl bg-[#00F0FF]/10 hover:bg-[#00F0FF]/20 border border-[#00F0FF]/25 text-xs font-black text-[#00F0FF] tracking-widest uppercase transition-all duration-300 shadow-[0_0_15px_rgba(0,240,255,0.1)] cursor-pointer active:scale-[0.98]"
+              >
+                {t("navLetsBuild")}
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       <main className="relative z-10 w-full overflow-x-hidden">
@@ -461,10 +592,97 @@ export default function Home() {
             <span className="font-mono text-[10px]">
               {t("footerRights", { year: new Date().getFullYear() })}
             </span>
+            <div className="flex gap-3 mt-1.5 font-mono text-[10px]">
+              <Link href="/impressum" className="hover:text-[#00F0FF] transition-colors duration-200">
+                {t("footerImpressum")}
+              </Link>
+              <span className="text-slate-800 select-none">|</span>
+              <Link href="/datenschutz" className="hover:text-[#00F0FF] transition-colors duration-200">
+                {t("footerDatenschutz")}
+              </Link>
+            </div>
           </div>
 
         </div>
       </footer>
+
+      {/* Elegant Vertical Social Sidebar (Left side) */}
+      <div className="fixed left-5 lg:left-8 bottom-0 z-40 hidden md:flex flex-col items-center gap-5">
+        <div className="flex flex-col gap-4 text-slate-400">
+          <motion.a 
+            href="https://github.com/samsoun" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{ 
+              y: githubY, 
+              rotate: iconRotate, 
+              borderColor: iconBorderColor, 
+              backgroundColor: iconGlowColor 
+            }}
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="group p-2 rounded-full border backdrop-blur-md shadow-[0_4px_12px_rgba(0,0,0,0.5)] cursor-pointer hover:scale-110 active:scale-95 transition-transform duration-200"
+            aria-label="GitHub Profile"
+          >
+            <svg className="w-4 h-4 group-hover:text-[#00F0FF] transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+              <path d="M9 18c-4.51 2-5-2-7-2" />
+            </svg>
+          </motion.a>
+          <motion.a 
+            href="https://linkedin.com/in/samsoun-behaein-a07aa933b" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{ 
+              rotate: useTransform(smoothScrollProgress, [0, 1], [0, -360]), 
+              borderColor: iconBorderColor, 
+              backgroundColor: iconGlowColor 
+            }}
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="group p-2 rounded-full border backdrop-blur-md shadow-[0_4px_12px_rgba(0,0,0,0.5)] cursor-pointer hover:scale-110 active:scale-95 transition-transform duration-200"
+            aria-label="LinkedIn Profile"
+          >
+            <svg className="w-4 h-4 group-hover:text-[#00F0FF] transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+              <rect x="2" y="9" width="4" height="12" />
+              <circle cx="4" cy="4" r="2" />
+            </svg>
+          </motion.a>
+          <motion.a 
+            href="mailto:behaein@web.de"
+            style={{ 
+              y: emailY, 
+              rotate: iconRotate, 
+              borderColor: iconBorderColor, 
+              backgroundColor: iconGlowColor 
+            }}
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="group p-2 rounded-full border backdrop-blur-md shadow-[0_4px_12px_rgba(0,0,0,0.5)] cursor-pointer hover:scale-110 active:scale-95 transition-transform duration-200"
+            aria-label="Email Address"
+          >
+            <Mail className="w-4 h-4 group-hover:text-[#00F0FF] transition-colors" />
+          </motion.a>
+        </div>
+        
+        {/* Elegant vertical neon line scroll progress bar */}
+        <motion.div 
+          initial={{ height: 0 }}
+          animate={{ height: 96 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="relative w-[2px] bg-slate-800/40 rounded-full overflow-hidden"
+        >
+          {/* Active progress indicator filled by scroll */}
+          <motion.div 
+            style={{ scaleY: smoothScrollProgress, transformOrigin: "top" }}
+            className="absolute inset-0 bg-gradient-to-b from-[#00F0FF] via-[#BD00FF] to-[#FF0080] w-full h-full" 
+          />
+        </motion.div>
+      </div>
     </>
   );
 }
