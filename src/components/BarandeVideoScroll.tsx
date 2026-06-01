@@ -33,7 +33,18 @@ export const BarandeVideoScroll: React.FC = () => {
   // Active phase index tracking for the floating glassmorphic information card
   const [activePhaseIndex, setActivePhaseIndex] = useState(0);
 
+  // Mobile Stories-style autoplay states & visibility observer tracking
+  const [inView, setInView] = useState(false);
+  const [autoplayProgress, setAutoplayProgress] = useState(0);
+  const [autoplayKey, setAutoplayKey] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
   const currentFrameRef = useRef(0);
+
+  const resetAutoplay = useCallback(() => {
+    setAutoplayProgress(0);
+    setAutoplayKey((k) => k + 1);
+  }, []);
 
   const phases: Phase[] = useMemo(() => [
     {
@@ -313,43 +324,130 @@ export const BarandeVideoScroll: React.FC = () => {
   useEffect(() => {
     if (!isMounted || !isMobile) return;
 
+    const container = containerRef.current;
     const video = videoRef.current;
-    if (!video) return;
+    if (!container || !video) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            setInView(true);
             // Reset to beginning and play exactly when scrolled to
             video.currentTime = 0;
             video.play().catch((e) => console.log("Playback prevented:", e));
           } else {
+            setInView(false);
+            setAutoplayProgress(0);
+            setActivePhaseIndex(0);
             // Pause and reset when scrolled away
             video.pause();
             video.currentTime = 0;
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.15 } // Sightly higher threshold for stable viewport entry detection
     );
 
-    observer.observe(video);
+    observer.observe(container);
 
     return () => {
       observer.disconnect();
     };
   }, [isMounted, isMobile]);
 
+  // Mobile Stories-style autoplay logic when in viewport
+  useEffect(() => {
+    if (!isMobile || !inView || isPaused) return;
+
+    const intervalTime = 50; // Update every 50ms for smooth progress bar updates
+    const totalTime = 5000; // 5 seconds per phase (User request: 5 seconds)
+    const increment = (intervalTime / totalTime) * 100;
+
+    const timer = setInterval(() => {
+      setAutoplayProgress((prev) => {
+        if (prev >= 100) {
+          return 100;
+        }
+        return prev + increment;
+      });
+    }, intervalTime);
+
+    return () => clearInterval(timer);
+  }, [isMobile, inView, isPaused, autoplayKey]);
+
+  // Synchronize phase advancement and progress reset in a single React batch commit to avoid out-of-sync jumps
+  useEffect(() => {
+    if (isMobile && autoplayProgress >= 100) {
+      setActivePhaseIndex((prev) => (prev + 1) % 4);
+      setAutoplayProgress(0);
+    }
+  }, [autoplayProgress, isMobile]);
+
+  // Swipe / Tap gesture handlers for Mobile Cards
+  const handleDragEnd = useCallback((info: { offset: { x: number } }) => {
+    const swipeThreshold = 40;
+    if (info.offset.x < -swipeThreshold) {
+      // Swipe left -> next phase (respecting RTL)
+      if (isRtl) {
+        setActivePhaseIndex((prev) => (prev - 1 + 4) % 4);
+      } else {
+        setActivePhaseIndex((prev) => (prev + 1) % 4);
+      }
+      resetAutoplay();
+    } else if (info.offset.x > swipeThreshold) {
+      // Swipe right -> prev phase (respecting RTL)
+      if (isRtl) {
+        setActivePhaseIndex((prev) => (prev + 1) % 4);
+      } else {
+        setActivePhaseIndex((prev) => (prev - 1 + 4) % 4);
+      }
+      resetAutoplay();
+    }
+  }, [isRtl, resetAutoplay]);
+
+  const handleCardTap = useCallback(() => {
+    if (isMobile) {
+      setActivePhaseIndex((prev) => (prev + 1) % 4);
+      resetAutoplay();
+    }
+  }, [isMobile, resetAutoplay]);
+
+  // Derived index of the phase text and stepper node state to display on mobile
+  const displayPhaseIndex = useMemo(() => {
+    if (!isMobile) {
+      return activePhaseIndex;
+    }
+    // On mobile, transition the UI elements early (at 90% of progress) when the line touches the next circle
+    if (autoplayProgress >= 90) {
+      return (activePhaseIndex + 1) % 4;
+    }
+    return activePhaseIndex;
+  }, [isMobile, activePhaseIndex, autoplayProgress]);
+
   // Retrieve active bullets list for current phase
-  const activePhase = phases[activePhaseIndex];
+  const activePhase = phases[displayPhaseIndex];
   const activeBullets = useMemo(() => {
     if (!isLoaded) return [];
     return getBulletsForLocale(locale, activePhase.bulletsKey);
-  }, [locale, activePhaseIndex, isLoaded, activePhase.bulletsKey]);
+  }, [locale, displayPhaseIndex, isLoaded, activePhase.bulletsKey]);
+
+  // Compute active connector line width dynamically based on active phase and autoplay progress
+  const activeLineWidth = useMemo(() => {
+    if (!isMobile) {
+      return `${(activePhaseIndex / 3) * 100}%`;
+    }
+    if (activePhaseIndex === 3) {
+      return "100%";
+    }
+    const baseProgress = activePhaseIndex / 3;
+    const stepProgress = (autoplayProgress / 100) * (1 / 3);
+    return `${(baseProgress + stepProgress) * 100}%`;
+  }, [isMobile, activePhaseIndex, autoplayProgress]);
 
   // Compute remaining phases count dynamically for ultra-clear user scrollytelling progress guidance
   const remainingText = useMemo(() => {
-    const remaining = 3 - activePhaseIndex;
+    const remaining = 3 - displayPhaseIndex;
     if (locale === "fa") {
       if (remaining === 3) return "۳ فاز باقی‌مانده";
       if (remaining === 2) return "۲ فاز باقی‌مانده";
@@ -367,7 +465,7 @@ export const BarandeVideoScroll: React.FC = () => {
     if (remaining === 2) return "2 phases remaining";
     if (remaining === 1) return "1 phase remaining";
     return "Final step";
-  }, [locale, activePhaseIndex]);
+  }, [locale, displayPhaseIndex]);
 
   return (
     <div 
@@ -514,16 +612,42 @@ export const BarandeVideoScroll: React.FC = () => {
           2. Floating Glassmorphic Information Card (UI-UX Pro Max legibility standard)
           Placed beautifully below the video framed viewport, with a solid high-contrast dark blur background 
         */}
-        <div 
-          onClick={() => {
-            if (isMobile) {
-              setActivePhaseIndex((prev) => (prev + 1) % 4);
-            }
-          }}
-          className={`w-full max-w-2xl min-h-[210px] md:min-h-[240px] mt-4 md:mt-5 glass-panel rounded-2xl p-5 md:p-6.5 border border-[#00F0FF]/20 bg-slate-950/95 backdrop-blur-xl shadow-2xl relative z-20 flex flex-col justify-between overflow-hidden ${
-            isMobile ? "cursor-pointer active:scale-[0.99] transition-transform duration-200" : ""
+        <motion.div 
+          drag={isMobile ? "x" : false}
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.15}
+          onDragEnd={(_, info) => handleDragEnd(info)}
+          onClick={handleCardTap}
+          whileTap={isMobile ? { scale: 0.992 } : undefined}
+          className={`w-full max-w-2xl min-h-[210px] md:min-h-[240px] mt-4 md:mt-5 glass-panel rounded-2xl p-5 md:p-6.5 border border-[#00F0FF]/25 bg-slate-950/95 backdrop-blur-xl shadow-2xl relative z-20 flex flex-col justify-between overflow-hidden transition-shadow duration-300 ${
+            isMobile ? "cursor-grab active:cursor-grabbing shadow-[0_0_20px_rgba(0,240,255,0.05)] hover:shadow-[0_0_30px_rgba(0,240,255,0.1)]" : ""
           }`}
         >
+          {/* Stories-style Segmented Progress Bar (Mobile only) */}
+          {isMobile && (
+            <div className="absolute top-0 left-0 right-0 h-[3px] flex gap-1.5 z-30 px-3.5 pt-[3px] bg-slate-950/50">
+              {phases.map((_, idx) => {
+                const isCompleted = idx < activePhaseIndex;
+                const isActive = idx === activePhaseIndex;
+                return (
+                  <div key={idx} className="flex-1 h-full bg-white/10 rounded-full overflow-hidden">
+                    {isCompleted && (
+                      <div className="w-full h-full bg-[#00F0FF] shadow-[0_0_4px_#00F0FF]" />
+                    )}
+                    {isActive && (
+                      <div 
+                        style={{ width: `${autoplayProgress}%` }}
+                        className="h-full bg-[#00F0FF] shadow-[0_0_4px_#00F0FF] transition-all duration-75 ease-linear"
+                      />
+                    )}
+                    {!isCompleted && !isActive && (
+                      <div className="w-0 h-full bg-[#00F0FF]/20" />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
           
           {/* Subtle neon corner accents for tech premium detail */}
           <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-[#00F0FF]/30 rounded-tl-xl" />
@@ -534,22 +658,24 @@ export const BarandeVideoScroll: React.FC = () => {
             Clearly communicates how many phases exist and which one is active
           */}
           <div dir="ltr" className="flex items-center justify-between w-full px-4 mb-5.5 relative">
-            {/* Background track line */}
-            <div className="absolute left-8 right-8 top-[11px] h-[1px] bg-slate-800/80 z-0" />
-            
-            {/* Active fill line */}
-            <div 
-              className="absolute left-8 top-[11px] h-[1px] bg-[#00F0FF] shadow-[0_0_8px_#00F0FF] transition-all duration-300 z-0"
-              style={{
-                width: `${(activePhaseIndex / 3) * 100}%`,
-                maxWidth: "calc(100% - 4rem)"
-              }}
-            />
+            {/* Background track line spanning exactly between circle centers */}
+            <div className="absolute left-[27px] right-[27px] top-[11px] h-[1px] bg-slate-800/80 z-0">
+              {/* Active fill line nested inside background track for perfect 1:1 pixel alignment */}
+              <div 
+                className={`absolute left-0 top-0 h-full bg-[#00F0FF] shadow-[0_0_8px_#00F0FF] z-0 ${
+                  isMobile ? "transition-all duration-75 ease-linear" : "transition-all duration-300"
+                }`}
+                style={{
+                  width: activeLineWidth
+                }}
+              />
+            </div>
 
             {phases.map((phase, idx) => {
-              const isCompleted = idx < activePhaseIndex;
-              const isActive = idx === activePhaseIndex;
-              const isUpcoming = idx > activePhaseIndex;
+              const isCompleted = idx < displayPhaseIndex;
+              const isActive = idx === displayPhaseIndex;
+              const isUpcoming = idx > displayPhaseIndex;
+              const isNextNode = idx === (displayPhaseIndex + 1) % 4;
               
               // Define short step descriptions
               const stepShortTitles = [
@@ -567,6 +693,7 @@ export const BarandeVideoScroll: React.FC = () => {
                     e.stopPropagation(); // Avoid triggering card click handler
                     if (isMobile) {
                       setActivePhaseIndex(idx);
+                      resetAutoplay();
                     } else {
                       const container = containerRef.current;
                       if (container) {
@@ -584,18 +711,23 @@ export const BarandeVideoScroll: React.FC = () => {
                 >
                   {/* Step Circle Node with dynamic states (Checkmark for completed, Pulse for active, Dotted/Dashed for future) */}
                   <div 
-                    className={`w-[22px] h-[22px] rounded-full flex items-center justify-center border font-mono text-[9px] font-black transition-all duration-300 ${
+                    className={`w-[22px] h-[22px] rounded-full flex items-center justify-center border font-mono text-[9px] font-black transition-all duration-300 relative ${
                       isActive 
                         ? "bg-slate-950 border-[#00F0FF] text-[#00F0FF] shadow-[0_0_10px_rgba(0,240,255,0.45)] scale-110" 
-                        : isCompleted 
-                          ? "bg-[#00F0FF]/15 border-[#00F0FF]/60 text-[#00F0FF]" 
-                          : "bg-slate-950/40 border-dashed border-slate-700 text-slate-600 hover:border-slate-500 hover:text-slate-400"
+                        : isNextNode && isMobile
+                          ? "bg-slate-950 border-[#00F0FF]/80 text-[#00F0FF]/80 shadow-[0_0_8px_rgba(0,240,255,0.25)] animate-pulse scale-105"
+                          : isCompleted 
+                            ? "bg-[#00F0FF]/15 border-[#00F0FF]/60 text-[#00F0FF]" 
+                            : "bg-slate-950/40 border-dashed border-slate-700 text-slate-600 hover:border-slate-500 hover:text-slate-400"
                     }`}
                   >
                     {isCompleted ? (
                       <span className="text-[10px] font-bold">✓</span>
                     ) : (
                       idx + 1
+                    )}
+                    {isNextNode && isMobile && (
+                      <span className="absolute inset-0 rounded-full border border-[#00F0FF] animate-ping opacity-40 pointer-events-none" />
                     )}
                   </div>
                   
@@ -626,18 +758,18 @@ export const BarandeVideoScroll: React.FC = () => {
           <AnimatePresence mode="wait">
             {isLoaded && (
               <motion.div
-                key={activePhaseIndex}
-                initial={{ opacity: 0, y: 15 }}
+                key={displayPhaseIndex}
+                initial={{ opacity: 0, y: 3 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
+                exit={{ opacity: 0, y: -3 }}
+                transition={{ duration: 0.08, ease: "easeOut" }}
                 className="flex flex-col h-full justify-between"
               >
                 {/* Stepper Tag & Dynamic Remaining Badge */}
                 <div className="flex justify-between items-center mb-2.5 gap-2">
                   <div className="flex flex-col gap-1 items-start">
                     <span className="text-[9px] font-mono font-bold tracking-[0.25em] text-[#00F0FF] uppercase">
-                      Phase 0{activePhaseIndex + 1} · {t("videoScrollTagline")}
+                      Phase 0{displayPhaseIndex + 1} · {t("videoScrollTagline")}
                     </span>
                     
                     {/* Glowing localized badge communicating remaining phases left */}
@@ -647,12 +779,12 @@ export const BarandeVideoScroll: React.FC = () => {
                         <span>{remainingText}</span>
                       </div>
                       {isMobile && (
-                        <span className="text-[7.5px] font-mono font-black text-slate-500 uppercase tracking-widest animate-pulse">
+                        <span className="text-[7.5px] font-mono font-black text-[#00F0FF]/60 uppercase tracking-widest animate-pulse">
                           {locale === "fa" 
-                            ? "ضربه روی کارت = فاز بعدی" 
+                            ? "بکشید یا ضربه بزنید" 
                             : (locale === "de" 
-                              ? "Tippen für nächste Phase" 
-                              : "Tap card for next phase")}
+                              ? "Wischen oder Tippen" 
+                              : "Swipe or Tap")}
                         </span>
                       )}
                     </div>
@@ -683,10 +815,46 @@ export const BarandeVideoScroll: React.FC = () => {
                     </div>
                   ))}
                 </div>
+
+                {/* Mobile-only Touch Navigation & Call-to-Action Bar */}
+                {isMobile && (
+                  <div 
+                    onClick={(e) => {
+                      e.stopPropagation(); // Avoid double triggers on card tap
+                      setActivePhaseIndex((prev) => (prev + 1) % 4);
+                      resetAutoplay();
+                    }}
+                    className="mt-4 flex items-center justify-between w-full border-t border-[#00F0FF]/15 pt-3.5 bg-gradient-to-r from-[#00F0FF]/0 to-[#00F0FF]/[0.03] rounded-b-xl px-1"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="relative flex items-center justify-center w-6 h-6 rounded-full bg-slate-900 border border-[#00F0FF]/20">
+                        <Smartphone className="w-3.5 h-3.5 text-[#00F0FF]/80 animate-pulse" />
+                        <span className="absolute -right-0.5 -top-0.5 w-2 h-2 rounded-full bg-[#00F0FF] animate-ping" />
+                      </div>
+                      <span className="text-[10px] font-mono text-slate-400 tracking-wider">
+                        {locale === "fa" 
+                          ? "بکشید یا ضربه بزنید" 
+                          : (locale === "de" 
+                            ? "Wischen oder Tippen" 
+                            : "Swipe or Tap")}
+                      </span>
+                    </div>
+                    
+                    <button className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[11px] font-bold font-mono tracking-wider text-[#00F0FF] border border-[#00F0FF]/40 bg-[#00F0FF]/10 shadow-[0_0_12px_rgba(0,240,255,0.2)] active:scale-95 transition-transform duration-100">
+                      <span>
+                        {displayPhaseIndex === 3 
+                          ? (isRtl ? "↺ فاز ۱" : "Phase 1 ↺") 
+                          : isRtl 
+                            ? `← فاز ۰${((displayPhaseIndex + 1) % 4) + 1}` 
+                            : `${locale === "de" ? "Phase" : "Phase"} 0${((displayPhaseIndex + 1) % 4) + 1} →`}
+                      </span>
+                    </button>
+                  </div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
+        </motion.div>
 
         {/* Vertical Scroll Progress Bar (Right side, identical to sheenberlin.de) */}
         <div className="absolute right-6 sm:right-8 top-1/2 z-30 hidden -translate-y-1/2 sm:block">
