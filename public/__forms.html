@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Netlify Forms Detection</title>
+</head>
+<body>
+  <!-- 
+    This file is used by Netlify's build system (using @netlify/plugin-nextjs v5+) to detect and configure forms for the Next.js site. 
+    It is placed in the public/ folder so it's parsed as a static asset during build time. 
+    It will not be rendered to the user, but ensures Netlify's Forms feature is correctly provisioned for the AJAX form submission.
+  -->
+  <form name="contact" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="contact" />
+    <input type="text" name="bot-field" />
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <select name="projectType">
+      <option value="Full-Stack Development"></option>
+      <option value="Mobile App Dev (React Native)"></option>
+      <option value="Premium UI/UX & SEO"></option>
+      <option value="Custom Consultation"></option>
+    </select>
+    <textarea name="message"></textarea>
+  </form>
+</body>
+</html>

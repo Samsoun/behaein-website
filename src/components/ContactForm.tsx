@@ -114,9 +114,6 @@ export const ContactForm: React.FC = () => {
             <motion.form
               key="contact-form"
               name="contact"
-              method="POST"
-              data-netlify="true"
-              data-netlify-honeypot="bot-field"
               onSubmit={handleSubmit}
               className="flex flex-col gap-6"
               initial={{ opacity: 0 }}
