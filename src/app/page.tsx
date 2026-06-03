@@ -19,7 +19,7 @@ import { BentoGrid } from "@/components/BentoGrid";
 import { SmartphoneMockup, BrowserMockup } from "@/components/DeviceMockup";
 import { ProcessTimeline } from "@/components/ProcessTimeline";
 import { ContactForm } from "@/components/ContactForm";
-import { PortraitFrame } from "@/components/PortraitFrame";
+import { PhysicsPlayground } from "@/components/PhysicsPlayground";
 import { useLanguage } from "@/context/LanguageContext";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { Logo } from "@/components/Logo";
@@ -58,7 +58,7 @@ const HamburgerIcon: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
 };
 
 export default function Home() {
-  const { t, isRtl } = useLanguage();
+  const { t, isRtl, locale } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Buttery-smooth scroll progress setup for sidebar motion
@@ -256,89 +256,9 @@ export default function Home() {
         {/* SECTION 1: HERO SECTION */}
         <section 
           id="hero" 
-          className="min-h-screen flex flex-col justify-center items-center px-6 relative pt-24"
+          className="relative min-h-screen flex flex-col justify-center items-center"
         >
-          {/* Neon background lighting orbs */}
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-radial-accent pointer-events-none -z-10 opacity-60" />
-          
-          <div className="max-w-6xl mx-auto w-full flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 text-center lg:text-start">
-            
-            {/* Left Column: Text Content */}
-            <div className="flex-1 flex flex-col items-center lg:items-start gap-6">
-              {/* Tagline */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6 }}
-                className="px-3.5 py-1.5 rounded-full bg-[#00F0FF]/5 border border-[#00F0FF]/15 text-xs font-mono font-bold tracking-widest uppercase text-[#00F0FF]"
-              >
-                {t("heroTagline")}
-              </motion.div>
-
-              {/* Main Headline */}
-              <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.1 }}
-                className="text-4xl md:text-5xl lg:text-6xl font-black font-display tracking-tight text-white leading-[1.08] select-none"
-              >
-                {t("heroHeadlinePrefix")}<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00F0FF] to-indigo-400">{t("heroHeadlineHighlight")}</span>{t("heroHeadlineSuffix")}
-              </motion.h1>
-
-              {/* Subline */}
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-slate-400 text-sm md:text-lg leading-relaxed max-w-xl"
-              >
-                {t("heroSubline")}
-              </motion.p>
-
-              {/* CTAs */}
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                className="flex flex-col sm:flex-row gap-4 mt-4"
-              >
-                <button
-                  onClick={() => handleScroll("projects")}
-                  className="px-7 py-3.5 rounded-lg bg-[#00F0FF] hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(0,240,255,0.25)] hover:shadow-[0_0_30px_rgba(0,240,255,0.4)] cursor-pointer active:scale-95"
-                >
-                  {t("heroCtaWork")}
-                </button>
-                <button
-                  onClick={() => handleScroll("contact")}
-                  className="px-7 py-3.5 rounded-lg bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer active:scale-95"
-                >
-                  {t("heroCtaBuild")}
-                </button>
-              </motion.div>
-            </div>
-
-            {/* Right Column: 3D Portrait Frame */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, rotateY: -10 }}
-              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-              transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.2 }}
-              className="flex-shrink-0 flex items-center justify-center w-full max-w-sm lg:max-w-none lg:w-auto"
-            >
-              <PortraitFrame />
-            </motion.div>
-
-          </div>
-
-          {/* Mouse scroll affordance */}
-          <div 
-            onClick={() => handleScroll("stack")}
-            className="hidden md:flex absolute bottom-8 cursor-pointer animate-bounce flex-col items-center gap-1.5 text-slate-500 hover:text-[#00F0FF] transition-colors"
-          >
-            <span className="text-[10px] font-mono font-bold tracking-widest uppercase">{t("heroScrollDown")}</span>
-            <div className="w-5 h-8 rounded-full border-2 border-current flex justify-center p-1.5">
-              <div className="w-1 h-2 bg-current rounded-full" />
-            </div>
-          </div>
+          <PhysicsPlayground />
         </section>
 
         {/* SECTION 2: TECH-STACK BENTO GRID */}

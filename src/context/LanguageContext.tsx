@@ -326,10 +326,10 @@ const translations: Record<Locale, Translations> = {
     navContact: "kontakt",
     navLetsBuild: "Lass uns bauen",
 
-    heroTagline: "🚀 Portfolio eines Creative Technologists",
+    heroTagline: "🚀 Portfolio eines Creative Technologist",
     heroHeadlinePrefix: "Digitale Produkte mit ",
-    heroHeadlineHighlight: "Pixel-Perfektion",
-    heroHeadlineSuffix: " & unkaputtbarem Code.",
+    heroHeadlineHighlight: "Pixelpräzision",
+    heroHeadlineSuffix: " & fehlerfreiem Code.",
     heroSubline: "Ich bin Full-Stack- und Mobile-Entwickler, spezialisiert auf die Entwicklung von High-End-Web-Erlebnissen und skalierbaren plattformübergreifenden Anwendungen. Vom Premium-UI/UX-Design bis hin zu robusten Backend-Architekturen schließe ich die Lücke zwischen Fantasie und produktionsbereiter Ingenieurskunst.",
     heroCtaWork: "Meine Arbeiten sehen",
     heroCtaBuild: "Lass uns etwas bauen",
