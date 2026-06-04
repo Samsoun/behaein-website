@@ -39,13 +39,6 @@ export const badgeLayoutAnchors: Record<string, { xPct: number; yPct: number; zO
   "badge-javascript": { xPct: 0.14, yPct: 0.88, zOffset: -110 },
   "badge-wm-ball": { xPct: 0.54, yPct: 0.68, zOffset: 0 },
   "badge-wm-trophy": { xPct: 0.76, yPct: 0.22, zOffset: -60 },
-  // Flags anchors
-  "flag-de": { xPct: 0.22, yPct: 0.72, zOffset: -70 },
-  "flag-us": { xPct: 0.32, yPct: 0.88, zOffset: -90 },
-  "flag-mx": { xPct: 0.62, yPct: 0.85, zOffset: -80 },
-  "flag-ca": { xPct: 0.42, yPct: 0.25, zOffset: -110 },
-  "flag-br": { xPct: 0.88, yPct: 0.18, zOffset: -90 },
-  "flag-ir": { xPct: 0.90, yPct: 0.65, zOffset: -70 },
 };
 
 export const PhysicsPlayground: React.FC = () => {
@@ -59,6 +52,37 @@ export const PhysicsPlayground: React.FC = () => {
   const [imgExists, setImgExists] = useState(false);
   const [engineStats, setEngineStats] = useState({ fps: 60, collisions: 0 });
   const [wmMode, setWmMode] = useState<boolean>(true);
+
+  // Goal celebration states and refs (Option B)
+  const [goalCelebration, setGoalCelebration] = useState(false);
+  const [particles, setParticles] = useState<any[]>([]);
+  const lastGoalTimeRef = useRef(0);
+
+  const triggerGoalCelebration = () => {
+    const colors = ["#00F0FF", "#3B82F6", "#8B5CF6", "#EC4899", "#10B981", "#F59E0B"];
+    const newParticles = Array.from({ length: 80 }).map((_, i) => {
+      const size = 6 + Math.random() * 10;
+      return {
+        id: i,
+        left: Math.random() * 100,
+        delay: Math.random() * 0.8,
+        duration: 2 + Math.random() * 2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        size,
+        angle: Math.random() * 360,
+        shape: Math.random() > 0.5 ? "rounded-full" : "rounded-sm",
+        drift: (Math.random() - 0.5) * 30, // drift in vw
+      };
+    });
+
+    setParticles(newParticles);
+    setGoalCelebration(true);
+
+    setTimeout(() => {
+      setGoalCelebration(false);
+      setParticles([]);
+    }, 3200);
+  };
 
   // Refs for animation loop without trigger re-renders
   const itemsRef = useRef<PhysicsItem[]>([]);
@@ -113,12 +137,6 @@ export const PhysicsPlayground: React.FC = () => {
       ? [
           { id: "badge-wm-ball", label: "WM Ball", isImage: true, imageUrl: "/wm_ball.png" },
           { id: "badge-wm-trophy", label: "WM Trophy", isImage: true, imageUrl: "/wm_trophy.png" },
-          { id: "flag-de", label: "Germany", isImage: true, imageUrl: "https://flagcdn.com/w80/de.png" },
-          { id: "flag-us", label: "USA", isImage: true, imageUrl: "https://flagcdn.com/w80/us.png" },
-          { id: "flag-mx", label: "Mexico", isImage: true, imageUrl: "https://flagcdn.com/w80/mx.png" },
-          { id: "flag-ca", label: "Canada", isImage: true, imageUrl: "https://flagcdn.com/w80/ca.png" },
-          { id: "flag-br", label: "Brazil", isImage: true, imageUrl: "https://flagcdn.com/w80/br.png" },
-          { id: "flag-ir", label: "Iran", isImage: true, imageUrl: "https://flagcdn.com/w80/ir.png" },
         ]
       : []),
   ];
@@ -215,7 +233,6 @@ export const PhysicsPlayground: React.FC = () => {
       let mass = 1.2;
       if (badge.id === "badge-wm-ball") mass = 2.4;
       else if (badge.id === "badge-wm-trophy") mass = 3.5;
-      else if (badge.id.startsWith("flag-")) mass = 0.8;
 
       updatedItems.push({
         id: badge.id,
@@ -498,6 +515,21 @@ export const PhysicsPlayground: React.FC = () => {
               const overlap = minDist - dist;
               const nx = dx / (dist || 1);
               const ny = dy / (dist || 1);
+
+              // Check for Tor/Goal collision (WM ball hitting portrait-card)
+              const isBall = a.id === "badge-wm-ball" || b.id === "badge-wm-ball";
+              const isPortrait = a.id === "portrait-card" || b.id === "portrait-card";
+              if (isBall && isPortrait) {
+                const ball = a.id === "badge-wm-ball" ? a : b;
+                const speed = Math.hypot(ball.vx, ball.vy);
+                if (speed > 2.0) {
+                  const now = performance.now();
+                  if (now - lastGoalTimeRef.current > 4000) {
+                    lastGoalTimeRef.current = now;
+                    setTimeout(() => triggerGoalCelebration(), 0);
+                  }
+                }
+              }
               
               const totalMass = a.mass + b.mass;
               const ratioA = b.mass / totalMass;
@@ -663,35 +695,52 @@ export const PhysicsPlayground: React.FC = () => {
       onPointerLeave={handlePointerLeave}
       className="relative w-full min-h-[90vh] flex flex-col justify-center items-center overflow-hidden [perspective:1200px]"
     >
+      <style>{`
+        @keyframes confetti-fall {
+          0% {
+            transform: translateY(-20px) rotate(0deg);
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(105vh) translateX(var(--drift)) rotate(720deg);
+            opacity: 0;
+          }
+        }
+        @keyframes goal-text-reveal {
+          0% {
+            transform: translate(-50%, -50%) scale(0.9) rotate(-5deg);
+            opacity: 0;
+            filter: blur(10px);
+          }
+          15% {
+            transform: translate(-50%, -50%) scale(1.1) rotate(2deg);
+            opacity: 1;
+            filter: blur(0);
+          }
+          25% {
+            transform: translate(-50%, -50%) scale(1) rotate(0deg);
+          }
+          80% {
+            transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            opacity: 1;
+            filter: blur(0);
+          }
+          100% {
+            transform: translate(-50%, -50%) scale(0.95) rotate(-2deg);
+            opacity: 0;
+            filter: blur(8px);
+          }
+        }
+        .animate-confetti-fall {
+          animation: confetti-fall linear forwards;
+        }
+        .animate-goal-text {
+          animation: goal-text-reveal 3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+      `}</style>
+
       {/* Background radial accent glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-radial-accent pointer-events-none -z-10 opacity-50" />
-
-      {/* Stadium Pitch markings when WM mode is active */}
-      {wmMode && (
-        <div className="absolute inset-0 pointer-events-none -z-20 opacity-30 select-none transition-opacity duration-500">
-          <svg className="w-full h-full fill-none" stroke="#00F0FF" strokeWidth="1.2" strokeOpacity="0.08" xmlns="http://www.w3.org/2000/svg">
-            {/* Outer boundary line */}
-            <rect x="3%" y="3%" width="94%" height="94%" rx="24" />
-            
-            {/* Center line */}
-            <line x1="50%" y1="3%" x2="50%" y2="97%" />
-            
-            {/* Center Circle */}
-            <circle cx="50%" cy="50%" r="90" />
-            <circle cx="50%" cy="50%" r="5" fill="#00F0FF" fillOpacity="0.15" />
-            
-            {/* Left Penalty Area */}
-            <rect x="3%" y="22%" width="14%" height="56%" />
-            <rect x="3%" y="33%" width="5%" height="34%" />
-            <path d="M 17% 42% A 70 70 0 0 1 17% 58%" />
-            
-            {/* Right Penalty Area */}
-            <rect x="83%" y="22%" width="14%" height="56%" />
-            <rect x="92%" y="33%" width="5%" height="34%" />
-            <path d="M 83% 42% A 70 70 0 0 0 83% 58%" />
-          </svg>
-        </div>
-      )}
 
       {/* Main Responsive Grid Container */}
       <div className="max-w-6xl mx-auto w-full flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 pt-24 pb-16 z-10 px-4">
@@ -819,16 +868,7 @@ export const PhysicsPlayground: React.FC = () => {
         
         if ('imageUrl' in badge) {
           const isBall = badge.id === "badge-wm-ball";
-          const isFlag = badge.id.startsWith("flag-");
-          
-          let dimsClass = "";
-          if (isBall) {
-            dimsClass = "w-[64px] h-[64px] md:w-[72px] md:h-[72px]";
-          } else if (isFlag) {
-            dimsClass = "w-[36px] h-[36px] md:w-[42px] md:h-[42px]";
-          } else {
-            dimsClass = "w-[80px] h-[100px] md:w-[90px] md:h-[110px]";
-          }
+          const dimsClass = isBall ? "w-[64px] h-[64px] md:w-[72px] md:h-[72px]" : "w-[80px] h-[100px] md:w-[90px] md:h-[110px]";
           return (
             <div
               key={badge.id}
@@ -841,9 +881,7 @@ export const PhysicsPlayground: React.FC = () => {
                 top: `${anchor.yPct * 100}%`,
                 transform: `translate(-50%, -50%)`,
               }}
-              className={`absolute cursor-grab active:cursor-grabbing select-none z-20 touch-none ${dimsClass} ${
-                isFlag ? "rounded-full overflow-hidden border border-[#00F0FF]/30 shadow-[0_0_12px_rgba(0,240,255,0.15)] bg-slate-950" : ""
-              }`}
+              className={`absolute cursor-grab active:cursor-grabbing select-none z-20 touch-none ${dimsClass}`}
             >
               {/* Pulsing indicator & tooltip helper for the ball to invite mouse touch */}
               {isBall && mode === "ordnung" && (
@@ -860,7 +898,7 @@ export const PhysicsPlayground: React.FC = () => {
               <img
                 src={badge.imageUrl}
                 alt={badge.label}
-                className={`w-full h-full pointer-events-none ${isFlag ? "object-cover" : "object-contain"}`}
+                className="w-full h-full object-contain pointer-events-none"
               />
             </div>
           );
@@ -944,6 +982,44 @@ export const PhysicsPlayground: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Goal Celebration Confetti Overlay */}
+      {goalCelebration && (
+        <div className="absolute inset-0 pointer-events-none z-[45] overflow-hidden">
+          {particles.map((p) => (
+            <div
+              key={p.id}
+              style={{
+                left: `${p.left}%`,
+                top: `-20px`,
+                width: `${p.size}px`,
+                height: `${p.size}px`,
+                backgroundColor: p.color,
+                animationDelay: `${p.delay}s`,
+                animationDuration: `${p.duration}s`,
+                transform: `rotate(${p.angle}deg)`,
+                "--drift": `${p.drift}vw`,
+              } as any}
+              className={`absolute ${p.shape} animate-confetti-fall shadow-sm`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Goal Celebration Text Banner */}
+      {goalCelebration && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-50 text-center select-none w-full max-w-lg px-4">
+          <div className="glass-panel border border-[#00F0FF]/30 bg-slate-950/90 py-8 px-6 md:px-12 rounded-3xl shadow-[0_0_50px_rgba(0,240,255,0.25)] animate-goal-text relative overflow-hidden">
+            <div className="absolute inset-0 bg-radial-accent opacity-30 pointer-events-none" />
+            <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-[#00F0FF] via-indigo-400 to-pink-500 neon-text-glow leading-none select-none">
+              {locale === "fa" ? "گل! ⚽🏆" : locale === "de" ? "TOR! ⚽🏆" : "GOAL! ⚽🏆"}
+            </h2>
+            <p className="text-[10px] md:text-xs font-mono tracking-widest uppercase text-slate-400 mt-3 select-none">
+              {locale === "fa" ? "شبیه‌ساز جام جهانی فعال است" : locale === "de" ? "WM-Simulation Aktiviert" : "World Cup Simulation Active"}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
