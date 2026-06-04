@@ -270,6 +270,57 @@ export default function Home() {
           id="hero" 
           className="relative min-h-screen flex flex-col justify-center items-center"
         >
+          {/* Dynamic Language-specific Flag Background with smooth blending */}
+          <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden select-none">
+            {locale === "de" && (
+              /* German Flag */
+              <div className="absolute inset-0 opacity-12 md:opacity-18 flex flex-col">
+                <div className="h-1/3 w-full bg-[#000000]" />
+                <div className="h-1/3 w-full bg-[#DD0000]" />
+                <div className="h-1/3 w-full bg-[#FFCC00]" />
+              </div>
+            )}
+
+            {locale === "en" && (
+              /* USA Flag (ambient SVG) */
+              <div className="absolute inset-0 opacity-10 md:opacity-15 flex items-center justify-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src="/us_flag.svg" 
+                  alt="US Flag Background" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+
+            {locale === "fa" && (
+              /* Lion and Sun Flag (Iran historical flag) */
+              <div className="absolute inset-0 opacity-12 md:opacity-18 flex flex-col justify-between">
+                {/* Background stripes (Green, White, Red) */}
+                <div className="absolute inset-0 flex flex-col">
+                  <div className="h-1/3 w-full bg-[#008b3c]" />
+                  <div className="h-1/3 w-full bg-[#ffffff]" />
+                  <div className="h-1/3 w-full bg-[#da121a]" />
+                </div>
+                {/* Centered Lion & Sun Symbol */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img 
+                    src="/lion_and_sun.svg" 
+                    alt="Lion and Sun Emblem" 
+                    className="h-1/3 max-w-[40%] object-contain"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Smooth transition overlays */}
+            {/* Radial vignette mask (soft edges on sides) */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,#0B0F19_90%)]" />
+            {/* Vertical linear mask (fade out at top and bottom boundaries) */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0B0F19] via-transparent to-[#0B0F19]" />
+          </div>
+
           <PhysicsPlayground />
         </section>
 
