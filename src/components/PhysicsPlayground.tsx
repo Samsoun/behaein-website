@@ -491,13 +491,51 @@ export const PhysicsPlayground: React.FC = () => {
           const goalX = goal.baseX + goal.x;
           const goalY = goal.baseY + goal.y;
 
-          // Bounding area checks (center net)
-          const isInsideGoalX = Math.abs(ballX - goalX) < goal.width * 0.38;
-          const isInsideGoalY = Math.abs(ballY - goalY) < goal.height * 0.38;
+          const ballSpeed = Math.hypot(ball.vx, ball.vy);
 
-          if (isInsideGoalX && isInsideGoalY) {
+          // Goal posts and crossbar positioning relative to goal center
+          const leftPostX = goalX - goal.width * 0.42;
+          const rightPostX = goalX + goal.width * 0.42;
+          const crossbarY = goalY - goal.height * 0.42;
+
+          // 1. Goalpost and Crossbar Bouncing Physics
+          const postThickness = 16;
+          const distToLeftPost = Math.hypot(ballX - leftPostX, ballY - crossbarY);
+          const distToRightPost = Math.hypot(ballX - rightPostX, ballY - crossbarY);
+
+          if (distToLeftPost < postThickness + 24) {
+            // Bounce off left post (elastic bounce back)
+            ball.vx = -Math.abs(ball.vx) * 0.85;
+            ball.vy = -ball.vy * 0.75 + (Math.random() - 0.5) * 3;
+            ball.angularVelocity = (Math.random() - 0.5) * 15;
+            ball.vz = 4 + Math.random() * 3; // pop up
+          } else if (distToRightPost < postThickness + 24) {
+            // Bounce off right post
+            ball.vx = Math.abs(ball.vx) * 0.85;
+            ball.vy = -ball.vy * 0.75 + (Math.random() - 0.5) * 3;
+            ball.angularVelocity = (Math.random() - 0.5) * 15;
+            ball.vz = 4 + Math.random() * 3;
+          } else if (ballX > leftPostX && ballX < rightPostX && Math.abs(ballY - crossbarY) < 18) {
+            // Bounce off crossbar
+            ball.vy = Math.abs(ball.vy) * 0.8; // bounce downwards
+            ball.vx += (Math.random() - 0.5) * 4;
+            ball.angularVelocity = (Math.random() - 0.5) * 15;
+            ball.vz = 3 + Math.random() * 3;
+          }
+          // 2. Goal scoring detection (ball is inside the posts and below the crossbar)
+          else if (ballX > leftPostX + 15 && ballX < rightPostX - 15 && ballY < goalY + goal.height * 0.2 && ballY > crossbarY) {
             shootStateRef.current = "goal";
             setTimeout(() => setShootState("goal"), 0);
+
+            // Goal Net Bulging Animation:
+            // Dampen ball velocity to simulate hitting the net mesh
+            ball.vx = ball.vx * 0.1;
+            ball.vy = ball.vy * 0.1;
+            // Pull the ball towards the center depth of the goal net
+            ball.x = goalX - ball.baseX;
+            ball.y = goalY - ball.baseY - goal.height * 0.05;
+            ball.z = -120; // stretch net backwards in 3D depth!
+            ball.angularVelocity = ball.angularVelocity * 0.15;
 
             // Reset ball after 3.5 seconds
             setTimeout(() => {
@@ -511,12 +549,11 @@ export const PhysicsPlayground: React.FC = () => {
               setTimeout(() => setMode("ordnung"), 0);
             }, 3500);
           } else {
-            // Check for miss conditions
-            const ballSpeed = Math.hypot(ball.vx, ball.vy);
-            const flewOverCrossbar = ballY < goalY - goal.height * 0.45;
-            const wentWideLeft = ballX < goalX - goal.width * 0.6;
-            const wentWideRight = ballX > goalX + goal.width * 0.6;
-            const stoppedMoving = ballSpeed < 0.25;
+            // 3. Check for miss conditions
+            const flewOverCrossbar = ballY < crossbarY - 20;
+            const wentWideLeft = ballX < leftPostX - 35;
+            const wentWideRight = ballX > rightPostX + 35;
+            const stoppedMoving = ballSpeed < 0.25 && ballY > goalY + goal.height * 0.2;
 
             if (flewOverCrossbar || wentWideLeft || wentWideRight || stoppedMoving) {
               shootStateRef.current = "miss";
@@ -550,6 +587,12 @@ export const PhysicsPlayground: React.FC = () => {
               const isGameA = a.id === "badge-wm-ball" || a.id === "badge-wm-trophy" || a.id === "portrait-card";
               const isGameB = b.id === "badge-wm-ball" || b.id === "badge-wm-trophy" || b.id === "portrait-card";
               if (!isGameA || !isGameB) {
+                continue;
+              }
+              // Skip giant circle collisions between the ball/trophy and the goal (portrait-card)
+              // so the ball can actually go inside the net and trigger scoring correctly.
+              const isGoalCollision = a.id === "portrait-card" || b.id === "portrait-card";
+              if (isGoalCollision) {
                 continue;
               }
             }
@@ -626,8 +669,19 @@ export const PhysicsPlayground: React.FC = () => {
           const blur = Math.max(0, -item.z / 40); // 2.5px blur at Z = -100
           const opacity = Math.max(0.2, Math.min(1.0, 1 + item.z / 280));
 
+          let shakeX = 0;
+          let shakeY = 0;
+          if (item.id === "portrait-card" && shootStateRef.current === "goal") {
+            const timeMs = performance.now();
+            shakeX = Math.sin(timeMs * 0.08) * 5;
+            shakeY = Math.cos(timeMs * 0.08) * 4;
+          } else if (item.id === "badge-wm-trophy" && shootStateRef.current === "goal") {
+            const timeMs = performance.now();
+            shakeY = -Math.abs(Math.sin(timeMs * 0.015)) * 18;
+          }
+
           const suffix = item.type === "badge" ? " translate(-50%, -50%)" : "";
-          el.style.transform = `translate3d(${item.x}px, ${item.y}px, ${item.z}px) rotate(${item.angle}deg) scale(${scale})${suffix}`;
+          el.style.transform = `translate3d(${item.x + shakeX}px, ${item.y + shakeY}px, ${item.z}px) rotate(${item.angle}deg) scale(${scale})${suffix}`;
           el.style.filter = blur > 0.5 ? `blur(${blur}px)` : "none";
           el.style.opacity = String(opacity);
           
@@ -909,7 +963,7 @@ export const PhysicsPlayground: React.FC = () => {
             onPointerUp={wmMode ? undefined : (e) => handleDragEnd(e, "portrait-card")}
             className={`relative select-none touch-none transition-all ${
               wmMode
-                ? "w-[300px] h-[220px] md:w-[380px] md:h-[285px] filter drop-shadow-[0_0_20px_rgba(0,240,255,0.15)] pointer-events-none"
+                ? "w-[340px] h-[250px] md:w-[460px] md:h-[345px] filter drop-shadow-[0_0_25px_rgba(0,240,255,0.2)] pointer-events-none"
                 : "w-[280px] h-[360px] md:w-[320px] md:h-[400px] rounded-3xl overflow-hidden shadow-2xl cursor-grab active:cursor-grabbing"
             }`}
           >
@@ -920,11 +974,23 @@ export const PhysicsPlayground: React.FC = () => {
                 <img 
                   src="/wm_goal.png" 
                   alt="WM Goal"
-                  className="w-full h-full object-contain filter drop-shadow-[0_0_20px_rgba(0,240,255,0.2)]"
+                  className={`w-full h-full object-contain transition-all duration-300 ${
+                    shootState === "goal"
+                      ? "filter drop-shadow-[0_0_35px_rgba(52,211,153,0.6)] scale-[1.02]"
+                      : "filter drop-shadow-[0_0_20px_rgba(0,240,255,0.2)]"
+                  }`}
                 />
                 {/* Goal post overlay indicator lights */}
-                <div className="absolute top-[8%] left-[7%] w-1.5 h-1.5 rounded-full bg-[#00F0FF] animate-pulse shadow-[0_0_8px_#00F0FF]" />
-                <div className="absolute top-[8%] right-[7%] w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse shadow-[0_0_8px_#818CF8]" />
+                <div className={`absolute top-[8%] left-[7%] w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                  shootState === "goal" 
+                    ? "bg-[#34D399] shadow-[0_0_12px_#34D399]" 
+                    : "bg-[#00F0FF] animate-pulse shadow-[0_0_8px_#00F0FF]"
+                }`} />
+                <div className={`absolute top-[8%] right-[7%] w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                  shootState === "goal" 
+                    ? "bg-[#34D399] shadow-[0_0_12px_#34D399]" 
+                    : "bg-indigo-400 animate-pulse shadow-[0_0_8px_#818CF8]"
+                }`} />
               </div>
             ) : (
               /* Card Content Shell (Portrait Card) */
