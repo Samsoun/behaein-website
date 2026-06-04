@@ -890,17 +890,7 @@ export const PhysicsPlayground: React.FC = () => {
         </div>
       )}
 
-      {/* Miss Feedback Overlay */}
-      {shootState === "miss" && (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none select-none text-center animate-[scaleUp_0.2s_ease-out_forwards]">
-          <h2 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-red-500 tracking-wider uppercase filter drop-shadow-[0_0_20px_rgba(239,68,68,0.2)]">
-            {locale === "fa" ? "خطا! 🔄" : locale === "de" ? "Knapp vorbei! 🔄" : "Knapp vorbei! 🔄"}
-          </h2>
-          <p className="text-slate-400 text-[10px] md:text-xs font-mono uppercase tracking-widest mt-2 bg-slate-950/80 px-4 py-1.5 rounded-full border border-red-500/20 backdrop-blur-sm inline-block">
-            {locale === "fa" ? "دوباره تلاش کن!" : locale === "de" ? "Nochmal versuchen!" : "Try again!"}
-          </p>
-        </div>
-      )}
+
       {/* Background radial accent glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-radial-accent pointer-events-none -z-10 opacity-50" />
 
@@ -984,6 +974,17 @@ export const PhysicsPlayground: React.FC = () => {
 
         {/* Right Column: Floating Picture Card Frame / Soccer Goal */}
         <div className="flex-shrink-0 flex items-center justify-center w-full max-w-sm lg:max-w-none lg:w-auto relative [transform-style:preserve-3d]">
+          {/* Miss Feedback Overlay (placed above the goal) */}
+          {shootState === "miss" && (
+            <div className="absolute top-[-75px] md:top-[-95px] left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none text-center animate-[scaleUp_0.2s_ease-out_forwards] whitespace-nowrap">
+              <h2 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-red-500 tracking-wider uppercase filter drop-shadow-[0_0_15px_rgba(239,68,68,0.25)]">
+                {locale === "fa" ? "خطا! 🔄" : locale === "de" ? "Knapp vorbei! 🔄" : "Missed! 🔄"}
+              </h2>
+              <p className="text-slate-400 text-[9px] md:text-[10px] font-mono uppercase tracking-widest mt-1 bg-slate-950/80 px-3 py-1 rounded-full border border-red-500/20 backdrop-blur-sm inline-block">
+                {locale === "fa" ? "دوباره تلاش کن!" : locale === "de" ? "Nochmal versuchen!" : "Try again!"}
+              </p>
+            </div>
+          )}
           <div
             id="portrait-card"
             ref={(el) => { refsMap.current["portrait-card"] = el; }}
