@@ -60,6 +60,18 @@ const HamburgerIcon: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
 export default function Home() {
   const { t, isRtl, locale } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showMobileBanner, setShowMobileBanner] = useState(false);
+
+  useEffect(() => {
+    const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 1024;
+    if (isMobileDevice) {
+      setShowMobileBanner(true);
+      const timer = setTimeout(() => {
+        setShowMobileBanner(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   // Buttery-smooth scroll progress setup for sidebar motion
   const { scrollYProgress } = useScroll();
@@ -608,6 +620,40 @@ export default function Home() {
 
       {/* Floating Interactive Tech Stack Loop Ticker */}
       <TechTicker />
+
+      {/* Mobile Desktop Recommendation Banner */}
+      <AnimatePresence>
+        {showMobileBanner && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-md lg:hidden"
+          >
+            <div className={`glass-panel rounded-2xl p-4 border border-[#00F0FF]/30 bg-slate-950/90 backdrop-blur-md shadow-2xl flex items-center justify-between gap-3 text-start ${isRtl ? "flex-row-reverse text-right" : "flex-row text-left"}`}>
+              <div className={`flex items-start gap-3 ${isRtl ? "flex-row-reverse" : "flex-row"}`}>
+                <span className="text-base flex-shrink-0 mt-0.5 select-none" role="img" aria-label="Desktop Computer">💻</span>
+                <p className="text-[11px] text-slate-300 font-sans leading-normal">
+                  {t("mobileDesktopNotice")}
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setShowMobileBanner(false);
+                }}
+                className="p-1.5 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer flex-shrink-0"
+                aria-label="Dismiss banner"
+              >
+                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

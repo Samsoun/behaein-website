@@ -1107,7 +1107,7 @@ export const PhysicsPlayground: React.FC = () => {
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-radial-accent pointer-events-none -z-10 opacity-50" />
 
       {/* Main Responsive Grid Container */}
-      <div className="max-w-6xl mx-auto w-full flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 pt-24 pb-16 z-10 px-4">
+      <div className="max-w-6xl mx-auto w-full flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 pt-24 pb-32 lg:pb-16 z-10 px-4">
         
         {/* Left Column: Floating Typography & Bio */}
         <div className="flex-1 flex flex-col items-center lg:items-start text-center lg:text-start select-none">
@@ -1363,7 +1363,7 @@ export const PhysicsPlayground: React.FC = () => {
       })}
 
       {/* Control Console (Ordnung, Chaos & Explosion) */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2 max-w-[90%] md:max-w-md w-full">
+      <div className="relative z-30 flex flex-col items-center gap-2 max-w-[90%] md:max-w-md w-full mt-4 pb-8 lg:pb-0 lg:absolute lg:bottom-8 lg:left-1/2 lg:-translate-x-1/2 lg:mt-0">
         <div className="glass-panel w-full px-4 py-3 rounded-2xl border border-white/5 bg-slate-950/90 backdrop-blur-md flex flex-col md:flex-row justify-between items-center gap-3 shadow-xl">
           
           {/* Status Monitor */}

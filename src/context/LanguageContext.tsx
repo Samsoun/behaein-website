@@ -157,6 +157,7 @@ export interface Translations {
   metaDesc: string;
   footerImpressum: string;
   footerDatenschutz: string;
+  mobileDesktopNotice: string;
 }
 
 const translations: Record<Locale, Translations> = {
@@ -318,6 +319,7 @@ const translations: Record<Locale, Translations> = {
     metaDesc: "Elite Full-Stack and Mobile Developer specializing in premium Next.js web applications, cross-platform React Native / Expo apps, scalable Cloud backends, and flawless SEO architectures.",
     footerImpressum: "Legal Notice",
     footerDatenschutz: "Privacy Policy",
+    mobileDesktopNotice: "✨ For the ultimate interactive experience (3D physics & scroll-driven video), view on a desktop screen.",
   },
   de: {
     navStack: "expertise",
@@ -477,6 +479,7 @@ const translations: Record<Locale, Translations> = {
     metaDesc: "Erstklassiger Full-Stack- und Mobile-Entwickler, spezialisiert auf Premium-Next.js-Webanwendungen, plattformübergreifende React-Native-/Expo-Apps, skalierbare Cloud-Backends und makellose SEO-Architekturen.",
     footerImpressum: "Impressum",
     footerDatenschutz: "Datenschutzerklärung",
+    mobileDesktopNotice: "✨ Für das beste interaktive Erlebnis (3D-Physik & Scroll-Videosteuerung) am besten auf einem Desktop-Bildschirm anschauen.",
   },
   fa: {
     navStack: "مهارت‌ها",
@@ -636,6 +639,7 @@ const translations: Record<Locale, Translations> = {
     metaDesc: "توسعه‌دهنده فول‌استک و موبایل ارشد، متخصص در ساخت برنامه‌های تحت وب نکست‌جی‌اس لوکس، اپلیکیشن‌های اکسپو و ری‌اکت نیتیو، بک‌اند ابری مقیاس‌پذیر و سئو بی‌نقص.",
     footerImpressum: "اطلاعات حقوقی",
     footerDatenschutz: "حریم خصوصی",
+    mobileDesktopNotice: "✨ برای بهترین تجربه تعاملی (فیزیک سه‌بعدی و داستان‌سرایی ویدیویی) لطفا در نسخه دسکتاپ مشاهده کنید.",
   },
 };
 
