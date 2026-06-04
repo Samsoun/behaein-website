@@ -58,6 +58,7 @@ export const PhysicsPlayground: React.FC = () => {
   const isSnappingRef = useRef(true);
   const modeRef = useRef<"chaos" | "ordnung">("ordnung");
   const isHoveringCTARef = useRef(false);
+  const wmModeRef = useRef(true);
   
   // Dragging states
   const activeDragIdRef = useRef<string | null>(null);
@@ -77,7 +78,8 @@ export const PhysicsPlayground: React.FC = () => {
     isSnappingRef.current = mode === "ordnung" || isHoveringCTA;
     modeRef.current = mode;
     isHoveringCTARef.current = isHoveringCTA;
-  }, [mode, isHoveringCTA]);
+    wmModeRef.current = wmMode;
+  }, [mode, isHoveringCTA, wmMode]);
 
   // Headline word splitting helper
   const prefixWords = t("heroHeadlinePrefix").trim().split(/\s+/);
@@ -388,8 +390,8 @@ export const PhysicsPlayground: React.FC = () => {
                   item.angularVelocity += (mouse.vx - mouse.vy) * 0.4;
                   item.vz += (Math.random() - 0.5) * 6; // Pop into 3D space
                 }
-              } else {
-                // Standard floaty repulsion
+              } else if (!wmModeRef.current) {
+                // Standard floaty repulsion ONLY when WM mode is inactive
                 const repulsionRadius = 130;
                 if (dist < repulsionRadius) {
                   const force = (repulsionRadius - dist) / repulsionRadius;
