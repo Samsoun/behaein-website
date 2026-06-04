@@ -305,7 +305,7 @@ export const PhysicsPlayground: React.FC = () => {
 
         // Determine if this specific item should snap to its grid position
         const itemShouldSnap = wmModeRef.current
-          ? (item.id !== "badge-wm-ball" && item.id !== "badge-wm-trophy" && item.id !== "portrait-card") || isSnapping
+          ? (item.id !== "badge-wm-ball") || isSnapping
           : isSnapping;
 
         if (item.id === activeDragId) {
@@ -829,6 +829,16 @@ export const PhysicsPlayground: React.FC = () => {
           0% { transform: scale(0.9) translate(-50%, -50%); opacity: 0; }
           100% { transform: scale(1) translate(-50%, -50%); opacity: 1; }
         }
+        @keyframes overlayFadeIn {
+          0% { opacity: 0; backdrop-filter: blur(0px); }
+          100% { opacity: 1; backdrop-filter: blur(12px); }
+        }
+        @keyframes trophyZoom {
+          0% { transform: scale(0.2) rotate(-20deg); }
+          60% { transform: scale(1.15) rotate(5deg); }
+          80% { transform: scale(0.97) rotate(0deg); }
+          100% { transform: scale(1.0) translateY(-6px); }
+        }
       `}</style>
 
       {/* Confetti Overlay */}
@@ -850,14 +860,32 @@ export const PhysicsPlayground: React.FC = () => {
         />
       ))}
 
-      {/* Goal Feedback Overlay */}
+      {/* Goal Fullscreen Celebration Overlay */}
       {shootState === "goal" && (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none select-none text-center animate-[scaleUp_0.2s_ease-out_forwards]">
-          <h2 className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#00F0FF] via-pink-500 to-indigo-400 tracking-wider uppercase filter drop-shadow-[0_0_30px_rgba(0,240,255,0.4)]">
-            {locale === "fa" ? "گل! ⚽🏆" : locale === "de" ? "TOR! ⚽🏆" : "GOAL! ⚽🏆"}
+        <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex flex-col items-center justify-center pointer-events-none select-none text-center animate-[overlayFadeIn_0.4s_ease-out_forwards]">
+          {/* Glowing background aura */}
+          <div className="absolute w-[300px] h-[300px] md:w-[500px] md:h-[500px] rounded-full bg-gradient-to-r from-amber-500/25 to-yellow-500/20 blur-[80px] pointer-events-none -z-10 animate-pulse" />
+
+          {/* Giant Trophy */}
+          <div className="relative w-[180px] h-[220px] md:w-[280px] md:h-[350px] mb-8 animate-[trophyZoom_1.4s_cubic-bezier(0.34,1.56,0.64,1)_forwards]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src="/wm_trophy.png" 
+              alt="WM Trophy"
+              className="w-full h-full object-contain filter drop-shadow-[0_0_40px_rgba(251,191,36,0.6)]"
+            />
+          </div>
+
+          {/* Text */}
+          <h2 className="text-4xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-200 to-amber-500 tracking-wider uppercase filter drop-shadow-[0_0_20px_rgba(251,191,36,0.3)] mb-4 px-4 leading-none">
+            {locale === "fa" ? "قهرمان جهان! 🏆⚽" : locale === "de" ? "WELTMEISTERLICHER SCHUSS! 🏆⚽" : "WORLD CHAMPION SHOT! 🏆⚽"}
           </h2>
-          <p className="text-slate-300 text-xs md:text-sm font-mono uppercase tracking-widest mt-2 bg-slate-950/80 px-4 py-1.5 rounded-full border border-[#00F0FF]/20 backdrop-blur-sm inline-block">
-            {locale === "fa" ? "شلیک عالی!" : locale === "de" ? "Was für ein Schuss!" : "What a shot!"}
+          <p className="text-slate-300 text-xs md:text-sm font-mono uppercase tracking-widest bg-amber-500/10 border border-amber-500/20 px-6 py-2 rounded-full backdrop-blur-sm shadow-[0_0_15px_rgba(245,158,11,0.15)] mx-4">
+            {locale === "fa" 
+              ? "جام جهانی ۲۰۲۶ در دستان شماست!" 
+              : locale === "de" 
+                ? "Du hast den goldenen Pokal erobert!" 
+                : "You have captured the golden World Cup!"}
           </p>
         </div>
       )}
@@ -976,21 +1004,13 @@ export const PhysicsPlayground: React.FC = () => {
                   alt="WM Goal"
                   className={`w-full h-full object-contain transition-all duration-300 ${
                     shootState === "goal"
-                      ? "filter drop-shadow-[0_0_35px_rgba(52,211,153,0.6)] scale-[1.02]"
-                      : "filter drop-shadow-[0_0_20px_rgba(0,240,255,0.2)]"
+                      ? "filter drop-shadow-[0_0_35px_rgba(0,240,255,0.55)] scale-[1.01]"
+                      : "filter drop-shadow-[0_0_20px_rgba(0,240,255,0.25)]"
                   }`}
                 />
                 {/* Goal post overlay indicator lights */}
-                <div className={`absolute top-[8%] left-[7%] w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                  shootState === "goal" 
-                    ? "bg-[#34D399] shadow-[0_0_12px_#34D399]" 
-                    : "bg-[#00F0FF] animate-pulse shadow-[0_0_8px_#00F0FF]"
-                }`} />
-                <div className={`absolute top-[8%] right-[7%] w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                  shootState === "goal" 
-                    ? "bg-[#34D399] shadow-[0_0_12px_#34D399]" 
-                    : "bg-indigo-400 animate-pulse shadow-[0_0_8px_#818CF8]"
-                }`} />
+                <div className="absolute top-[8%] left-[7%] w-1.5 h-1.5 rounded-full bg-[#00F0FF] animate-pulse shadow-[0_0_8px_#00F0FF]" />
+                <div className="absolute top-[8%] right-[7%] w-1.5 h-1.5 rounded-full bg-[#00F0FF] animate-pulse shadow-[0_0_8px_#00F0FF]" />
               </div>
             ) : (
               /* Card Content Shell (Portrait Card) */
