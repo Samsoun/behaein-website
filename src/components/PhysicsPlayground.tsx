@@ -39,6 +39,13 @@ export const badgeLayoutAnchors: Record<string, { xPct: number; yPct: number; zO
   "badge-javascript": { xPct: 0.14, yPct: 0.88, zOffset: -110 },
   "badge-wm-ball": { xPct: 0.54, yPct: 0.68, zOffset: 0 },
   "badge-wm-trophy": { xPct: 0.76, yPct: 0.22, zOffset: -60 },
+  // Flags anchors
+  "flag-de": { xPct: 0.22, yPct: 0.72, zOffset: -70 },
+  "flag-us": { xPct: 0.32, yPct: 0.88, zOffset: -90 },
+  "flag-mx": { xPct: 0.62, yPct: 0.85, zOffset: -80 },
+  "flag-ca": { xPct: 0.42, yPct: 0.25, zOffset: -110 },
+  "flag-br": { xPct: 0.88, yPct: 0.18, zOffset: -90 },
+  "flag-ir": { xPct: 0.90, yPct: 0.65, zOffset: -70 },
 };
 
 export const PhysicsPlayground: React.FC = () => {
@@ -106,6 +113,12 @@ export const PhysicsPlayground: React.FC = () => {
       ? [
           { id: "badge-wm-ball", label: "WM Ball", isImage: true, imageUrl: "/wm_ball.png" },
           { id: "badge-wm-trophy", label: "WM Trophy", isImage: true, imageUrl: "/wm_trophy.png" },
+          { id: "flag-de", label: "Germany", isImage: true, imageUrl: "https://flagcdn.com/w80/de.png" },
+          { id: "flag-us", label: "USA", isImage: true, imageUrl: "https://flagcdn.com/w80/us.png" },
+          { id: "flag-mx", label: "Mexico", isImage: true, imageUrl: "https://flagcdn.com/w80/mx.png" },
+          { id: "flag-ca", label: "Canada", isImage: true, imageUrl: "https://flagcdn.com/w80/ca.png" },
+          { id: "flag-br", label: "Brazil", isImage: true, imageUrl: "https://flagcdn.com/w80/br.png" },
+          { id: "flag-ir", label: "Iran", isImage: true, imageUrl: "https://flagcdn.com/w80/ir.png" },
         ]
       : []),
   ];
@@ -202,6 +215,7 @@ export const PhysicsPlayground: React.FC = () => {
       let mass = 1.2;
       if (badge.id === "badge-wm-ball") mass = 2.4;
       else if (badge.id === "badge-wm-trophy") mass = 3.5;
+      else if (badge.id.startsWith("flag-")) mass = 0.8;
 
       updatedItems.push({
         id: badge.id,
@@ -652,6 +666,33 @@ export const PhysicsPlayground: React.FC = () => {
       {/* Background radial accent glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-radial-accent pointer-events-none -z-10 opacity-50" />
 
+      {/* Stadium Pitch markings when WM mode is active */}
+      {wmMode && (
+        <div className="absolute inset-0 pointer-events-none -z-20 opacity-30 select-none transition-opacity duration-500">
+          <svg className="w-full h-full fill-none" stroke="#00F0FF" strokeWidth="1.2" strokeOpacity="0.08" xmlns="http://www.w3.org/2000/svg">
+            {/* Outer boundary line */}
+            <rect x="3%" y="3%" width="94%" height="94%" rx="24" />
+            
+            {/* Center line */}
+            <line x1="50%" y1="3%" x2="50%" y2="97%" />
+            
+            {/* Center Circle */}
+            <circle cx="50%" cy="50%" r="90" />
+            <circle cx="50%" cy="50%" r="5" fill="#00F0FF" fillOpacity="0.15" />
+            
+            {/* Left Penalty Area */}
+            <rect x="3%" y="22%" width="14%" height="56%" />
+            <rect x="3%" y="33%" width="5%" height="34%" />
+            <path d="M 17% 42% A 70 70 0 0 1 17% 58%" />
+            
+            {/* Right Penalty Area */}
+            <rect x="83%" y="22%" width="14%" height="56%" />
+            <rect x="92%" y="33%" width="5%" height="34%" />
+            <path d="M 83% 42% A 70 70 0 0 0 83% 58%" />
+          </svg>
+        </div>
+      )}
+
       {/* Main Responsive Grid Container */}
       <div className="max-w-6xl mx-auto w-full flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 pt-24 pb-16 z-10 px-4">
         
@@ -778,7 +819,16 @@ export const PhysicsPlayground: React.FC = () => {
         
         if ('imageUrl' in badge) {
           const isBall = badge.id === "badge-wm-ball";
-          const dimsClass = isBall ? "w-[64px] h-[64px] md:w-[72px] md:h-[72px]" : "w-[80px] h-[100px] md:w-[90px] md:h-[110px]";
+          const isFlag = badge.id.startsWith("flag-");
+          
+          let dimsClass = "";
+          if (isBall) {
+            dimsClass = "w-[64px] h-[64px] md:w-[72px] md:h-[72px]";
+          } else if (isFlag) {
+            dimsClass = "w-[36px] h-[36px] md:w-[42px] md:h-[42px]";
+          } else {
+            dimsClass = "w-[80px] h-[100px] md:w-[90px] md:h-[110px]";
+          }
           return (
             <div
               key={badge.id}
@@ -791,7 +841,9 @@ export const PhysicsPlayground: React.FC = () => {
                 top: `${anchor.yPct * 100}%`,
                 transform: `translate(-50%, -50%)`,
               }}
-              className={`absolute cursor-grab active:cursor-grabbing select-none z-20 touch-none ${dimsClass}`}
+              className={`absolute cursor-grab active:cursor-grabbing select-none z-20 touch-none ${dimsClass} ${
+                isFlag ? "rounded-full overflow-hidden border border-[#00F0FF]/30 shadow-[0_0_12px_rgba(0,240,255,0.15)] bg-slate-950" : ""
+              }`}
             >
               {/* Pulsing indicator & tooltip helper for the ball to invite mouse touch */}
               {isBall && mode === "ordnung" && (
@@ -808,7 +860,7 @@ export const PhysicsPlayground: React.FC = () => {
               <img
                 src={badge.imageUrl}
                 alt={badge.label}
-                className="w-full h-full object-contain pointer-events-none"
+                className={`w-full h-full pointer-events-none ${isFlag ? "object-cover" : "object-contain"}`}
               />
             </div>
           );
