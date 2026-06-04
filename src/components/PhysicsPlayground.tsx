@@ -39,12 +39,16 @@ export const badgeLayoutAnchors: Record<string, { xPct: number; yPct: number; zO
   "badge-javascript": { xPct: 0.14, yPct: 0.88, zOffset: -110 },
   "badge-wm-ball": { xPct: 0.75, yPct: 0.72, zOffset: 0 },
   "badge-wm-trophy": { xPct: 0.88, yPct: 0.24, zOffset: -60 },
+  "badge-wm-shoe": { xPct: 0.75, yPct: 0.83, zOffset: 10 },
 };
 
 export const PhysicsPlayground: React.FC = () => {
   const { t, locale, isRtl } = useLanguage();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const refsMap = useRef<Record<string, HTMLElement | null>>({});
+  const aimSvgRef = useRef<SVGSVGElement | null>(null);
+  const aimLineRef = useRef<SVGLineElement | null>(null);
+  const aimCircleRef = useRef<SVGCircleElement | null>(null);
 
   // Physics engine settings and state
   const [mode, setMode] = useState<"chaos" | "ordnung">("ordnung");
@@ -52,6 +56,7 @@ export const PhysicsPlayground: React.FC = () => {
   const [imgExists, setImgExists] = useState(false);
   const [engineStats, setEngineStats] = useState({ fps: 60, collisions: 0 });
   const [wmMode, setWmMode] = useState<boolean>(true);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Shootout Mini-Game States
   const [shootState, setShootState] = useState<"idle" | "goal" | "miss">("idle");
@@ -65,11 +70,23 @@ export const PhysicsPlayground: React.FC = () => {
   const modeRef = useRef<"chaos" | "ordnung">("ordnung");
   const isHoveringCTARef = useRef(false);
   const wmModeRef = useRef(true);
+  const isMobileRef = useRef(false);
+  const isRtlRef = useRef(false);
   
   // Dragging states
   const activeDragIdRef = useRef<string | null>(null);
   const dragOffsetRef = useRef({ x: 0, y: 0 });
   const mousePosRef = useRef({ rawX: -1000, rawY: -1000, prevX: 0, prevY: 0, vx: 0, vy: 0 });
+
+  // Handle window resizing to detect mobile layout
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Check if portrait image exists in public folder
   useEffect(() => {
@@ -85,7 +102,9 @@ export const PhysicsPlayground: React.FC = () => {
     modeRef.current = mode;
     isHoveringCTARef.current = isHoveringCTA;
     wmModeRef.current = wmMode;
-  }, [mode, isHoveringCTA, wmMode]);
+    isMobileRef.current = isMobile;
+    isRtlRef.current = isRtl;
+  }, [mode, isHoveringCTA, wmMode, isMobile, isRtl]);
 
   // Headline word splitting helper
   const prefixWords = t("heroHeadlinePrefix").trim().split(/\s+/);
@@ -183,6 +202,7 @@ export const PhysicsPlayground: React.FC = () => {
     if (wmMode) {
       processItem("badge-wm-ball", "badge", 2.4, "WM Ball", 0);
       processItem("badge-wm-trophy", "badge", 3.5, "WM Trophy", -60);
+      processItem("badge-wm-shoe", "badge", 1.8, "WM Shoe", 10);
     }
 
     // 2. Process custom floating tech badges using pre-calculated percentage spots
@@ -250,7 +270,7 @@ export const PhysicsPlayground: React.FC = () => {
       clearTimeout(timer);
       window.removeEventListener("resize", handleResize);
     };
-  }, [locale, wmMode]); // Remeasure on locale/wmMode shift
+  }, [locale, wmMode, isMobile]); // Remeasure on locale/wmMode/isMobile shift
 
   // Simulation Loop setup
   useEffect(() => {
@@ -303,32 +323,104 @@ export const PhysicsPlayground: React.FC = () => {
       for (let i = 0; i < items.length; i++) {
         const item = items[i];
 
+        if (isMobileRef.current) {
+          item.x = 0;
+          item.y = 0;
+          item.z = item.targetZ || 0;
+          item.angle = 0;
+          item.vx = 0;
+          item.vy = 0;
+          item.vz = 0;
+          item.angularVelocity = 0;
+          continue;
+        }
+
         // Determine if this specific item should snap to its grid position
         const itemShouldSnap = wmModeRef.current
           ? (item.id !== "badge-wm-ball") || isSnapping
           : isSnapping;
 
         if (item.id === activeDragId) {
-          // Dragging: Lock coordinate offset to scaled pointer position
-          const targetX = mouse.rawX - item.baseX - dragOffsetRef.current.x;
-          const targetY = mouse.rawY - item.baseY - dragOffsetRef.current.y;
-          
-          // Move physics values with mouse cursor
-          item.x = targetX;
-          item.y = targetY;
-          item.z = 45; // bring closer in 3D perspective
+          if (item.id === "badge-wm-shoe") {
+            const ball = items.find(i => i.id === "badge-wm-ball");
+            if (ball) {
+              const ballX = ball.baseX + ball.x;
+              const ballY = ball.baseY + ball.y;
 
-          // Keep tracking momentum from drag movements
-          item.vx = mouse.vx * 0.85;
-          item.vy = mouse.vy * 0.85;
-          item.vz = 0;
-          item.angularVelocity = (mouse.vx * 0.15); // spin based on drag swipe
+              // Target position from mouse
+              const mouseTargetX = mouse.rawX - dragOffsetRef.current.x;
+              const mouseTargetY = mouse.rawY - dragOffsetRef.current.y;
+
+              // Vector from ball to shoe
+              let dx = mouseTargetX - ballX;
+              let dy = mouseTargetY - ballY;
+              let dist = Math.hypot(dx, dy);
+
+              // Limit the pull distance
+              const maxPull = 120;
+              if (dist > maxPull) {
+                dist = maxPull;
+              }
+
+              // Calculate angle of pull
+              let theta = Math.atan2(dy, dx);
+              
+              // Constraint: Limit rotation to 180 degrees (lower semi-circle pull)
+              // theta must be in [0, Math.PI] (dy >= 0)
+              if (theta < 0) {
+                theta = dx >= 0 ? 0 : Math.PI;
+              }
+
+              // Recompute dx and dy using clamped theta and dist
+              dx = Math.cos(theta) * dist;
+              dy = Math.sin(theta) * dist;
+
+              const targetX = ballX + dx;
+              const targetY = ballY + dy;
+
+              item.x = targetX - item.baseX;
+              item.y = targetY - item.baseY;
+              item.z = 25; // slightly raised
+
+              // Keep shoe horizontal (0 degrees)
+              item.angle = 0;
+
+              item.vx = 0;
+              item.vy = 0;
+              item.vz = 0;
+              item.angularVelocity = 0;
+            } else {
+              item.x = mouse.rawX - item.baseX - dragOffsetRef.current.x;
+              item.y = mouse.rawY - item.baseY - dragOffsetRef.current.y;
+              item.z = 45;
+              item.vx = mouse.vx * 0.85;
+              item.vy = mouse.vy * 0.85;
+              item.vz = 0;
+              item.angularVelocity = (mouse.vx * 0.15);
+            }
+          } else {
+            // Dragging: Lock coordinate offset to scaled pointer position
+            const targetX = mouse.rawX - item.baseX - dragOffsetRef.current.x;
+            const targetY = mouse.rawY - item.baseY - dragOffsetRef.current.y;
+            
+            // Move physics values with mouse cursor
+            item.x = targetX;
+            item.y = targetY;
+            item.z = 45; // bring closer in 3D perspective
+
+            // Keep tracking momentum from drag movements
+            item.vx = mouse.vx * 0.85;
+            item.vy = mouse.vy * 0.85;
+            item.vz = 0;
+            item.angularVelocity = (mouse.vx * 0.15); // spin based on drag swipe
+          }
         } else if (itemShouldSnap) {
           // A. Snap-back mode (Spring pull towards offset zero and target Z depth)
           const ax = (0 - item.x) * springK;
           const ay = (0 - item.y) * springK;
           const az = (item.targetZ - item.z) * springK;
-          const aRot = (0 - item.angle) * springK;
+          const targetAngle = 0;
+          const aRot = (targetAngle - item.angle) * springK;
 
           item.vx = (item.vx + ax) * damping;
           item.vy = (item.vy + ay) * damping;
@@ -350,8 +442,8 @@ export const PhysicsPlayground: React.FC = () => {
           if (Math.abs(item.z - item.targetZ) < 0.02 && Math.abs(item.vz) < 0.02) {
             item.z = item.targetZ; item.vz = 0;
           }
-          if (Math.abs(item.angle) < 0.02 && Math.abs(item.angularVelocity) < 0.02) {
-            item.angle = 0; item.angularVelocity = 0;
+          if (Math.abs(item.angle - targetAngle) < 0.02 && Math.abs(item.angularVelocity) < 0.02) {
+            item.angle = targetAngle; item.angularVelocity = 0;
           }
         } else {
           // B. Chaos / Zero-Gravity mode
@@ -378,7 +470,7 @@ export const PhysicsPlayground: React.FC = () => {
               const dy = (item.baseY + item.y) - mouse.rawY;
               const dist = Math.hypot(dx, dy);
 
-              if (item.id === "badge-wm-ball") {
+              if (item.id === "badge-wm-ball" && !wmModeRef.current) {
                 // Kick logic for soccer ball
                 const kickRadius = 60;
                 const mouseSpeed = Math.hypot(mouse.vx, mouse.vy);
@@ -438,10 +530,15 @@ export const PhysicsPlayground: React.FC = () => {
           let minY = 0;
           let maxY = containerHeight;
 
-          if (wmModeRef.current && (item.id === "badge-wm-ball" || item.id === "badge-wm-trophy" || item.id === "portrait-card")) {
+          if (wmModeRef.current && (item.id === "badge-wm-ball" || item.id === "badge-wm-trophy" || item.id === "portrait-card" || item.id === "badge-wm-shoe")) {
             if (containerWidth >= 1024) {
-              // Desktop: Restrict game elements to the right column area
-              minX = containerWidth * 0.45;
+              if (isRtlRef.current) {
+                // RTL: Restrict game elements to the left column area
+                maxX = containerWidth * 0.55;
+              } else {
+                // LTR: Restrict game elements to the right column area
+                minX = containerWidth * 0.45;
+              }
             } else {
               // Mobile/Tablet: Restrict game elements to the bottom column area
               minY = containerHeight * 0.42;
@@ -659,6 +756,47 @@ export const PhysicsPlayground: React.FC = () => {
 
       setEngineStats(prev => ({ ...prev, collisions: localCollisionCount }));
 
+      // Update aiming line if shoe is being dragged
+      if (wmModeRef.current && activeDragId === "badge-wm-shoe") {
+        const ball = items.find(i => i.id === "badge-wm-ball");
+        const shoe = items.find(i => i.id === "badge-wm-shoe");
+        if (ball && shoe && aimSvgRef.current && aimLineRef.current && aimCircleRef.current) {
+          const ballX = ball.baseX + ball.x;
+          const ballY = ball.baseY + ball.y;
+          const shoeX = shoe.baseX + shoe.x;
+          const shoeY = shoe.baseY + shoe.y;
+
+          const dx = shoeX - ballX;
+          const dy = shoeY - ballY;
+          const dist = Math.hypot(dx, dy);
+
+          if (dist > 15) {
+            // Show SVG
+            aimSvgRef.current.style.opacity = "1";
+
+            // Project line in the opposite direction
+            const scale = 1.8;
+            const endX = ballX - dx * scale;
+            const endY = ballY - dy * scale;
+
+            aimLineRef.current.setAttribute("x1", String(ballX));
+            aimLineRef.current.setAttribute("y1", String(ballY));
+            aimLineRef.current.setAttribute("x2", String(endX));
+            aimLineRef.current.setAttribute("y2", String(endY));
+
+            aimCircleRef.current.setAttribute("cx", String(endX));
+            aimCircleRef.current.setAttribute("cy", String(endY));
+            aimCircleRef.current.style.display = "block";
+          } else {
+            aimSvgRef.current.style.opacity = "0";
+          }
+        }
+      } else {
+        if (aimSvgRef.current) {
+          aimSvgRef.current.style.opacity = "0";
+        }
+      }
+
       // 3. Render and apply styles to DOM nodes directly for maximum frame rates
       for (let i = 0; i < items.length; i++) {
         const item = items[i];
@@ -723,6 +861,7 @@ export const PhysicsPlayground: React.FC = () => {
 
   // Dragging event handlers
   const handleDragStart = (e: React.PointerEvent<HTMLOrSVGElement>, id: string) => {
+    if (isMobileRef.current) return;
     const container = containerRef.current;
     if (!container) return;
     const rect = container.getBoundingClientRect();
@@ -769,6 +908,39 @@ export const PhysicsPlayground: React.FC = () => {
       const item = itemsRef.current.find(item => item.id === id);
       if (item) {
         item.isDragging = false;
+
+        // If the shoe is released, launch the ball!
+        if (id === "badge-wm-shoe" && wmModeRef.current) {
+          const ball = itemsRef.current.find(b => b.id === "badge-wm-ball");
+          if (ball) {
+            const ballX = ball.baseX + ball.x;
+            const ballY = ball.baseY + ball.y;
+            const shoeX = item.baseX + item.x;
+            const shoeY = item.baseY + item.y;
+
+            const dx = shoeX - ballX;
+            const dy = shoeY - ballY;
+            const dist = Math.hypot(dx, dy);
+
+            // Only kick if pulled a minimum distance
+            if (dist > 15) {
+              // Launch ball in opposite direction of pull
+              const powerScale = 0.18;
+              ball.vx = -dx * powerScale;
+              ball.vy = -dy * powerScale;
+              // Add a vertical pop velocity based on pull distance
+              ball.vz = 2 + dist * 0.05;
+              ball.angularVelocity = -dx * 0.15; // spin
+
+              ballWasKickedRef.current = true;
+              shootStateRef.current = "idle";
+              setShootState("idle");
+
+              // Switch mode to chaos so the ball simulation runs
+              setMode("chaos");
+            }
+          }
+        }
       }
     }
     
@@ -820,6 +992,39 @@ export const PhysicsPlayground: React.FC = () => {
       onPointerLeave={handlePointerLeave}
       className="relative w-full min-h-[90vh] flex flex-col justify-center items-center overflow-hidden [perspective:1200px]"
     >
+      {/* Aiming Line SVG Overlay */}
+      <svg
+        ref={aimSvgRef}
+        className="absolute inset-0 w-full h-full pointer-events-none z-10 transition-opacity duration-150"
+        style={{ opacity: 0 }}
+      >
+        <defs>
+          <linearGradient id="aim-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#00F0FF" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="#818CF8" stopOpacity="0.15" />
+          </linearGradient>
+        </defs>
+        <line
+          ref={aimLineRef}
+          x1="0"
+          y1="0"
+          x2="0"
+          y2="0"
+          stroke="url(#aim-gradient)"
+          strokeWidth="3.5"
+          strokeDasharray="6 4"
+          strokeLinecap="round"
+        />
+        <circle
+          ref={aimCircleRef}
+          cx="0"
+          cy="0"
+          r="6.5"
+          fill="#00F0FF"
+          style={{ filter: "drop-shadow(0 0 8px #00F0FF)" }}
+        />
+      </svg>
+
       <style>{`
         @keyframes fall {
           0% { transform: translateY(0px) rotate(0deg); opacity: 0.9; }
@@ -877,10 +1082,17 @@ export const PhysicsPlayground: React.FC = () => {
           </div>
 
           {/* Text */}
-          <h2 className="text-4xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-200 to-amber-500 tracking-wider uppercase filter drop-shadow-[0_0_20px_rgba(251,191,36,0.3)] mb-4 px-4 leading-none">
-            {locale === "fa" ? "قهرمان جهان! 🏆⚽" : locale === "de" ? "WELTMEISTERLICHER SCHUSS! 🏆⚽" : "WORLD CHAMPION SHOT! 🏆⚽"}
+          <h2 className="text-4xl md:text-7xl font-black filter drop-shadow-[0_0_20px_rgba(251,191,36,0.3)] mb-4 px-4 leading-normal flex flex-wrap items-center justify-center gap-2">
+            <span className={`text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-200 to-amber-500 font-display ${
+              locale === "fa" ? "" : "tracking-wider uppercase"
+            }`}>
+              {locale === "fa" ? "قهرمان جهان!" : locale === "de" ? "WELTMEISTERLICHER SCHUSS!" : "WORLD CHAMPION SHOT!"}
+            </span>
+            <span className="select-none filter drop-shadow-[0_0_10px_rgba(251,191,36,0.4)]">🏆⚽</span>
           </h2>
-          <p className="text-slate-300 text-xs md:text-sm font-mono uppercase tracking-widest bg-amber-500/10 border border-amber-500/20 px-6 py-2 rounded-full backdrop-blur-sm shadow-[0_0_15px_rgba(245,158,11,0.15)] mx-4">
+          <p className={`text-slate-300 text-xs md:text-sm bg-amber-500/10 border border-amber-500/20 px-6 py-2 rounded-full backdrop-blur-sm shadow-[0_0_15px_rgba(245,158,11,0.15)] mx-4 ${
+            locale === "fa" ? "font-sans font-medium" : "font-mono uppercase tracking-widest"
+          }`}>
             {locale === "fa" 
               ? "جام جهانی ۲۰۲۶ در دستان شماست!" 
               : locale === "de" 
@@ -977,10 +1189,17 @@ export const PhysicsPlayground: React.FC = () => {
           {/* Miss Feedback Overlay (placed above the goal) */}
           {shootState === "miss" && (
             <div className="absolute top-[-75px] md:top-[-95px] left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none text-center animate-[scaleUp_0.2s_ease-out_forwards] whitespace-nowrap">
-              <h2 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-red-500 tracking-wider uppercase filter drop-shadow-[0_0_15px_rgba(239,68,68,0.25)]">
-                {locale === "fa" ? "خطا! 🔄" : locale === "de" ? "Knapp vorbei! 🔄" : "Missed! 🔄"}
+              <h2 className="text-2xl md:text-3xl font-black filter drop-shadow-[0_0_15px_rgba(239,68,68,0.25)] flex items-center justify-center gap-1.5 leading-normal">
+                <span className={`text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-red-500 ${
+                  locale === "fa" ? "" : "tracking-wider uppercase"
+                }`}>
+                  {locale === "fa" ? "خطا!" : locale === "de" ? "Knapp vorbei!" : "Missed!"}
+                </span>
+                <span className="select-none">🔄</span>
               </h2>
-              <p className="text-slate-400 text-[9px] md:text-[10px] font-mono uppercase tracking-widest mt-1 bg-slate-950/80 px-3 py-1 rounded-full border border-red-500/20 backdrop-blur-sm inline-block">
+              <p className={`text-slate-400 text-[9px] md:text-[10px] mt-1 bg-slate-950/80 px-3 py-1 rounded-full border border-red-500/20 backdrop-blur-sm inline-block ${
+                locale === "fa" ? "font-sans font-medium" : "font-mono uppercase tracking-widest"
+              }`}>
                 {locale === "fa" ? "دوباره تلاش کن!" : locale === "de" ? "Nochmal versuchen!" : "Try again!"}
               </p>
             </div>
@@ -990,7 +1209,7 @@ export const PhysicsPlayground: React.FC = () => {
             ref={(el) => { refsMap.current["portrait-card"] = el; }}
             onPointerDown={wmMode ? undefined : (e) => handleDragStart(e, "portrait-card")}
             onPointerUp={wmMode ? undefined : (e) => handleDragEnd(e, "portrait-card")}
-            className={`relative select-none touch-none transition-all ${
+            className={`relative select-none touch-none transition-[width,height] duration-300 ${
               wmMode
                 ? "w-[340px] h-[250px] md:w-[460px] md:h-[345px] filter drop-shadow-[0_0_25px_rgba(0,240,255,0.2)] pointer-events-none"
                 : "w-[280px] h-[360px] md:w-[320px] md:h-[400px] rounded-3xl overflow-hidden shadow-2xl cursor-grab active:cursor-grabbing"
@@ -1057,21 +1276,8 @@ export const PhysicsPlayground: React.FC = () => {
               <div
                 id="badge-wm-ball"
                 ref={(el) => { refsMap.current["badge-wm-ball"] = el; }}
-                onPointerDown={(e) => handleDragStart(e, "badge-wm-ball")}
-                onPointerUp={(e) => handleDragEnd(e, "badge-wm-ball")}
-                className="absolute w-[64px] h-[64px] md:w-[72px] md:h-[72px] cursor-grab active:cursor-grabbing select-none z-20 touch-none left-1/2 bottom-[-60px] md:bottom-[-80px] -translate-x-1/2 translate-y-1/2"
+                className="absolute w-[64px] h-[64px] md:w-[72px] md:h-[72px] select-none z-20 touch-none left-1/2 bottom-[-60px] md:bottom-[-80px] -translate-x-1/2 translate-y-1/2 pointer-events-none"
               >
-                {/* Pulsing indicator & tooltip helper for the ball to invite mouse touch */}
-                {mode === "ordnung" && (
-                  <>
-                    <div className="absolute inset-0 rounded-full bg-[#00F0FF]/25 animate-ping pointer-events-none -z-10" />
-                    <div className="absolute inset-[-4px] rounded-full border border-[#00F0FF]/30 animate-pulse pointer-events-none -z-10" />
-                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded bg-slate-950/90 border border-[#00F0FF]/30 text-[9px] font-mono text-[#00F0FF] whitespace-nowrap tracking-wider pointer-events-none shadow-md uppercase flex items-center gap-1 select-none animate-bounce">
-                      <span>⚽</span>
-                      {locale === "fa" ? "شوت کن!" : locale === "de" ? "Kick mich!" : "Kick me!"}
-                    </div>
-                  </>
-                )}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/wm_ball.png"
@@ -1079,6 +1285,38 @@ export const PhysicsPlayground: React.FC = () => {
                   className="w-full h-full object-contain pointer-events-none"
                 />
               </div>
+
+              {/* Shoe */}
+              {!isMobile && (
+                <div
+                  id="badge-wm-shoe"
+                  ref={(el) => { refsMap.current["badge-wm-shoe"] = el; }}
+                  onPointerDown={(e) => handleDragStart(e, "badge-wm-shoe")}
+                  onPointerUp={(e) => handleDragEnd(e, "badge-wm-shoe")}
+                  className="absolute w-[72px] h-[72px] md:w-[84px] md:h-[84px] cursor-grab active:cursor-grabbing select-none z-20 touch-none left-1/2 bottom-[-140px] md:bottom-[-170px] -translate-x-1/2 translate-y-1/2"
+                  style={{
+                    transformOrigin: "center center",
+                  }}
+                >
+                  {/* Pulsing indicator & tooltip helper for the shoe */}
+                  {mode === "ordnung" && (
+                    <>
+                      <div className="absolute inset-0 rounded-full bg-[#00F0FF]/20 animate-ping pointer-events-none -z-10" />
+                      <div className="absolute inset-[-4px] rounded-full border border-[#00F0FF]/25 animate-pulse pointer-events-none -z-10" />
+                      <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded bg-slate-950/90 border border-[#00F0FF]/30 text-[9px] font-mono text-[#00F0FF] whitespace-nowrap tracking-wider pointer-events-none shadow-md uppercase flex items-center gap-1 select-none animate-bounce">
+                        <span>👟</span>
+                        {locale === "fa" ? "بکش و شوت کن!" : locale === "de" ? "Ziehen & Schießen!" : "Pull & Shoot!"}
+                      </div>
+                    </>
+                  )}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/wm_shoe.png"
+                    alt="WM Shoe"
+                    className="w-full h-full object-contain pointer-events-none filter drop-shadow-[0_0_15px_rgba(0,240,255,0.4)]"
+                  />
+                </div>
+              )}
 
               {/* Trophy */}
               <div
