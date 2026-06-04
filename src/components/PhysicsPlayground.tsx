@@ -310,6 +310,11 @@ export const PhysicsPlayground: React.FC = () => {
       for (let i = 0; i < items.length; i++) {
         const item = items[i];
 
+        // Determine if this specific item should snap to its grid position
+        const itemShouldSnap = wmModeRef.current
+          ? (item.id !== "badge-wm-ball" && item.id !== "badge-wm-trophy" && item.id !== "portrait-card") || isSnapping
+          : isSnapping;
+
         if (item.id === activeDragId) {
           // Dragging: Lock coordinate offset to scaled pointer position
           const targetX = mouse.rawX - item.baseX - dragOffsetRef.current.x;
@@ -325,7 +330,7 @@ export const PhysicsPlayground: React.FC = () => {
           item.vy = mouse.vy * 0.85;
           item.vz = 0;
           item.angularVelocity = (mouse.vx * 0.15); // spin based on drag swipe
-        } else if (isSnapping) {
+        } else if (itemShouldSnap) {
           // A. Snap-back mode (Spring pull towards offset zero and target Z depth)
           const ax = (0 - item.x) * springK;
           const ay = (0 - item.y) * springK;
@@ -531,6 +536,16 @@ export const PhysicsPlayground: React.FC = () => {
 
           for (let j = i + 1; j < items.length; j++) {
             const b = items[j];
+            
+            if (wmModeRef.current) {
+              // In WM mode, only game elements (ball, trophy, goal) can collide with each other
+              const isGameA = a.id === "badge-wm-ball" || a.id === "badge-wm-trophy" || a.id === "portrait-card";
+              const isGameB = b.id === "badge-wm-ball" || b.id === "badge-wm-trophy" || b.id === "portrait-card";
+              if (!isGameA || !isGameB) {
+                continue;
+              }
+            }
+
             const radiusB = (b.width + b.height) / 4.4;
 
             const ax = a.baseX + a.x;
