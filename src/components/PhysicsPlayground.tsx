@@ -304,7 +304,22 @@ export const PhysicsPlayground: React.FC = () => {
       for (let i = 0; i < items.length; i++) {
         const item = items[i];
 
-        if (isSnapping) {
+        if (item.id === activeDragId) {
+          // Dragging: Lock coordinate offset to scaled pointer position
+          const targetX = mouse.rawX - item.baseX - dragOffsetRef.current.x;
+          const targetY = mouse.rawY - item.baseY - dragOffsetRef.current.y;
+          
+          // Move physics values with mouse cursor
+          item.x = targetX;
+          item.y = targetY;
+          item.z = 45; // bring closer in 3D perspective
+
+          // Keep tracking momentum from drag movements
+          item.vx = mouse.vx * 0.85;
+          item.vy = mouse.vy * 0.85;
+          item.vz = 0;
+          item.angularVelocity = (mouse.vx * 0.15); // spin based on drag swipe
+        } else if (isSnapping) {
           // A. Snap-back mode (Spring pull towards offset zero and target Z depth)
           const ax = (0 - item.x) * springK;
           const ay = (0 - item.y) * springK;
@@ -336,38 +351,22 @@ export const PhysicsPlayground: React.FC = () => {
           }
         } else {
           // B. Chaos / Zero-Gravity mode
-          if (item.id === activeDragId) {
-            // Dragging: Lock coordinate offset to scaled pointer position
-            const targetX = mouse.rawX - item.baseX - dragOffsetRef.current.x;
-            const targetY = mouse.rawY - item.baseY - dragOffsetRef.current.y;
-            
-            // Move physics values with mouse cursor
-            item.x = targetX;
-            item.y = targetY;
-            item.z = 45; // bring closer in 3D perspective
+          // Floating free in space: apply minor gravity drift
+          item.vx += (Math.random() - 0.5) * 0.07;
+          item.vy += (Math.random() - 0.5) * 0.07;
 
-            // Keep tracking momentum from drag movements
-            item.vx = mouse.vx * 0.85;
-            item.vy = mouse.vy * 0.85;
-            item.vz = 0;
-            item.angularVelocity = (mouse.vx * 0.15); // spin based on drag swipe
-          } else {
-            // Floating free in space: apply minor gravity drift
-            item.vx += (Math.random() - 0.5) * 0.07;
-            item.vy += (Math.random() - 0.5) * 0.07;
+          // Apply friction/drag resistance (very low in space)
+          item.vx *= 0.985;
+          item.vy *= 0.985;
+          item.vz *= 0.97;
+          item.angularVelocity *= 0.98;
 
-            // Apply friction/drag resistance (very low in space)
-            item.vx *= 0.985;
-            item.vy *= 0.985;
-            item.vz *= 0.97;
-            item.angularVelocity *= 0.98;
-
-            // An extremely light attraction pull to make sure they never escape the viewport boundaries completely over time
-            const globalAttract = 0.0006;
-            item.vx += (0 - item.x) * globalAttract;
-            item.vy += (0 - item.y) * globalAttract;
-            item.vz += (0 - item.z) * globalAttract;
-            item.angularVelocity += (0 - item.angle) * globalAttract;
+          // An extremely light attraction pull to make sure they never escape the viewport boundaries completely over time
+          const globalAttract = 0.0006;
+          item.vx += (0 - item.x) * globalAttract;
+          item.vy += (0 - item.y) * globalAttract;
+          item.vz += (0 - item.z) * globalAttract;
+          item.angularVelocity += (0 - item.angle) * globalAttract;
 
             // Mouse Repulsion / Kick Force
             if (mouse.rawX > -100) {
@@ -457,7 +456,6 @@ export const PhysicsPlayground: React.FC = () => {
             item.vz = -item.vz * 0.5;
           }
         }
-      }
 
       // 2. Circle-collision checks between floating components in Chaos Mode
       if (!isSnapping) {
@@ -594,7 +592,9 @@ export const PhysicsPlayground: React.FC = () => {
 
     // Prevent snapping back mid-drag
     if (mode === "ordnung") {
-      setMode("chaos");
+      if (!wmModeRef.current || id === "badge-wm-ball") {
+        setMode("chaos");
+      }
     }
 
     activeDragIdRef.current = id;
@@ -793,6 +793,17 @@ export const PhysicsPlayground: React.FC = () => {
               }}
               className={`absolute cursor-grab active:cursor-grabbing select-none z-20 touch-none ${dimsClass}`}
             >
+              {/* Pulsing indicator & tooltip helper for the ball to invite mouse touch */}
+              {isBall && mode === "ordnung" && (
+                <>
+                  <div className="absolute inset-0 rounded-full bg-[#00F0FF]/25 animate-ping pointer-events-none -z-10" />
+                  <div className="absolute inset-[-4px] rounded-full border border-[#00F0FF]/30 animate-pulse pointer-events-none -z-10" />
+                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded bg-slate-950/90 border border-[#00F0FF]/30 text-[9px] font-mono text-[#00F0FF] whitespace-nowrap tracking-wider pointer-events-none shadow-md uppercase flex items-center gap-1 select-none animate-bounce">
+                    <span>⚽</span>
+                    {locale === "fa" ? "شوت کن!" : locale === "de" ? "Kick mich!" : "Kick me!"}
+                  </div>
+                </>
+              )}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={badge.imageUrl}
