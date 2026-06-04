@@ -53,37 +53,6 @@ export const PhysicsPlayground: React.FC = () => {
   const [engineStats, setEngineStats] = useState({ fps: 60, collisions: 0 });
   const [wmMode, setWmMode] = useState<boolean>(true);
 
-  // Goal celebration states and refs (Option B)
-  const [goalCelebration, setGoalCelebration] = useState(false);
-  const [particles, setParticles] = useState<any[]>([]);
-  const lastGoalTimeRef = useRef(0);
-
-  const triggerGoalCelebration = () => {
-    const colors = ["#00F0FF", "#3B82F6", "#8B5CF6", "#EC4899", "#10B981", "#F59E0B"];
-    const newParticles = Array.from({ length: 80 }).map((_, i) => {
-      const size = 6 + Math.random() * 10;
-      return {
-        id: i,
-        left: Math.random() * 100,
-        delay: Math.random() * 0.8,
-        duration: 2 + Math.random() * 2,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        size,
-        angle: Math.random() * 360,
-        shape: Math.random() > 0.5 ? "rounded-full" : "rounded-sm",
-        drift: (Math.random() - 0.5) * 30, // drift in vw
-      };
-    });
-
-    setParticles(newParticles);
-    setGoalCelebration(true);
-
-    setTimeout(() => {
-      setGoalCelebration(false);
-      setParticles([]);
-    }, 3200);
-  };
-
   // Refs for animation loop without trigger re-renders
   const itemsRef = useRef<PhysicsItem[]>([]);
   const isSnappingRef = useRef(true);
@@ -515,21 +484,6 @@ export const PhysicsPlayground: React.FC = () => {
               const overlap = minDist - dist;
               const nx = dx / (dist || 1);
               const ny = dy / (dist || 1);
-
-              // Check for Tor/Goal collision (WM ball hitting portrait-card)
-              const isBall = a.id === "badge-wm-ball" || b.id === "badge-wm-ball";
-              const isPortrait = a.id === "portrait-card" || b.id === "portrait-card";
-              if (isBall && isPortrait) {
-                const ball = a.id === "badge-wm-ball" ? a : b;
-                const speed = Math.hypot(ball.vx, ball.vy);
-                if (speed > 2.0) {
-                  const now = performance.now();
-                  if (now - lastGoalTimeRef.current > 4000) {
-                    lastGoalTimeRef.current = now;
-                    setTimeout(() => triggerGoalCelebration(), 0);
-                  }
-                }
-              }
               
               const totalMass = a.mass + b.mass;
               const ratioA = b.mass / totalMass;
@@ -695,50 +649,6 @@ export const PhysicsPlayground: React.FC = () => {
       onPointerLeave={handlePointerLeave}
       className="relative w-full min-h-[90vh] flex flex-col justify-center items-center overflow-hidden [perspective:1200px]"
     >
-      <style>{`
-        @keyframes confetti-fall {
-          0% {
-            transform: translateY(-20px) rotate(0deg);
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(105vh) translateX(var(--drift)) rotate(720deg);
-            opacity: 0;
-          }
-        }
-        @keyframes goal-text-reveal {
-          0% {
-            transform: translate(-50%, -50%) scale(0.9) rotate(-5deg);
-            opacity: 0;
-            filter: blur(10px);
-          }
-          15% {
-            transform: translate(-50%, -50%) scale(1.1) rotate(2deg);
-            opacity: 1;
-            filter: blur(0);
-          }
-          25% {
-            transform: translate(-50%, -50%) scale(1) rotate(0deg);
-          }
-          80% {
-            transform: translate(-50%, -50%) scale(1) rotate(0deg);
-            opacity: 1;
-            filter: blur(0);
-          }
-          100% {
-            transform: translate(-50%, -50%) scale(0.95) rotate(-2deg);
-            opacity: 0;
-            filter: blur(8px);
-          }
-        }
-        .animate-confetti-fall {
-          animation: confetti-fall linear forwards;
-        }
-        .animate-goal-text {
-          animation: goal-text-reveal 3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-      `}</style>
-
       {/* Background radial accent glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-radial-accent pointer-events-none -z-10 opacity-50" />
 
@@ -748,6 +658,31 @@ export const PhysicsPlayground: React.FC = () => {
         {/* Left Column: Floating Typography & Bio */}
         <div className="flex-1 flex flex-col items-center lg:items-start text-center lg:text-start select-none">
           
+          {/* Option C: World Cup Banner */}
+          {wmMode && (
+            <div className="flex items-center gap-2.5 px-4 py-1.5 rounded-full glass-panel border border-[#00F0FF]/30 bg-slate-950/60 text-[9px] md:text-[10px] font-mono font-bold text-white uppercase tracking-widest mb-6 shadow-[0_0_20px_rgba(0,240,255,0.08)] select-none transition-all duration-300 hover:border-[#00F0FF]/60 hover:shadow-[0_0_25px_rgba(0,240,255,0.15)]">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="text-[#00F0FF] font-black">
+                {locale === "fa"
+                  ? "شبیه‌ساز جام جهانی ۲۰۲۶"
+                  : locale === "de"
+                  ? "FIFA WM 2026™ SIMULATOR"
+                  : "FIFA WC 2026™ SIMULATOR"}
+              </span>
+              <span className="text-slate-500">|</span>
+              <span className="text-slate-300 font-medium">
+                {locale === "fa"
+                  ? "استادیوم فعال است"
+                  : locale === "de"
+                  ? "PORTFOLIO-STADION AKTIV"
+                  : "PORTFOLIO STADIUM ACTIVE"}
+              </span>
+            </div>
+          )}
+
           {/* Tagline Badge */}
           <div
             id="tagline"
@@ -982,44 +917,6 @@ export const PhysicsPlayground: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Goal Celebration Confetti Overlay */}
-      {goalCelebration && (
-        <div className="absolute inset-0 pointer-events-none z-[45] overflow-hidden">
-          {particles.map((p) => (
-            <div
-              key={p.id}
-              style={{
-                left: `${p.left}%`,
-                top: `-20px`,
-                width: `${p.size}px`,
-                height: `${p.size}px`,
-                backgroundColor: p.color,
-                animationDelay: `${p.delay}s`,
-                animationDuration: `${p.duration}s`,
-                transform: `rotate(${p.angle}deg)`,
-                "--drift": `${p.drift}vw`,
-              } as any}
-              className={`absolute ${p.shape} animate-confetti-fall shadow-sm`}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* Goal Celebration Text Banner */}
-      {goalCelebration && (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-50 text-center select-none w-full max-w-lg px-4">
-          <div className="glass-panel border border-[#00F0FF]/30 bg-slate-950/90 py-8 px-6 md:px-12 rounded-3xl shadow-[0_0_50px_rgba(0,240,255,0.25)] animate-goal-text relative overflow-hidden">
-            <div className="absolute inset-0 bg-radial-accent opacity-30 pointer-events-none" />
-            <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-[#00F0FF] via-indigo-400 to-pink-500 neon-text-glow leading-none select-none">
-              {locale === "fa" ? "گل! ⚽🏆" : locale === "de" ? "TOR! ⚽🏆" : "GOAL! ⚽🏆"}
-            </h2>
-            <p className="text-[10px] md:text-xs font-mono tracking-widest uppercase text-slate-400 mt-3 select-none">
-              {locale === "fa" ? "شبیه‌ساز جام جهانی فعال است" : locale === "de" ? "WM-Simulation Aktiviert" : "World Cup Simulation Active"}
-            </p>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
