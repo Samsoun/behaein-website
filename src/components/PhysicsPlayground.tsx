@@ -23,6 +23,8 @@ interface PhysicsItem {
   isDragging: boolean;
   label?: string; // For text/badge label rendering
   targetZ: number; // target depth during snap-back
+  isImage?: boolean;
+  imageUrl?: string;
 }
 
 // Layout anchors representing a beautiful scatter pattern behind the text and around the portrait
@@ -35,6 +37,8 @@ export const badgeLayoutAnchors: Record<string, { xPct: number; yPct: number; zO
   "badge-native": { xPct: 0.88, yPct: 0.42, zOffset: -100 },
   "badge-framer": { xPct: 0.82, yPct: 0.84, zOffset: -90 },
   "badge-javascript": { xPct: 0.14, yPct: 0.88, zOffset: -110 },
+  "badge-wm-ball": { xPct: 0.54, yPct: 0.68, zOffset: 0 },
+  "badge-wm-trophy": { xPct: 0.76, yPct: 0.22, zOffset: -60 },
 };
 
 export const PhysicsPlayground: React.FC = () => {
@@ -47,6 +51,7 @@ export const PhysicsPlayground: React.FC = () => {
   const [isHoveringCTA, setIsHoveringCTA] = useState(false);
   const [imgExists, setImgExists] = useState(false);
   const [engineStats, setEngineStats] = useState({ fps: 60, collisions: 0 });
+  const [wmMode, setWmMode] = useState<boolean>(true);
 
   // Refs for animation loop without trigger re-renders
   const itemsRef = useRef<PhysicsItem[]>([]);
@@ -95,6 +100,12 @@ export const PhysicsPlayground: React.FC = () => {
     { id: "badge-native", label: "React Native" },
     { id: "badge-framer", label: "Framer Motion" },
     { id: "badge-javascript", label: "JavaScript" },
+    ...(wmMode
+      ? [
+          { id: "badge-wm-ball", label: "WM Ball", isImage: true, imageUrl: "/wm_ball.png" },
+          { id: "badge-wm-trophy", label: "WM Trophy", isImage: true, imageUrl: "/wm_trophy.png" },
+        ]
+      : []),
   ];
 
   // Helper for scroll offset
@@ -186,6 +197,10 @@ export const PhysicsPlayground: React.FC = () => {
       const baseX = xPct * parentRect.width;
       const baseY = anchor.yPct * parentRect.height;
 
+      let mass = 1.2;
+      if (badge.id === "badge-wm-ball") mass = 2.4;
+      else if (badge.id === "badge-wm-trophy") mass = 3.5;
+
       updatedItems.push({
         id: badge.id,
         type: "badge",
@@ -201,10 +216,12 @@ export const PhysicsPlayground: React.FC = () => {
         height,
         baseX,
         baseY,
-        mass: 1.2,
+        mass,
         isDragging: existing ? existing.isDragging : false,
         label: badge.label,
         targetZ: anchor.zOffset,
+        isImage: 'imageUrl' in badge ? true : undefined,
+        imageUrl: 'imageUrl' in badge ? (badge as any).imageUrl : undefined,
       });
     });
 
@@ -232,7 +249,7 @@ export const PhysicsPlayground: React.FC = () => {
       clearTimeout(timer);
       window.removeEventListener("resize", handleResize);
     };
-  }, [locale]); // Remeasure on locale shift since content widths change
+  }, [locale, wmMode]); // Remeasure on locale/wmMode shift
 
   // Simulation Loop setup
   useEffect(() => {
@@ -350,24 +367,40 @@ export const PhysicsPlayground: React.FC = () => {
             item.vz += (0 - item.z) * globalAttract;
             item.angularVelocity += (0 - item.angle) * globalAttract;
 
-            // Mouse Repulsion Force
+            // Mouse Repulsion / Kick Force
             if (mouse.rawX > -100) {
               const dx = (item.baseX + item.x) - mouse.rawX;
               const dy = (item.baseY + item.y) - mouse.rawY;
               const dist = Math.hypot(dx, dy);
-              const repulsionRadius = 130;
 
-              if (dist < repulsionRadius) {
-                const force = (repulsionRadius - dist) / repulsionRadius;
-                // Repel away from mouse
-                const pushX = (dx / (dist || 1)) * force * 1.6;
-                const pushY = (dy / (dist || 1)) * force * 1.6;
+              if (item.id === "badge-wm-ball") {
+                // Kick logic for soccer ball
+                const kickRadius = 60;
+                const mouseSpeed = Math.hypot(mouse.vx, mouse.vy);
+                if (dist < kickRadius && mouseSpeed > 1.5) {
+                  if (modeRef.current === "ordnung") {
+                    modeRef.current = "chaos";
+                    isSnappingRef.current = false;
+                    setTimeout(() => setMode("chaos"), 0);
+                  }
+                  item.vx += mouse.vx * 1.8;
+                  item.vy += mouse.vy * 1.8;
+                  item.angularVelocity += (mouse.vx - mouse.vy) * 0.4;
+                  item.vz += (Math.random() - 0.5) * 6; // Pop into 3D space
+                }
+              } else {
+                // Standard floaty repulsion
+                const repulsionRadius = 130;
+                if (dist < repulsionRadius) {
+                  const force = (repulsionRadius - dist) / repulsionRadius;
+                  const pushX = (dx / (dist || 1)) * force * 1.6;
+                  const pushY = (dy / (dist || 1)) * force * 1.6;
 
-                item.vx += pushX;
-                item.vy += pushY;
-                // Random depth pop and rotation twist
-                item.vz += (Math.random() - 0.5) * force * 4.5;
-                item.angularVelocity += (Math.random() - 0.5) * force * 2.5;
+                  item.vx += pushX;
+                  item.vy += pushY;
+                  item.vz += (Math.random() - 0.5) * force * 4.5;
+                  item.angularVelocity += (Math.random() - 0.5) * force * 2.5;
+                }
               }
             }
 
@@ -740,6 +773,34 @@ export const PhysicsPlayground: React.FC = () => {
       {techBadges.map((badge) => {
         const anchor = badgeLayoutAnchors[badge.id] || { xPct: 0.5, yPct: 0.5 };
         const xPct = isRtl ? 1 - anchor.xPct : anchor.xPct;
+        
+        if ('imageUrl' in badge) {
+          const isBall = badge.id === "badge-wm-ball";
+          const dimsClass = isBall ? "w-[64px] h-[64px] md:w-[72px] md:h-[72px]" : "w-[80px] h-[100px] md:w-[90px] md:h-[110px]";
+          return (
+            <div
+              key={badge.id}
+              id={badge.id}
+              ref={(el) => { refsMap.current[badge.id] = el; }}
+              onPointerDown={(e) => handleDragStart(e, badge.id)}
+              onPointerUp={(e) => handleDragEnd(e, badge.id)}
+              style={{
+                left: `${xPct * 100}%`,
+                top: `${anchor.yPct * 100}%`,
+                transform: `translate(-50%, -50%)`,
+              }}
+              className={`absolute cursor-grab active:cursor-grabbing select-none z-20 touch-none ${dimsClass}`}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={badge.imageUrl}
+                alt={badge.label}
+                className="w-full h-full object-contain pointer-events-none"
+              />
+            </div>
+          );
+        }
+
         return (
           <div
             key={badge.id}
@@ -770,12 +831,25 @@ export const PhysicsPlayground: React.FC = () => {
           </div>
 
           {/* Interactive buttons */}
-          <div className="flex gap-2">
+          <div className="flex gap-1.5 md:gap-2 flex-wrap justify-center">
             
+            {/* WM Mode switch */}
+            <button
+              onClick={() => setWmMode(prev => !prev)}
+              className={`px-2.5 py-1.5 rounded-lg border text-[10px] font-mono font-bold uppercase tracking-wider cursor-pointer active:scale-[0.97] transition-all flex items-center gap-1 ${
+                wmMode
+                  ? "border-indigo-500/30 bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20"
+                  : "border-slate-800 bg-slate-900/50 text-slate-400 hover:bg-slate-800"
+              }`}
+            >
+              <span>🏆</span>
+              {locale === "fa" ? "جام جهانی" : locale === "de" ? "WM 2026" : "WC 2026"}
+            </button>
+
             {/* Mode switch */}
             <button
               onClick={() => setMode(prev => prev === "chaos" ? "ordnung" : "chaos")}
-              className={`px-3 py-1.5 rounded-lg border text-[10px] font-mono font-bold uppercase tracking-wider cursor-pointer active:scale-95 transition-all flex items-center gap-1 ${
+              className={`px-2.5 py-1.5 rounded-lg border text-[10px] font-mono font-bold uppercase tracking-wider cursor-pointer active:scale-[0.97] transition-all flex items-center gap-1 ${
                 mode === "chaos"
                   ? "border-amber-500/30 bg-amber-500/10 text-amber-500"
                   : "border-emerald-500/30 bg-emerald-500/10 text-emerald-500"
@@ -797,7 +871,7 @@ export const PhysicsPlayground: React.FC = () => {
             {/* Impulse trigger */}
             <button
               onClick={triggerImpulse}
-              className="px-3 py-1.5 rounded-lg border border-pink-500/30 bg-pink-500/10 text-pink-500 hover:bg-pink-500/20 text-[10px] font-mono font-bold uppercase tracking-wider cursor-pointer active:scale-95 transition-all flex items-center gap-1"
+              className="px-2.5 py-1.5 rounded-lg border border-pink-500/30 bg-pink-500/10 text-pink-500 hover:bg-pink-500/20 text-[10px] font-mono font-bold uppercase tracking-wider cursor-pointer active:scale-[0.97] transition-all flex items-center gap-1"
             >
               <Zap className="w-3.5 h-3.5" />
               {locale === "fa" ? "شلیک" : locale === "de" ? "Impuls" : "Burst"}
