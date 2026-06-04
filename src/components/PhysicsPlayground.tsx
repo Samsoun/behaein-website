@@ -37,8 +37,8 @@ export const badgeLayoutAnchors: Record<string, { xPct: number; yPct: number; zO
   "badge-native": { xPct: 0.88, yPct: 0.42, zOffset: -100 },
   "badge-framer": { xPct: 0.82, yPct: 0.84, zOffset: -90 },
   "badge-javascript": { xPct: 0.14, yPct: 0.88, zOffset: -110 },
-  "badge-wm-ball": { xPct: 0.54, yPct: 0.68, zOffset: 0 },
-  "badge-wm-trophy": { xPct: 0.76, yPct: 0.22, zOffset: -60 },
+  "badge-wm-ball": { xPct: 0.75, yPct: 0.72, zOffset: 0 },
+  "badge-wm-trophy": { xPct: 0.88, yPct: 0.24, zOffset: -60 },
 };
 
 export const PhysicsPlayground: React.FC = () => {
@@ -52,6 +52,12 @@ export const PhysicsPlayground: React.FC = () => {
   const [imgExists, setImgExists] = useState(false);
   const [engineStats, setEngineStats] = useState({ fps: 60, collisions: 0 });
   const [wmMode, setWmMode] = useState<boolean>(true);
+
+  // Shootout Mini-Game States
+  const [shootState, setShootState] = useState<"idle" | "goal" | "miss">("idle");
+  const shootStateRef = useRef<"idle" | "goal" | "miss">("idle");
+  const ballWasKickedRef = useRef<boolean>(false);
+  const [confetti, setConfetti] = useState<{ id: number; x: number; y: number; color: string; angle: number; size: number; delay: number }[]>([]);
 
   // Refs for animation loop without trigger re-renders
   const itemsRef = useRef<PhysicsItem[]>([]);
@@ -388,6 +394,10 @@ export const PhysicsPlayground: React.FC = () => {
                   item.vy += mouse.vy * 1.8;
                   item.angularVelocity += (mouse.vx - mouse.vy) * 0.4;
                   item.vz += (Math.random() - 0.5) * 6; // Pop into 3D space
+
+                  ballWasKickedRef.current = true;
+                  shootStateRef.current = "idle";
+                  setTimeout(() => setShootState("idle"), 0);
                 }
               } else if (!wmModeRef.current) {
                 // Standard floaty repulsion ONLY when WM mode is inactive
@@ -457,7 +467,63 @@ export const PhysicsPlayground: React.FC = () => {
           }
         }
 
-      // 2. Circle-collision checks between floating components in Chaos Mode
+      // Goal Shooter Mini-Game Logic
+      if (wmModeRef.current && shootStateRef.current === "idle" && ballWasKickedRef.current) {
+        const ball = items.find(item => item.id === "badge-wm-ball");
+        const goal = items.find(item => item.id === "portrait-card");
+
+        if (ball && goal) {
+          const ballX = ball.baseX + ball.x;
+          const ballY = ball.baseY + ball.y;
+          const goalX = goal.baseX + goal.x;
+          const goalY = goal.baseY + goal.y;
+
+          // Bounding area checks (center net)
+          const isInsideGoalX = Math.abs(ballX - goalX) < goal.width * 0.38;
+          const isInsideGoalY = Math.abs(ballY - goalY) < goal.height * 0.38;
+
+          if (isInsideGoalX && isInsideGoalY) {
+            shootStateRef.current = "goal";
+            setTimeout(() => setShootState("goal"), 0);
+
+            // Reset ball after 3.5 seconds
+            setTimeout(() => {
+              ball.x = 0; ball.y = 0; ball.z = 0;
+              ball.vx = 0; ball.vy = 0; ball.vz = 0;
+              ball.angle = 0; ball.angularVelocity = 0;
+              
+              ballWasKickedRef.current = false;
+              shootStateRef.current = "idle";
+              setTimeout(() => setShootState("idle"), 0);
+              setTimeout(() => setMode("ordnung"), 0);
+            }, 3500);
+          } else {
+            // Check for miss conditions
+            const ballSpeed = Math.hypot(ball.vx, ball.vy);
+            const flewOverCrossbar = ballY < goalY - goal.height * 0.45;
+            const wentWideLeft = ballX < goalX - goal.width * 0.6;
+            const wentWideRight = ballX > goalX + goal.width * 0.6;
+            const stoppedMoving = ballSpeed < 0.25;
+
+            if (flewOverCrossbar || wentWideLeft || wentWideRight || stoppedMoving) {
+              shootStateRef.current = "miss";
+              setTimeout(() => setShootState("miss"), 0);
+
+              // Reset ball after 3.5 seconds
+              setTimeout(() => {
+                ball.x = 0; ball.y = 0; ball.z = 0;
+                ball.vx = 0; ball.vy = 0; ball.vz = 0;
+                ball.angle = 0; ball.angularVelocity = 0;
+
+                ballWasKickedRef.current = false;
+                shootStateRef.current = "idle";
+                setTimeout(() => setShootState("idle"), 0);
+                setTimeout(() => setMode("ordnung"), 0);
+              }, 3500);
+            }
+          }
+        }
+      } // 2. Circle-collision checks between floating components in Chaos Mode
       if (!isSnapping) {
         for (let i = 0; i < items.length; i++) {
           const a = items[i];
@@ -594,6 +660,11 @@ export const PhysicsPlayground: React.FC = () => {
     if (mode === "ordnung") {
       if (!wmModeRef.current || id === "badge-wm-ball") {
         setMode("chaos");
+        if (id === "badge-wm-ball") {
+          ballWasKickedRef.current = true;
+          shootStateRef.current = "idle";
+          setShootState("idle");
+        }
       }
     }
 
@@ -642,6 +713,24 @@ export const PhysicsPlayground: React.FC = () => {
     });
   };
 
+  useEffect(() => {
+    if (shootState === "goal") {
+      const colors = ["#00F0FF", "#818CF8", "#F472B6", "#FBBF24", "#34D399"];
+      const newConfetti = Array.from({ length: 80 }).map((_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        y: -10 - Math.random() * 20,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        angle: Math.random() * 360,
+        size: 6 + Math.random() * 8,
+        delay: Math.random() * 0.6,
+      }));
+      setConfetti(newConfetti);
+    } else {
+      setConfetti([]);
+    }
+  }, [shootState]);
+
   return (
     <div
       ref={containerRef}
@@ -649,6 +738,59 @@ export const PhysicsPlayground: React.FC = () => {
       onPointerLeave={handlePointerLeave}
       className="relative w-full min-h-[90vh] flex flex-col justify-center items-center overflow-hidden [perspective:1200px]"
     >
+      <style>{`
+        @keyframes fall {
+          0% { transform: translateY(0px) rotate(0deg); opacity: 0.9; }
+          100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+        }
+        @keyframes scaleUp {
+          0% { transform: scale(0.9) translate(-50%, -50%); opacity: 0; }
+          100% { transform: scale(1) translate(-50%, -50%); opacity: 1; }
+        }
+      `}</style>
+
+      {/* Confetti Overlay */}
+      {shootState === "goal" && confetti.map((p) => (
+        <div
+          key={p.id}
+          style={{
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            backgroundColor: p.color,
+            width: `${p.size}px`,
+            height: `${p.size * 1.5}px`,
+            transform: `rotate(${p.angle}deg)`,
+            animation: `fall 3s linear infinite`,
+            animationDelay: `${p.delay}s`,
+            zIndex: 100,
+          }}
+          className="absolute rounded-sm pointer-events-none opacity-90"
+        />
+      ))}
+
+      {/* Goal Feedback Overlay */}
+      {shootState === "goal" && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none select-none text-center animate-[scaleUp_0.2s_ease-out_forwards]">
+          <h2 className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#00F0FF] via-pink-500 to-indigo-400 tracking-wider uppercase filter drop-shadow-[0_0_30px_rgba(0,240,255,0.4)]">
+            {locale === "fa" ? "گل! ⚽🏆" : locale === "de" ? "TOR! ⚽🏆" : "GOAL! ⚽🏆"}
+          </h2>
+          <p className="text-slate-300 text-xs md:text-sm font-mono uppercase tracking-widest mt-2 bg-slate-950/80 px-4 py-1.5 rounded-full border border-[#00F0FF]/20 backdrop-blur-sm inline-block">
+            {locale === "fa" ? "شلیک عالی!" : locale === "de" ? "Was für ein Schuss!" : "What a shot!"}
+          </p>
+        </div>
+      )}
+
+      {/* Miss Feedback Overlay */}
+      {shootState === "miss" && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none select-none text-center animate-[scaleUp_0.2s_ease-out_forwards]">
+          <h2 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-red-500 tracking-wider uppercase filter drop-shadow-[0_0_20px_rgba(239,68,68,0.2)]">
+            {locale === "fa" ? "خطا! 🔄" : locale === "de" ? "Knapp vorbei! 🔄" : "Knapp vorbei! 🔄"}
+          </h2>
+          <p className="text-slate-400 text-[10px] md:text-xs font-mono uppercase tracking-widest mt-2 bg-slate-950/80 px-4 py-1.5 rounded-full border border-red-500/20 backdrop-blur-sm inline-block">
+            {locale === "fa" ? "دوباره تلاش کن!" : locale === "de" ? "Nochmal versuchen!" : "Try again!"}
+          </p>
+        </div>
+      )}
       {/* Background radial accent glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-radial-accent pointer-events-none -z-10 opacity-50" />
 
@@ -658,31 +800,6 @@ export const PhysicsPlayground: React.FC = () => {
         {/* Left Column: Floating Typography & Bio */}
         <div className="flex-1 flex flex-col items-center lg:items-start text-center lg:text-start select-none">
           
-          {/* Option C: World Cup Banner */}
-          {wmMode && (
-            <div className="flex items-center gap-2.5 px-4 py-1.5 rounded-full glass-panel border border-[#00F0FF]/30 bg-slate-950/60 text-[9px] md:text-[10px] font-mono font-bold text-white uppercase tracking-widest mb-6 shadow-[0_0_20px_rgba(0,240,255,0.08)] select-none transition-all duration-300 hover:border-[#00F0FF]/60 hover:shadow-[0_0_25px_rgba(0,240,255,0.15)]">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span className="text-[#00F0FF] font-black">
-                {locale === "fa"
-                  ? "شبیه‌ساز جام جهانی ۲۰۲۶"
-                  : locale === "de"
-                  ? "FIFA WM 2026™ SIMULATOR"
-                  : "FIFA WC 2026™ SIMULATOR"}
-              </span>
-              <span className="text-slate-500">|</span>
-              <span className="text-slate-300 font-medium">
-                {locale === "fa"
-                  ? "استادیوم فعال است"
-                  : locale === "de"
-                  ? "PORTFOLIO-STADION AKTIV"
-                  : "PORTFOLIO STADIUM ACTIVE"}
-              </span>
-            </div>
-          )}
-
           {/* Tagline Badge */}
           <div
             id="tagline"
@@ -749,49 +866,67 @@ export const PhysicsPlayground: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Column: Floating Picture Card Frame */}
+        {/* Right Column: Floating Picture Card Frame / Soccer Goal */}
         <div className="flex-shrink-0 flex items-center justify-center w-full max-w-sm lg:max-w-none lg:w-auto relative">
           <div
             id="portrait-card"
             ref={(el) => { refsMap.current["portrait-card"] = el; }}
             onPointerDown={(e) => handleDragStart(e, "portrait-card")}
             onPointerUp={(e) => handleDragEnd(e, "portrait-card")}
-            className="relative w-[280px] h-[360px] md:w-[320px] md:h-[400px] select-none cursor-grab active:cursor-grabbing touch-none rounded-3xl overflow-hidden shadow-2xl"
+            className={`relative select-none cursor-grab active:cursor-grabbing touch-none transition-all ${
+              wmMode
+                ? "w-[300px] h-[220px] md:w-[380px] md:h-[285px] filter drop-shadow-[0_0_20px_rgba(0,240,255,0.15)]"
+                : "w-[280px] h-[360px] md:w-[320px] md:h-[400px] rounded-3xl overflow-hidden shadow-2xl"
+            }`}
           >
-            {/* Card Content Shell */}
-            <div className="w-full h-full rounded-3xl border border-[#00F0FF]/15 bg-slate-950/40 backdrop-blur-md p-4 relative flex flex-col items-center justify-center pointer-events-none">
-              
-              {/* Image slot */}
-              <div className="w-full h-full rounded-2xl overflow-hidden relative border border-slate-800 bg-slate-900/50 flex flex-col items-center justify-center">
-                {imgExists ? (
-                  <>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img 
-                      src="/samsoun.jpg" 
-                      alt="Samsoun Behaein"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
-                    <div className="absolute bottom-3 left-4 flex items-center gap-1.5 text-[10px] font-bold font-mono text-[#00F0FF] tracking-wider uppercase bg-slate-950/80 px-2 py-0.5 rounded border border-[#00F0FF]/20">
-                      <Sparkles className="w-3 h-3 text-[#00F0FF]" /> Samsoun Behaein
-                    </div>
-                  </>
-                ) : (
-                  /* Fallback Mock Avatar */
-                  <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 relative">
-                    <div className="w-24 h-24 rounded-full border border-[#00F0FF]/20 flex items-center justify-center relative mb-4 shadow-[0_0_20px_rgba(0,240,255,0.05)]">
-                      <div className="absolute inset-1 rounded-full border border-dashed border-[#00F0FF]/10 animate-spin-slow" />
-                      <User className="w-10 h-10 text-[#00F0FF]/60" />
-                    </div>
-                    <h4 className="text-sm font-bold text-white uppercase tracking-wider font-display">Samsoun Behaein</h4>
-                    <p className="text-[10px] text-slate-500 mt-1 font-mono uppercase tracking-widest text-[#00F0FF]/80">CREATIVE TECHNOLOGIST</p>
-                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1 text-[8px] font-bold text-[#00F0FF]/60 uppercase font-mono bg-slate-950/50 px-2 py-0.5 rounded">
-                      <Cpu className="w-2.5 h-2.5" /> Core Simulator Active
-                    </div>
-                  </div>
-                )}
+            {wmMode ? (
+              /* Soccer Goal Net Slot */
+              <div className="w-full h-full relative flex items-center justify-center pointer-events-none">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src="/wm_goal.png" 
+                  alt="WM Goal"
+                  className="w-full h-full object-contain filter drop-shadow-[0_0_20px_rgba(0,240,255,0.2)]"
+                />
+                {/* Goal post overlay indicator lights */}
+                <div className="absolute top-[8%] left-[7%] w-1.5 h-1.5 rounded-full bg-[#00F0FF] animate-pulse shadow-[0_0_8px_#00F0FF]" />
+                <div className="absolute top-[8%] right-[7%] w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse shadow-[0_0_8px_#818CF8]" />
               </div>
-            </div>
+            ) : (
+              /* Card Content Shell (Portrait Card) */
+              <div className="w-full h-full rounded-3xl border border-[#00F0FF]/15 bg-slate-950/40 backdrop-blur-md p-4 relative flex flex-col items-center justify-center pointer-events-none">
+                {/* Image slot */}
+                <div className="w-full h-full rounded-2xl overflow-hidden relative border border-slate-800 bg-slate-900/50 flex flex-col items-center justify-center">
+                  {imgExists ? (
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img 
+                        src="/samsoun.jpg" 
+                        alt="Samsoun Behaein"
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
+                      <div className="absolute bottom-3 left-4 flex items-center gap-1.5 text-[10px] font-bold font-mono text-[#00F0FF] tracking-wider uppercase bg-slate-950/80 px-2 py-0.5 rounded border border-[#00F0FF]/20">
+                        <Sparkles className="w-3 h-3 text-[#00F0FF]" /> Samsoun Behaein
+                      </div>
+                    </>
+                  ) : (
+                    /* Fallback Mock Avatar */
+                    <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 relative">
+                      <div className="w-24 h-24 rounded-full border border-[#00F0FF]/20 flex items-center justify-center relative mb-4 shadow-[0_0_20px_rgba(0,240,255,0.05)]">
+                        <div className="absolute inset-1 rounded-full border border-dashed border-[#00F0FF]/10 animate-spin-slow" />
+                        <User className="w-10 h-10 text-[#00F0FF]/60" />
+                      </div>
+                      <h4 className="text-sm font-bold text-white uppercase tracking-wider font-display">Samsoun Behaein</h4>
+                      <p className="text-[10px] text-slate-500 mt-1 font-mono uppercase tracking-widest text-[#00F0FF]/80">CREATIVE TECHNOLOGIST</p>
+                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1 text-[8px] font-bold text-[#00F0FF]/60 uppercase font-mono bg-slate-950/50 px-2 py-0.5 rounded">
+                        <Cpu className="w-2.5 h-2.5" /> Core Simulator Active
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
