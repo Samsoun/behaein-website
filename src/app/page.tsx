@@ -68,7 +68,7 @@ export default function Home() {
       setShowMobileBanner(true);
       const timer = setTimeout(() => {
         setShowMobileBanner(false);
-      }, 5000);
+      }, 10000);
       return () => clearTimeout(timer);
     }
   }, []);
