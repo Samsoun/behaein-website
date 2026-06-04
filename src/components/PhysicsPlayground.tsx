@@ -108,12 +108,6 @@ export const PhysicsPlayground: React.FC = () => {
     { id: "badge-native", label: "React Native" },
     { id: "badge-framer", label: "Framer Motion" },
     { id: "badge-javascript", label: "JavaScript" },
-    ...(wmMode
-      ? [
-          { id: "badge-wm-ball", label: "WM Ball", isImage: true, imageUrl: "/wm_ball.png" },
-          { id: "badge-wm-trophy", label: "WM Trophy", isImage: true, imageUrl: "/wm_trophy.png" },
-        ]
-      : []),
   ];
 
   // Helper for scroll offset
@@ -139,7 +133,7 @@ export const PhysicsPlayground: React.FC = () => {
     const updatedItems: PhysicsItem[] = [];
 
     // Helper to process standard layout items
-    const processItem = (id: string, type: PhysicsItem["type"], mass: number, label?: string) => {
+    const processItem = (id: string, type: PhysicsItem["type"], mass: number, label?: string, defaultZ = 0) => {
       const el = refsMap.current[id];
       if (!el) return;
 
@@ -161,7 +155,7 @@ export const PhysicsPlayground: React.FC = () => {
         type,
         x: currentDx,
         y: currentDy,
-        z: existing ? existing.z : 0,
+        z: existing ? existing.z : defaultZ,
         vx: existing ? existing.vx : 0,
         vy: existing ? existing.vy : 0,
         vz: existing ? existing.vz : 0,
@@ -174,7 +168,7 @@ export const PhysicsPlayground: React.FC = () => {
         mass,
         isDragging: existing ? existing.isDragging : false,
         label,
-        targetZ: 0,
+        targetZ: defaultZ,
       });
     };
 
@@ -185,6 +179,11 @@ export const PhysicsPlayground: React.FC = () => {
     });
     processItem("subline", "subline", 3.5);
     processItem("portrait-card", "portrait", 6.0);
+
+    if (wmMode) {
+      processItem("badge-wm-ball", "badge", 2.4, "WM Ball", 0);
+      processItem("badge-wm-trophy", "badge", 3.5, "WM Trophy", -60);
+    }
 
     // 2. Process custom floating tech badges using pre-calculated percentage spots
     techBadges.forEach((badge) => {
@@ -205,10 +204,6 @@ export const PhysicsPlayground: React.FC = () => {
       const baseX = xPct * parentRect.width;
       const baseY = anchor.yPct * parentRect.height;
 
-      let mass = 1.2;
-      if (badge.id === "badge-wm-ball") mass = 2.4;
-      else if (badge.id === "badge-wm-trophy") mass = 3.5;
-
       updatedItems.push({
         id: badge.id,
         type: "badge",
@@ -224,12 +219,10 @@ export const PhysicsPlayground: React.FC = () => {
         height,
         baseX,
         baseY,
-        mass,
+        mass: 1.2,
         isDragging: existing ? existing.isDragging : false,
         label: badge.label,
         targetZ: anchor.zOffset,
-        isImage: 'imageUrl' in badge ? true : undefined,
-        imageUrl: 'imageUrl' in badge ? (badge as any).imageUrl : undefined,
       });
     });
 
@@ -440,24 +433,39 @@ export const PhysicsPlayground: React.FC = () => {
           const halfW = item.width / 2;
           const halfH = item.height / 2;
 
+          let minX = 0;
+          let maxX = containerWidth;
+          let minY = 0;
+          let maxY = containerHeight;
+
+          if (wmModeRef.current && (item.id === "badge-wm-ball" || item.id === "badge-wm-trophy" || item.id === "portrait-card")) {
+            if (containerWidth >= 1024) {
+              // Desktop: Restrict game elements to the right column area
+              minX = containerWidth * 0.45;
+            } else {
+              // Mobile/Tablet: Restrict game elements to the bottom column area
+              minY = containerHeight * 0.42;
+            }
+          }
+
           // X border collisions
-          if (absX - halfW < 0) {
-            item.x = halfW - item.baseX;
+          if (absX - halfW < minX) {
+            item.x = minX + halfW - item.baseX;
             item.vx = -item.vx * boundaryBounce;
             item.angularVelocity += (Math.random() - 0.5) * 1.5;
-          } else if (absX + halfW > containerWidth) {
-            item.x = containerWidth - item.baseX - halfW;
+          } else if (absX + halfW > maxX) {
+            item.x = maxX - item.baseX - halfW;
             item.vx = -item.vx * boundaryBounce;
             item.angularVelocity += (Math.random() - 0.5) * 1.5;
           }
 
           // Y border collisions
-          if (absY - halfH < 0) {
-            item.y = halfH - item.baseY;
+          if (absY - halfH < minY) {
+            item.y = minY + halfH - item.baseY;
             item.vy = -item.vy * boundaryBounce;
             item.angularVelocity += (Math.random() - 0.5) * 1.5;
-          } else if (absY + halfH > containerHeight) {
-            item.y = containerHeight - item.baseY - halfH;
+          } else if (absY + halfH > maxY) {
+            item.y = maxY - item.baseY - halfH;
             item.vy = -item.vy * boundaryBounce;
             item.angularVelocity += (Math.random() - 0.5) * 1.5;
           }
@@ -720,6 +728,11 @@ export const PhysicsPlayground: React.FC = () => {
   const triggerImpulse = () => {
     setMode("chaos");
     itemsRef.current.forEach((item) => {
+      if (wmModeRef.current) {
+        // Only game elements explode in WM mode
+        const isGame = item.id === "badge-wm-ball" || item.id === "badge-wm-trophy" || item.id === "portrait-card";
+        if (!isGame) return;
+      }
       // Direct high velocity bursts
       item.vx = (Math.random() - 0.5) * 25;
       item.vy = (Math.random() - 0.5) * 25;
@@ -819,9 +832,11 @@ export const PhysicsPlayground: React.FC = () => {
           <div
             id="tagline"
             ref={(el) => { refsMap.current["tagline"] = el; }}
-            onPointerDown={(e) => handleDragStart(e, "tagline")}
-            onPointerUp={(e) => handleDragEnd(e, "tagline")}
-            className="inline-block px-3.5 py-1.5 rounded-full bg-[#00F0FF]/5 border border-[#00F0FF]/15 text-xs font-mono font-bold tracking-widest uppercase text-[#00F0FF] cursor-grab active:cursor-grabbing hover:border-[#00F0FF]/40 transition-colors select-none mb-6 touch-none"
+            onPointerDown={wmMode ? undefined : (e) => handleDragStart(e, "tagline")}
+            onPointerUp={wmMode ? undefined : (e) => handleDragEnd(e, "tagline")}
+            className={`inline-block px-3.5 py-1.5 rounded-full bg-[#00F0FF]/5 border border-[#00F0FF]/15 text-xs font-mono font-bold tracking-widest uppercase text-[#00F0FF] transition-colors select-none mb-6 touch-none ${
+              wmMode ? "pointer-events-none" : "cursor-grab active:cursor-grabbing hover:border-[#00F0FF]/40"
+            }`}
           >
             {t("heroTagline")}
           </div>
@@ -835,13 +850,15 @@ export const PhysicsPlayground: React.FC = () => {
                   key={word.id}
                   id={word.id}
                   ref={(el) => { refsMap.current[word.id] = el; }}
-                  onPointerDown={(e) => handleDragStart(e, word.id)}
-                  onPointerUp={(e) => handleDragEnd(e, word.id)}
-                  className={`inline-block cursor-grab active:cursor-grabbing select-none ${
+                  onPointerDown={wmMode ? undefined : (e) => handleDragStart(e, word.id)}
+                  onPointerUp={wmMode ? undefined : (e) => handleDragEnd(e, word.id)}
+                  className={`inline-block select-none ${
                     isHighlight
                       ? "text-transparent bg-clip-text bg-gradient-to-r from-[#00F0FF] to-indigo-400 font-extrabold"
                       : "text-white font-black"
-                  } hover:text-[#00F0FF] transition-colors duration-150`}
+                  } ${
+                    wmMode ? "pointer-events-none" : "cursor-grab active:cursor-grabbing hover:text-[#00F0FF] transition-colors duration-150"
+                  }`}
                 >
                   {word.text}
                 </span>
@@ -853,9 +870,11 @@ export const PhysicsPlayground: React.FC = () => {
           <div
             id="subline"
             ref={(el) => { refsMap.current["subline"] = el; }}
-            onPointerDown={(e) => handleDragStart(e, "subline")}
-            onPointerUp={(e) => handleDragEnd(e, "subline")}
-            className="text-slate-400 text-sm md:text-base leading-relaxed max-w-xl cursor-grab active:cursor-grabbing hover:text-slate-300 transition-colors select-none mb-8 touch-none"
+            onPointerDown={wmMode ? undefined : (e) => handleDragStart(e, "subline")}
+            onPointerUp={wmMode ? undefined : (e) => handleDragEnd(e, "subline")}
+            className={`text-slate-400 text-sm md:text-base leading-relaxed max-w-xl select-none mb-8 touch-none ${
+              wmMode ? "pointer-events-none" : "cursor-grab active:cursor-grabbing hover:text-slate-300 transition-colors"
+            }`}
           >
             {t("heroSubline")}
           </div>
@@ -882,16 +901,16 @@ export const PhysicsPlayground: React.FC = () => {
         </div>
 
         {/* Right Column: Floating Picture Card Frame / Soccer Goal */}
-        <div className="flex-shrink-0 flex items-center justify-center w-full max-w-sm lg:max-w-none lg:w-auto relative">
+        <div className="flex-shrink-0 flex items-center justify-center w-full max-w-sm lg:max-w-none lg:w-auto relative [transform-style:preserve-3d]">
           <div
             id="portrait-card"
             ref={(el) => { refsMap.current["portrait-card"] = el; }}
-            onPointerDown={(e) => handleDragStart(e, "portrait-card")}
-            onPointerUp={(e) => handleDragEnd(e, "portrait-card")}
-            className={`relative select-none cursor-grab active:cursor-grabbing touch-none transition-all ${
+            onPointerDown={wmMode ? undefined : (e) => handleDragStart(e, "portrait-card")}
+            onPointerUp={wmMode ? undefined : (e) => handleDragEnd(e, "portrait-card")}
+            className={`relative select-none touch-none transition-all ${
               wmMode
-                ? "w-[300px] h-[220px] md:w-[380px] md:h-[285px] filter drop-shadow-[0_0_20px_rgba(0,240,255,0.15)]"
-                : "w-[280px] h-[360px] md:w-[320px] md:h-[400px] rounded-3xl overflow-hidden shadow-2xl"
+                ? "w-[300px] h-[220px] md:w-[380px] md:h-[285px] filter drop-shadow-[0_0_20px_rgba(0,240,255,0.15)] pointer-events-none"
+                : "w-[280px] h-[360px] md:w-[320px] md:h-[400px] rounded-3xl overflow-hidden shadow-2xl cursor-grab active:cursor-grabbing"
             }`}
           >
             {wmMode ? (
@@ -943,6 +962,52 @@ export const PhysicsPlayground: React.FC = () => {
               </div>
             )}
           </div>
+
+          {/* Render WM Ball and Trophy here, relative to this column! */}
+          {wmMode && (
+            <>
+              {/* Ball */}
+              <div
+                id="badge-wm-ball"
+                ref={(el) => { refsMap.current["badge-wm-ball"] = el; }}
+                onPointerDown={(e) => handleDragStart(e, "badge-wm-ball")}
+                onPointerUp={(e) => handleDragEnd(e, "badge-wm-ball")}
+                className="absolute w-[64px] h-[64px] md:w-[72px] md:h-[72px] cursor-grab active:cursor-grabbing select-none z-20 touch-none left-1/2 bottom-[-60px] md:bottom-[-80px] -translate-x-1/2 translate-y-1/2"
+              >
+                {/* Pulsing indicator & tooltip helper for the ball to invite mouse touch */}
+                {mode === "ordnung" && (
+                  <>
+                    <div className="absolute inset-0 rounded-full bg-[#00F0FF]/25 animate-ping pointer-events-none -z-10" />
+                    <div className="absolute inset-[-4px] rounded-full border border-[#00F0FF]/30 animate-pulse pointer-events-none -z-10" />
+                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded bg-slate-950/90 border border-[#00F0FF]/30 text-[9px] font-mono text-[#00F0FF] whitespace-nowrap tracking-wider pointer-events-none shadow-md uppercase flex items-center gap-1 select-none animate-bounce">
+                      <span>⚽</span>
+                      {locale === "fa" ? "شوت کن!" : locale === "de" ? "Kick mich!" : "Kick me!"}
+                    </div>
+                  </>
+                )}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/wm_ball.png"
+                  alt="WM Ball"
+                  className="w-full h-full object-contain pointer-events-none"
+                />
+              </div>
+
+              {/* Trophy */}
+              <div
+                id="badge-wm-trophy"
+                ref={(el) => { refsMap.current["badge-wm-trophy"] = el; }}
+                className="absolute w-[80px] h-[100px] md:w-[90px] md:h-[110px] select-none z-20 touch-none pointer-events-none right-[-70px] md:right-[-90px] top-[10%] -translate-y-1/2"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/wm_trophy.png"
+                  alt="WM Trophy"
+                  className="w-full h-full object-contain pointer-events-none"
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -950,58 +1015,22 @@ export const PhysicsPlayground: React.FC = () => {
       {techBadges.map((badge) => {
         const anchor = badgeLayoutAnchors[badge.id] || { xPct: 0.5, yPct: 0.5 };
         const xPct = isRtl ? 1 - anchor.xPct : anchor.xPct;
-        
-        if ('imageUrl' in badge) {
-          const isBall = badge.id === "badge-wm-ball";
-          const dimsClass = isBall ? "w-[64px] h-[64px] md:w-[72px] md:h-[72px]" : "w-[80px] h-[100px] md:w-[90px] md:h-[110px]";
-          return (
-            <div
-              key={badge.id}
-              id={badge.id}
-              ref={(el) => { refsMap.current[badge.id] = el; }}
-              onPointerDown={(e) => handleDragStart(e, badge.id)}
-              onPointerUp={(e) => handleDragEnd(e, badge.id)}
-              style={{
-                left: `${xPct * 100}%`,
-                top: `${anchor.yPct * 100}%`,
-                transform: `translate(-50%, -50%)`,
-              }}
-              className={`absolute cursor-grab active:cursor-grabbing select-none z-20 touch-none ${dimsClass}`}
-            >
-              {/* Pulsing indicator & tooltip helper for the ball to invite mouse touch */}
-              {isBall && mode === "ordnung" && (
-                <>
-                  <div className="absolute inset-0 rounded-full bg-[#00F0FF]/25 animate-ping pointer-events-none -z-10" />
-                  <div className="absolute inset-[-4px] rounded-full border border-[#00F0FF]/30 animate-pulse pointer-events-none -z-10" />
-                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded bg-slate-950/90 border border-[#00F0FF]/30 text-[9px] font-mono text-[#00F0FF] whitespace-nowrap tracking-wider pointer-events-none shadow-md uppercase flex items-center gap-1 select-none animate-bounce">
-                    <span>⚽</span>
-                    {locale === "fa" ? "شوت کن!" : locale === "de" ? "Kick mich!" : "Kick me!"}
-                  </div>
-                </>
-              )}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={badge.imageUrl}
-                alt={badge.label}
-                className="w-full h-full object-contain pointer-events-none"
-              />
-            </div>
-          );
-        }
 
         return (
           <div
             key={badge.id}
             id={badge.id}
             ref={(el) => { refsMap.current[badge.id] = el; }}
-            onPointerDown={(e) => handleDragStart(e, badge.id)}
-            onPointerUp={(e) => handleDragEnd(e, badge.id)}
+            onPointerDown={wmMode ? undefined : (e) => handleDragStart(e, badge.id)}
+            onPointerUp={wmMode ? undefined : (e) => handleDragEnd(e, badge.id)}
             style={{
               left: `${xPct * 100}%`,
               top: `${anchor.yPct * 100}%`,
               transform: `translate(-50%, -50%)`,
             }}
-            className="absolute px-3.5 py-1.5 rounded-full glass-panel border border-[#00F0FF]/15 text-xs font-mono font-bold text-[#00F0FF] shadow-[0_0_15px_rgba(0,240,255,0.06)] cursor-grab active:cursor-grabbing select-none hover:border-[#00F0FF]/40 transition-colors z-20 touch-none"
+            className={`absolute px-3.5 py-1.5 rounded-full glass-panel border border-[#00F0FF]/15 text-xs font-mono font-bold text-[#00F0FF] shadow-[0_0_15px_rgba(0,240,255,0.06)] select-none transition-colors z-20 touch-none ${
+              wmMode ? "pointer-events-none" : "cursor-grab active:cursor-grabbing hover:border-[#00F0FF]/40"
+            }`}
           >
             {badge.label}
           </div>
