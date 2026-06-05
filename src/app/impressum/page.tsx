@@ -127,14 +127,14 @@ export default function Impressum() {
 
       {/* Floating Navbar */}
       <header className="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl">
-        <nav className="glass-panel rounded-full px-4 sm:px-6 py-3 flex justify-between items-center shadow-lg border border-white/5 backdrop-blur-md">
+        <nav className="glass-panel rounded-full px-4 sm:px-6 py-3 flex justify-between items-center shadow-lg border border-zinc-800/80 backdrop-blur-md">
           <Link href="/" className="cursor-pointer group flex items-center gap-2">
             <Logo size={24} />
           </Link>
           
           <Link
             href="/"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#00F0FF]/15 hover:bg-[#00F0FF]/25 border border-[#00F0FF]/25 text-[10px] sm:text-xs font-bold text-[#00F0FF] uppercase tracking-wider transition-all duration-300 active:scale-95"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-100/10 hover:bg-amber-100/20 border border-amber-100/25 text-[10px] sm:text-xs font-bold text-amber-100 uppercase tracking-wider transition-all duration-300 active:scale-95"
           >
             <ArrowLeft className={`w-3.5 h-3.5 ${isRtl ? "rotate-180" : ""}`} />
             {t.backButton}
@@ -157,27 +157,27 @@ export default function Impressum() {
             <h1 className="text-4xl md:text-5xl font-black font-display text-white tracking-tight leading-tight">
               {t.title}
             </h1>
-            <p className="text-slate-400 text-sm md:text-base mt-2 font-mono uppercase tracking-wider">
+            <p className="text-zinc-400 text-sm md:text-base mt-2 font-mono uppercase tracking-wider">
               {t.subtitle}
             </p>
           </motion.div>
-
+ 
           {/* Legal Card Content */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="glass-panel p-6 sm:p-10 rounded-2xl flex flex-col gap-8 shadow-2xl border border-white/5"
+            className="glass-panel p-6 sm:p-10 rounded-2xl flex flex-col gap-8 shadow-2xl border border-zinc-800/80"
           >
             {t.sections.map((section, idx) => (
               <div 
                 key={idx} 
-                className={`flex flex-col gap-3 pb-8 last:pb-0 border-b border-slate-900/50 last:border-0 ${isRtl ? "text-right" : "text-left"}`}
+                className={`flex flex-col gap-3 pb-8 last:pb-0 border-b border-zinc-900/50 last:border-0 ${isRtl ? "text-right" : "text-left"}`}
               >
-                <h2 className="text-lg sm:text-xl font-bold font-display text-[#00F0FF]">
+                <h2 className="text-lg sm:text-xl font-bold font-display text-[#E6C17A]">
                   {section.title}
                 </h2>
-                <div className="text-slate-300 text-sm leading-relaxed whitespace-pre-line font-sans">
+                <div className="text-zinc-300 text-sm leading-relaxed whitespace-pre-line font-sans">
                   {section.content}
                 </div>
               </div>
