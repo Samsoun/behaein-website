@@ -114,9 +114,9 @@ export const BentoGrid: React.FC = () => {
   // Mobile Simulator demo steps
   const [simulatorStep, setSimulatorStep] = useState(0);
   const steps = [
-    { title: t.step1Title, info: t.step1Info, icon: <Lock className="w-4 h-4 text-[#00F0FF]" /> },
-    { title: t.step2Title, info: t.step2Info, icon: <Smartphone className="w-4 h-4 text-[#00F0FF]" /> },
-    { title: t.step3Title, info: t.step3Info, icon: <Zap className="w-4 h-4 text-[#00F0FF]" /> }
+    { title: t.step1Title, info: t.step1Info, icon: <Lock className="w-4 h-4 text-[#E6C17A]" /> },
+    { title: t.step2Title, info: t.step2Info, icon: <Smartphone className="w-4 h-4 text-[#E6C17A]" /> },
+    { title: t.step3Title, info: t.step3Info, icon: <Zap className="w-4 h-4 text-[#E6C17A]" /> }
   ];
 
   useEffect(() => {
@@ -192,12 +192,12 @@ export const BentoGrid: React.FC = () => {
         <div className="flex flex-col justify-between h-full z-10 relative">
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                <Code2 className="w-6 h-6 text-emerald-400" />
+              <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800">
+                <Code2 className="w-6 h-6 text-[#E6C17A]" />
               </div>
-              <h3 className="text-xl font-bold font-display text-white">{t.frontendTitle}</h3>
+              <h3 className="text-xl font-bold font-display text-zinc-50">{t.frontendTitle}</h3>
             </div>
-            <p className="text-[#94A3B8] leading-relaxed max-w-lg text-sm md:text-base">
+            <p className="text-zinc-400 leading-relaxed max-w-lg text-sm md:text-base">
               {t.frontendDesc}
             </p>
           </div>
@@ -205,17 +205,17 @@ export const BentoGrid: React.FC = () => {
           {/* Floating tech chips */}
           <div className="flex flex-wrap gap-2.5 mt-6">
             {[
-              { name: "Next.js 16", level: t.levelExpert, color: "bg-white/10 text-white border-white/20" },
-              { name: "React 19", level: t.levelExpert, color: "bg-cyan-500/10 text-[#00F0FF] border-[#00F0FF]/25" },
-              { name: "TypeScript", level: t.levelHighlySkilled, color: "bg-blue-500/10 text-blue-400 border-blue-500/25" },
-              { name: "Tailwind CSS v4", level: t.levelExpert, color: "bg-teal-500/10 text-teal-400 border-teal-500/25" },
-              { name: "Framer Motion", level: t.levelFluid, color: "bg-purple-500/10 text-purple-400 border-purple-500/25" },
-              { name: "HTML5/CSS3", level: t.levelSemantic, color: "bg-amber-500/10 text-amber-400 border-amber-500/25" },
+              { name: "Next.js 16" },
+              { name: "React 19" },
+              { name: "TypeScript" },
+              { name: "Tailwind CSS v4" },
+              { name: "Framer Motion" },
+              { name: "HTML5/CSS3" },
             ].map((tech, idx) => (
               <motion.div
                 key={idx}
                 whileHover={{ scale: 1.06, y: -2 }}
-                className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 cursor-default transition-colors ${tech.color}`}
+                className="px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 cursor-default transition-colors bg-zinc-900/80 border-zinc-800 text-amber-100/90 hover:border-[#E6C17A]/30"
               >
                 <div className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
                 {tech.name}
@@ -226,7 +226,7 @@ export const BentoGrid: React.FC = () => {
 
         {/* Abstract background mesh */}
         <div className="absolute right-0 bottom-0 top-0 w-1/3 opacity-15 pointer-events-none hidden md:block">
-          <svg className="w-full h-full text-[#00F0FF]" viewBox="0 0 100 100" fill="none">
+          <svg className="w-full h-full text-[#E6C17A]/40" viewBox="0 0 100 100" fill="none">
             <path d="M10,90 Q50,10 90,90" stroke="currentColor" strokeWidth="0.5" />
             <path d="M10,70 Q50,30 90,70" stroke="currentColor" strokeWidth="0.5" />
             <path d="M10,50 Q50,50 90,50" stroke="currentColor" strokeWidth="0.5" />
@@ -242,24 +242,24 @@ export const BentoGrid: React.FC = () => {
         <div className="flex flex-col justify-between h-full">
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2.5 rounded-lg bg-sky-500/10 border border-sky-500/20">
-                <Smartphone className="w-6 h-6 text-sky-400" />
+              <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800">
+                <Smartphone className="w-6 h-6 text-[#E6C17A]" />
               </div>
-              <h3 className="text-xl font-bold font-display text-white">{t.mobileTitle}</h3>
+              <h3 className="text-xl font-bold font-display text-zinc-50">{t.mobileTitle}</h3>
             </div>
-            <p className="text-[#94A3B8] text-sm leading-relaxed">
+            <p className="text-zinc-400 text-sm leading-relaxed">
               {t.mobileDesc}
             </p>
           </div>
 
           {/* Mini Interactive Simulator Screen */}
-          <div className="mt-4 p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 relative h-[120px] overflow-hidden">
+          <div className="mt-4 p-3.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80 relative h-[120px] overflow-hidden">
             <div className="absolute top-2 right-3 flex gap-1">
               <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
               <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
               <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
             </div>
-            <div className="text-[10px] text-slate-500 font-mono mb-2">expo-simulator://barande-app</div>
+            <div className="text-[10px] text-zinc-500 font-mono mb-2">expo-simulator://barande-app</div>
             
             <AnimatePresence mode="wait">
               <motion.div
@@ -270,18 +270,18 @@ export const BentoGrid: React.FC = () => {
                 transition={{ duration: 0.3 }}
                 className="flex items-start gap-2.5"
               >
-                <div className="p-1.5 rounded bg-[#00F0FF]/10 border border-[#00F0FF]/25 mt-0.5">
+                <div className="p-1.5 rounded bg-[#E6C17A]/10 border border-[#E6C17A]/25 mt-0.5">
                   {steps[simulatorStep].icon}
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-white">{steps[simulatorStep].title}</h4>
-                  <p className="text-[10px] text-[#94A3B8]">{steps[simulatorStep].info}</p>
+                  <h4 className="text-xs font-bold text-zinc-50">{steps[simulatorStep].title}</h4>
+                  <p className="text-[10px] text-zinc-400">{steps[simulatorStep].info}</p>
                 </div>
               </motion.div>
             </AnimatePresence>
 
             {/* GPS coordinates trace overlay */}
-            <div className="absolute bottom-2 right-3 text-[9px] font-mono text-[#00F0FF]/50">
+            <div className="absolute bottom-2 right-3 text-[9px] font-mono text-[#E6C17A]/50">
               LAT: 52.5200° N | LON: 13.4050° E
             </div>
           </div>
@@ -293,26 +293,26 @@ export const BentoGrid: React.FC = () => {
         <div className="flex flex-col justify-between h-full">
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2.5 rounded-lg bg-orange-500/10 border border-orange-500/20">
-                <Database className="w-6 h-6 text-orange-400" />
+              <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800">
+                <Database className="w-6 h-6 text-[#E6C17A]" />
               </div>
-              <h3 className="text-xl font-bold font-display text-white">{t.backendTitle}</h3>
+              <h3 className="text-xl font-bold font-display text-zinc-50">{t.backendTitle}</h3>
             </div>
-            <p className="text-[#94A3B8] text-sm leading-relaxed">
+            <p className="text-zinc-400 text-sm leading-relaxed">
               {t.backendDesc}
             </p>
           </div>
 
           {/* Caching/Latency SVG Graph */}
-          <div className="mt-4 p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 relative h-[120px] flex flex-col justify-between">
+          <div className="mt-4 p-3 rounded-xl bg-zinc-950/60 border border-zinc-800/80 relative h-[120px] flex flex-col justify-between">
             <div className="flex justify-between items-center text-[10px]">
-              <span className="font-mono text-slate-500">{t.queryCache}</span>
+              <span className="font-mono text-zinc-500">{t.queryCache}</span>
               <motion.span 
                 key={latencyValue}
                 initial={{ opacity: 0, y: -2 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={`flex items-center gap-1 font-mono font-semibold ${
-                  isCached ? "text-[#00F0FF]" : "text-orange-400"
+                  isCached ? "text-[#E6C17A]" : "text-white"
                 }`}
               >
                 <Cpu className="w-3 h-3" /> 
@@ -323,17 +323,17 @@ export const BentoGrid: React.FC = () => {
             {/* Futuristic Node connection graph */}
             <div className="flex justify-between items-center relative w-full h-[65px] px-6 mt-1">
               {/* Dash track path */}
-              <div className="absolute left-[40px] right-[40px] top-1/2 -translate-y-1/2 h-[2px] border-t-2 border-dashed border-slate-800/80 -z-10" />
+              <div className="absolute left-[40px] right-[40px] top-1/2 -translate-y-1/2 h-[2px] border-t-2 border-dashed border-zinc-800/80 -z-10" />
 
               {/* Glowing active query path overlay */}
               <div className="absolute left-[40px] right-[40px] top-1/2 -translate-y-1/2 h-[2px] -z-10 overflow-hidden">
                 <motion.div
                   initial={{ left: "-100%", right: "100%" }}
                   animate={
-                    packetState === "to-cache" ? { left: "0%", right: "50%", backgroundColor: "#00F0FF", opacity: 0.8 } :
-                    packetState === "cache-hit" ? { left: "0%", right: "50%", backgroundColor: "#00F0FF", opacity: 0.8 } :
-                    packetState === "to-db" ? { left: "0%", right: "0%", backgroundColor: "#f97316", opacity: 0.8 } :
-                    packetState === "db-hit" ? { left: "0%", right: "0%", backgroundColor: "#f97316", opacity: 0.8 } :
+                    packetState === "to-cache" ? { left: "0%", right: "50%", backgroundColor: "#E6C17A", opacity: 0.8 } :
+                    packetState === "cache-hit" ? { left: "0%", right: "50%", backgroundColor: "#E6C17A", opacity: 0.8 } :
+                    packetState === "to-db" ? { left: "0%", right: "0%", backgroundColor: "#ffffff", opacity: 0.8 } :
+                    packetState === "db-hit" ? { left: "0%", right: "0%", backgroundColor: "#ffffff", opacity: 0.8 } :
                     { left: "-100%", right: "100%", opacity: 0 }
                   }
                   transition={{ duration: 0.4 }}
@@ -343,12 +343,12 @@ export const BentoGrid: React.FC = () => {
 
               {/* CLIENT NODE */}
               <div className="flex flex-col items-center gap-1 relative">
-                <div className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-700/80 flex items-center justify-center relative shadow-inner">
-                  <Smartphone className="w-4 h-4 text-slate-400" />
+                <div className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center relative shadow-inner">
+                  <Smartphone className="w-4 h-4 text-zinc-400" />
                   {/* Green client signal status */}
-                  <span className="absolute top-0 right-0 w-2 h-2 bg-emerald-500 rounded-full border border-slate-950 animate-pulse" />
+                  <span className="absolute top-0 right-0 w-2 h-2 bg-emerald-500 rounded-full border border-zinc-950 animate-pulse" />
                 </div>
-                <span className="text-[8px] font-mono text-slate-500 font-bold">{t.clientLabel}</span>
+                <span className="text-[8px] font-mono text-zinc-500 font-bold">{t.clientLabel}</span>
               </div>
 
               {/* QUERY CACHE NODE */}
@@ -356,11 +356,11 @@ export const BentoGrid: React.FC = () => {
                 <motion.div 
                   animate={packetState === "cache-hit" ? { scale: [1, 1.15, 1] } : {}}
                   transition={{ duration: 0.3 }}
-                  className={`w-8 h-8 rounded-full bg-slate-900 border ${
-                    packetState === "cache-hit" ? "border-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.3)]" : "border-slate-800"
+                  className={`w-8 h-8 rounded-full bg-zinc-900 border ${
+                    packetState === "cache-hit" ? "border-[#E6C17A] shadow-[0_0_8px_rgba(230,193,122,0.3)]" : "border-zinc-800"
                   } flex items-center justify-center relative shadow-inner`}
                 >
-                  <Cpu className={`w-4 h-4 ${packetState === "cache-hit" ? "text-cyan-400 animate-pulse" : "text-cyan-600"}`} />
+                  <Cpu className={`w-4 h-4 ${packetState === "cache-hit" ? "text-[#E6C17A] animate-pulse" : "text-zinc-600"}`} />
                   
                   {/* Cache Shield Glow Pulse */}
                   <AnimatePresence>
@@ -370,12 +370,12 @@ export const BentoGrid: React.FC = () => {
                         animate={{ scale: 2.2, opacity: 0 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.5, ease: "easeOut" }}
-                        className="absolute inset-0 rounded-full border border-cyan-400 pointer-events-none"
+                        className="absolute inset-0 rounded-full border border-[#E6C17A] pointer-events-none"
                       />
                     )}
                   </AnimatePresence>
                 </motion.div>
-                <span className={`text-[8px] font-mono font-bold ${packetState === "cache-hit" ? "text-cyan-400" : "text-slate-500"}`}>
+                <span className={`text-[8px] font-mono font-bold ${packetState === "cache-hit" ? "text-[#E6C17A]" : "text-zinc-500"}`}>
                   {t.cacheLabel}
                 </span>
               </div>
@@ -385,11 +385,11 @@ export const BentoGrid: React.FC = () => {
                 <motion.div 
                   animate={packetState === "db-hit" ? { scale: [1, 1.15, 1] } : {}}
                   transition={{ duration: 0.3 }}
-                  className={`w-8 h-8 rounded-lg bg-slate-900 border ${
-                    packetState === "db-hit" ? "border-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.3)]" : "border-slate-800"
+                  className={`w-8 h-8 rounded-lg bg-zinc-900 border ${
+                    packetState === "db-hit" ? "border-white shadow-[0_0_8px_rgba(255,255,255,0.3)]" : "border-zinc-800"
                   } flex items-center justify-center relative shadow-inner`}
                 >
-                  <Database className={`w-4 h-4 ${packetState === "db-hit" ? "text-orange-400 animate-bounce" : "text-orange-600"}`} />
+                  <Database className={`w-4 h-4 ${packetState === "db-hit" ? "text-white animate-bounce" : "text-zinc-600"}`} />
                   
                   {/* Database Glow Pulse */}
                   <AnimatePresence>
@@ -399,12 +399,12 @@ export const BentoGrid: React.FC = () => {
                         animate={{ scale: 2.2, opacity: 0 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.5, ease: "easeOut" }}
-                        className="absolute inset-0 rounded-lg border border-orange-500 pointer-events-none"
+                        className="absolute inset-0 rounded-lg border border-white pointer-events-none"
                       />
                     )}
                   </AnimatePresence>
                 </motion.div>
-                <span className={`text-[8px] font-mono font-bold ${packetState === "db-hit" ? "text-orange-400" : "text-slate-500"}`}>
+                <span className={`text-[8px] font-mono font-bold ${packetState === "db-hit" ? "text-white" : "text-zinc-500"}`}>
                   {t.databaseLabel}
                 </span>
               </div>
@@ -413,11 +413,11 @@ export const BentoGrid: React.FC = () => {
               <div className="absolute left-[40px] right-[40px] top-1/2 -translate-y-1/2 h-[2px] -z-5 pointer-events-none">
                 <motion.div
                   variants={{
-                    idle: { left: "0%", scale: 0, opacity: 0, backgroundColor: "#00F0FF", boxShadow: "0 0 8px #00F0FF" },
-                    "to-cache": { left: "50%", scale: 1.2, opacity: 1, backgroundColor: "#00F0FF", boxShadow: "0 0 12px #00F0FF" },
-                    "cache-hit": { left: "0%", scale: 1, opacity: 1, backgroundColor: "#00F0FF", boxShadow: "0 0 8px #00F0FF" },
-                    "to-db": { left: "100%", scale: 1.2, opacity: 1, backgroundColor: "#f97316", boxShadow: "0 0 12px #f97316" },
-                    "db-hit": { left: "0%", scale: 1, opacity: 1, backgroundColor: "#f97316", boxShadow: "0 0 8px #f97316" }
+                    idle: { left: "0%", scale: 0, opacity: 0, backgroundColor: "#E6C17A", boxShadow: "0 0 8px #E6C17A" },
+                    "to-cache": { left: "50%", scale: 1.2, opacity: 1, backgroundColor: "#E6C17A", boxShadow: "0 0 12px #E6C17A" },
+                    "cache-hit": { left: "0%", scale: 1, opacity: 1, backgroundColor: "#E6C17A", boxShadow: "0 0 8px #E6C17A" },
+                    "to-db": { left: "100%", scale: 1.2, opacity: 1, backgroundColor: "#ffffff", boxShadow: "0 0 12px #ffffff" },
+                    "db-hit": { left: "0%", scale: 1, opacity: 1, backgroundColor: "#ffffff", boxShadow: "0 0 8px #ffffff" }
                   }}
                   animate={packetState}
                   transition={
@@ -441,28 +441,28 @@ export const BentoGrid: React.FC = () => {
           <div className="flex-1 flex flex-col justify-between h-full">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
-                  <Wrench className="w-6 h-6 text-indigo-400" />
+                <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800">
+                  <Wrench className="w-6 h-6 text-[#E6C17A]" />
                 </div>
-                <h3 className="text-xl font-bold font-display text-white">{t.toolsTitle}</h3>
+                <h3 className="text-xl font-bold font-display text-zinc-50">{t.toolsTitle}</h3>
               </div>
-              <p className="text-[#94A3B8] leading-relaxed text-sm md:text-base">
+              <p className="text-zinc-400 leading-relaxed text-sm md:text-base">
                 {t.toolsDesc}
               </p>
             </div>
 
             <div className="flex gap-4 mt-4">
-              <div className="flex items-center gap-1.5 text-xs text-[#94A3B8]">
-                <Globe className="w-4 h-4 text-emerald-400" /> {t.seoStructured}
+              <div className="flex items-center gap-1.5 text-xs text-zinc-400">
+                <Globe className="w-4 h-4 text-[#E6C17A]" /> {t.seoStructured}
               </div>
-              <div className="flex items-center gap-1.5 text-xs text-[#94A3B8]">
-                <Cpu className="w-4 h-4 text-cyan-400" /> {t.cicdPipelines}
+              <div className="flex items-center gap-1.5 text-xs text-zinc-400">
+                <Cpu className="w-4 h-4 text-white" /> {t.cicdPipelines}
               </div>
             </div>
           </div>
 
           {/* Interactive circular SEO metric visualization */}
-          <div className="w-[180px] h-[180px] flex-shrink-0 mx-auto md:my-auto rounded-full bg-slate-950/40 border border-slate-800/80 flex items-center justify-center relative shadow-inner">
+          <div className="w-[180px] h-[180px] flex-shrink-0 mx-auto md:my-auto rounded-full bg-zinc-950/40 border border-zinc-800/80 flex items-center justify-center relative shadow-inner">
             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
               <circle
                 cx="50"
@@ -476,7 +476,7 @@ export const BentoGrid: React.FC = () => {
                 cx="50"
                 cy="50"
                 r="40"
-                stroke="url(#cyanGlowGrad)"
+                stroke="url(#goldGlowGrad)"
                 strokeWidth="6"
                 fill="none"
                 strokeDasharray="251.2"
@@ -486,15 +486,15 @@ export const BentoGrid: React.FC = () => {
                 viewport={{ once: true }}
               />
               <defs>
-                <linearGradient id="cyanGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#00F0FF" />
-                  <stop offset="100%" stopColor="#0ea5e9" />
+                <linearGradient id="goldGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="100%" stopColor="#E6C17A" />
                 </linearGradient>
               </defs>
             </svg>
             <div className="absolute flex flex-col items-center">
               <span className="text-3xl font-black font-display text-white tracking-tighter">100</span>
-              <span className="text-[10px] uppercase font-bold text-[#00F0FF] tracking-wider flex items-center gap-0.5">
+              <span className="text-[10px] uppercase font-bold text-[#E6C17A] tracking-wider flex items-center gap-0.5">
                 <Search className="w-3 h-3" /> {t.seoScore}
               </span>
             </div>

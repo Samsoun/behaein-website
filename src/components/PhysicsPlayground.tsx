@@ -969,7 +969,7 @@ export const PhysicsPlayground: React.FC = () => {
 
   useEffect(() => {
     if (shootState === "goal") {
-      const colors = ["#00F0FF", "#818CF8", "#F472B6", "#FBBF24", "#34D399"];
+      const colors = ["#E6C17A", "#818CF8", "#F472B6", "#FBBF24", "#34D399"];
       const newConfetti = Array.from({ length: 80 }).map((_, i) => ({
         id: i,
         x: Math.random() * 100,
@@ -990,6 +990,7 @@ export const PhysicsPlayground: React.FC = () => {
       ref={containerRef}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
+      dir={isRtl ? "rtl" : "ltr"}
       className="relative w-full min-h-[90vh] flex flex-col justify-center items-center overflow-hidden [perspective:1200px]"
     >
       {/* Aiming Line SVG Overlay */}
@@ -1000,8 +1001,8 @@ export const PhysicsPlayground: React.FC = () => {
       >
         <defs>
           <linearGradient id="aim-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#00F0FF" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="#818CF8" stopOpacity="0.15" />
+            <stop offset="0%" stopColor="#E6C17A" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="#ffffff" stopOpacity="0.15" />
           </linearGradient>
         </defs>
         <line
@@ -1020,8 +1021,8 @@ export const PhysicsPlayground: React.FC = () => {
           cx="0"
           cy="0"
           r="6.5"
-          fill="#00F0FF"
-          style={{ filter: "drop-shadow(0 0 8px #00F0FF)" }}
+          fill="#E6C17A"
+          style={{ filter: "drop-shadow(0 0 8px #E6C17A)" }}
         />
       </svg>
 
@@ -1118,8 +1119,8 @@ export const PhysicsPlayground: React.FC = () => {
             ref={(el) => { refsMap.current["tagline"] = el; }}
             onPointerDown={wmMode ? undefined : (e) => handleDragStart(e, "tagline")}
             onPointerUp={wmMode ? undefined : (e) => handleDragEnd(e, "tagline")}
-            className={`inline-block px-3.5 py-1.5 rounded-full bg-[#00F0FF]/5 border border-[#00F0FF]/15 text-xs font-mono font-bold tracking-widest uppercase text-[#00F0FF] transition-colors select-none mb-6 touch-none ${
-              wmMode ? "pointer-events-none" : "cursor-grab active:cursor-grabbing hover:border-[#00F0FF]/40"
+            className={`inline-block px-3.5 py-1.5 rounded-full bg-zinc-900/80 border border-zinc-800 text-xs font-mono font-bold tracking-widest uppercase text-amber-100/90 transition-colors select-none mb-6 touch-none ${
+              wmMode ? "pointer-events-none" : "cursor-grab active:cursor-grabbing hover:border-zinc-700/80"
             }`}
           >
             {t("heroTagline")}
@@ -1129,23 +1130,26 @@ export const PhysicsPlayground: React.FC = () => {
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-display tracking-tight text-white leading-[1.12] mb-6 flex flex-wrap justify-center lg:justify-start gap-x-3 gap-y-1 sm:gap-y-2 select-none touch-none">
             {headlineWordObjects.map((word) => {
               const isHighlight = word.type === "highlight";
+              const showBreak = locale === "fa" && word.id === "word-highlight-0";
               return (
-                <span
-                  key={word.id}
-                  id={word.id}
-                  ref={(el) => { refsMap.current[word.id] = el; }}
-                  onPointerDown={wmMode ? undefined : (e) => handleDragStart(e, word.id)}
-                  onPointerUp={wmMode ? undefined : (e) => handleDragEnd(e, word.id)}
-                  className={`inline-block select-none ${
-                    isHighlight
-                      ? "text-transparent bg-clip-text bg-gradient-to-r from-[#00F0FF] to-indigo-400 font-extrabold"
-                      : "text-white font-black"
-                  } ${
-                    wmMode ? "pointer-events-none" : "cursor-grab active:cursor-grabbing hover:text-[#00F0FF] transition-colors duration-150"
-                  }`}
-                >
-                  {word.text}
-                </span>
+                <React.Fragment key={word.id}>
+                  {showBreak && <div className="w-full h-0 pointer-events-none" />}
+                  <span
+                    id={word.id}
+                    ref={(el) => { refsMap.current[word.id] = el; }}
+                    onPointerDown={wmMode ? undefined : (e) => handleDragStart(e, word.id)}
+                    onPointerUp={wmMode ? undefined : (e) => handleDragEnd(e, word.id)}
+                    className={`inline-block select-none ${
+                      isHighlight
+                        ? "text-transparent bg-clip-text bg-gradient-to-r from-white via-amber-100 to-[#E6C17A] font-extrabold"
+                        : "text-white font-black"
+                    } ${
+                      wmMode ? "pointer-events-none" : "cursor-grab active:cursor-grabbing hover:text-[#E6C17A] transition-colors duration-150"
+                    }`}
+                  >
+                    {word.text}
+                  </span>
+                </React.Fragment>
               );
             })}
           </h1>
@@ -1156,7 +1160,7 @@ export const PhysicsPlayground: React.FC = () => {
             ref={(el) => { refsMap.current["subline"] = el; }}
             onPointerDown={wmMode ? undefined : (e) => handleDragStart(e, "subline")}
             onPointerUp={wmMode ? undefined : (e) => handleDragEnd(e, "subline")}
-            className={`text-slate-400 text-sm md:text-base leading-relaxed max-w-xl select-none mb-8 touch-none ${
+            className={`text-zinc-400 text-sm md:text-base leading-relaxed max-w-xl select-none mb-8 touch-none ${
               wmMode ? "pointer-events-none" : "cursor-grab active:cursor-grabbing hover:text-slate-300 transition-colors"
             }`}
           >
@@ -1169,7 +1173,7 @@ export const PhysicsPlayground: React.FC = () => {
               onMouseEnter={() => setIsHoveringCTA(true)}
               onMouseLeave={() => setIsHoveringCTA(false)}
               onClick={() => handleScroll("projects")}
-              className="px-7 py-3.5 rounded-lg bg-[#00F0FF] hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(0,240,255,0.25)] hover:shadow-[0_0_30px_rgba(0,240,255,0.4)] cursor-pointer active:scale-95 z-30"
+              className="px-7 py-3.5 rounded-lg bg-amber-100 hover:bg-white text-zinc-950 font-black text-xs uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(230,193,122,0.25)] hover:shadow-[0_0_30px_rgba(230,193,122,0.4)] cursor-pointer active:scale-95 z-30"
             >
               {t("heroCtaWork")}
             </button>
@@ -1177,7 +1181,7 @@ export const PhysicsPlayground: React.FC = () => {
               onMouseEnter={() => setIsHoveringCTA(true)}
               onMouseLeave={() => setIsHoveringCTA(false)}
               onClick={() => handleScroll("contact")}
-              className="px-7 py-3.5 rounded-lg bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer active:scale-95 z-30"
+              className="px-7 py-3.5 rounded-lg bg-zinc-900/30 border border-zinc-700 hover:border-amber-100/60 hover:bg-zinc-800/40 text-amber-100 font-bold text-xs uppercase tracking-wider transition-all duration-300 ease-in-out cursor-pointer active:scale-95 z-30"
             >
               {t("heroCtaBuild")}
             </button>
@@ -1211,7 +1215,7 @@ export const PhysicsPlayground: React.FC = () => {
             onPointerUp={wmMode ? undefined : (e) => handleDragEnd(e, "portrait-card")}
             className={`relative select-none touch-none transition-[width,height] duration-300 ${
               wmMode
-                ? "w-[340px] h-[250px] md:w-[460px] md:h-[345px] filter drop-shadow-[0_0_25px_rgba(0,240,255,0.2)] pointer-events-none"
+                ? "w-[340px] h-[250px] md:w-[460px] md:h-[345px] filter drop-shadow-[0_0_25px_rgba(230,193,122,0.2)] pointer-events-none"
                 : "w-[280px] h-[360px] md:w-[320px] md:h-[400px] rounded-3xl overflow-hidden shadow-2xl cursor-grab active:cursor-grabbing"
             }`}
           >
@@ -1224,17 +1228,17 @@ export const PhysicsPlayground: React.FC = () => {
                   alt="WM Goal"
                   className={`w-full h-full object-contain transition-all duration-300 ${
                     shootState === "goal"
-                      ? "filter drop-shadow-[0_0_35px_rgba(0,240,255,0.55)] scale-[1.01]"
-                      : "filter drop-shadow-[0_0_20px_rgba(0,240,255,0.25)]"
+                      ? "filter drop-shadow-[0_0_35px_rgba(230,193,122,0.55)] scale-[1.01]"
+                      : "filter drop-shadow-[0_0_20px_rgba(230,193,122,0.25)]"
                   }`}
                 />
                 {/* Goal post overlay indicator lights */}
-                <div className="absolute top-[8%] left-[7%] w-1.5 h-1.5 rounded-full bg-[#00F0FF] animate-pulse shadow-[0_0_8px_#00F0FF]" />
-                <div className="absolute top-[8%] right-[7%] w-1.5 h-1.5 rounded-full bg-[#00F0FF] animate-pulse shadow-[0_0_8px_#00F0FF]" />
+                <div className="absolute top-[8%] left-[7%] w-1.5 h-1.5 rounded-full bg-[#E6C17A] animate-pulse shadow-[0_0_8px_#E6C17A]" />
+                <div className="absolute top-[8%] right-[7%] w-1.5 h-1.5 rounded-full bg-[#E6C17A] animate-pulse shadow-[0_0_8px_#E6C17A]" />
               </div>
             ) : (
               /* Card Content Shell (Portrait Card) */
-              <div className="w-full h-full rounded-3xl border border-[#00F0FF]/15 bg-slate-950/40 backdrop-blur-md p-4 relative flex flex-col items-center justify-center pointer-events-none">
+              <div className="w-full h-full rounded-3xl border border-[#E6C17A]/15 bg-slate-950/40 backdrop-blur-md p-4 relative flex flex-col items-center justify-center pointer-events-none">
                 {/* Image slot */}
                 <div className="w-full h-full rounded-2xl overflow-hidden relative border border-slate-800 bg-slate-900/50 flex flex-col items-center justify-center">
                   {imgExists ? (
@@ -1246,20 +1250,20 @@ export const PhysicsPlayground: React.FC = () => {
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
-                      <div className="absolute bottom-3 left-4 flex items-center gap-1.5 text-[10px] font-bold font-mono text-[#00F0FF] tracking-wider uppercase bg-slate-950/80 px-2 py-0.5 rounded border border-[#00F0FF]/20">
-                        <Sparkles className="w-3 h-3 text-[#00F0FF]" /> Samsoun Behaein
+                      <div className="absolute bottom-3 left-4 flex items-center gap-1.5 text-[10px] font-bold font-mono text-[#E6C17A] tracking-wider uppercase bg-slate-950/80 px-2 py-0.5 rounded border border-[#E6C17A]/20">
+                        <Sparkles className="w-3 h-3 text-[#E6C17A]" /> Samsoun Behaein
                       </div>
                     </>
                   ) : (
                     /* Fallback Mock Avatar */
                     <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 relative">
-                      <div className="w-24 h-24 rounded-full border border-[#00F0FF]/20 flex items-center justify-center relative mb-4 shadow-[0_0_20px_rgba(0,240,255,0.05)]">
-                        <div className="absolute inset-1 rounded-full border border-dashed border-[#00F0FF]/10 animate-spin-slow" />
-                        <User className="w-10 h-10 text-[#00F0FF]/60" />
+                      <div className="w-24 h-24 rounded-full border border-[#E6C17A]/20 flex items-center justify-center relative mb-4 shadow-[0_0_20px_rgba(230,193,122,0.05)]">
+                        <div className="absolute inset-1 rounded-full border border-dashed border-[#E6C17A]/10 animate-spin-slow" />
+                        <User className="w-10 h-10 text-[#E6C17A]/60" />
                       </div>
                       <h4 className="text-sm font-bold text-white uppercase tracking-wider font-display">Samsoun Behaein</h4>
-                      <p className="text-[10px] text-slate-500 mt-1 font-mono uppercase tracking-widest text-[#00F0FF]/80">CREATIVE TECHNOLOGIST</p>
-                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1 text-[8px] font-bold text-[#00F0FF]/60 uppercase font-mono bg-slate-950/50 px-2 py-0.5 rounded">
+                      <p className="text-[10px] text-slate-500 mt-1 font-mono uppercase tracking-widest text-[#E6C17A]/80">CREATIVE TECHNOLOGIST</p>
+                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1 text-[8px] font-bold text-[#E6C17A]/60 uppercase font-mono bg-slate-950/50 px-2 py-0.5 rounded">
                         <Cpu className="w-2.5 h-2.5" /> Core Simulator Active
                       </div>
                     </div>
@@ -1301,9 +1305,9 @@ export const PhysicsPlayground: React.FC = () => {
                   {/* Pulsing indicator & tooltip helper for the shoe */}
                   {mode === "ordnung" && (
                     <>
-                      <div className="absolute inset-0 rounded-full bg-[#00F0FF]/20 animate-ping pointer-events-none -z-10" />
-                      <div className="absolute inset-[-4px] rounded-full border border-[#00F0FF]/25 animate-pulse pointer-events-none -z-10" />
-                      <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded bg-slate-950/90 border border-[#00F0FF]/30 text-[9px] font-mono text-[#00F0FF] whitespace-nowrap tracking-wider pointer-events-none shadow-md uppercase flex items-center gap-1 select-none animate-bounce">
+                      <div className="absolute inset-0 rounded-full bg-[#E6C17A]/20 animate-ping pointer-events-none -z-10" />
+                      <div className="absolute inset-[-4px] rounded-full border border-[#E6C17A]/25 animate-pulse pointer-events-none -z-10" />
+                      <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded bg-slate-950/90 border border-[#E6C17A]/30 text-[9px] font-mono text-[#E6C17A] whitespace-nowrap tracking-wider pointer-events-none shadow-md uppercase flex items-center gap-1 select-none animate-bounce">
                         <span>👟</span>
                         {locale === "fa" ? "بکش و شوت کن!" : locale === "de" ? "Ziehen & Schießen!" : "Pull & Shoot!"}
                       </div>
@@ -1313,7 +1317,7 @@ export const PhysicsPlayground: React.FC = () => {
                   <img
                     src="/wm_shoe.png"
                     alt="WM Shoe"
-                    className="w-full h-full object-contain pointer-events-none filter drop-shadow-[0_0_15px_rgba(0,240,255,0.4)]"
+                    className="w-full h-full object-contain pointer-events-none filter drop-shadow-[0_0_15px_rgba(230,193,122,0.4)]"
                   />
                 </div>
               )}
@@ -1353,8 +1357,8 @@ export const PhysicsPlayground: React.FC = () => {
               top: `${anchor.yPct * 100}%`,
               transform: `translate(-50%, -50%)`,
             }}
-            className={`absolute px-3.5 py-1.5 rounded-full glass-panel border border-[#00F0FF]/15 text-xs font-mono font-bold text-[#00F0FF] shadow-[0_0_15px_rgba(0,240,255,0.06)] select-none transition-colors z-20 touch-none ${
-              wmMode ? "pointer-events-none" : "cursor-grab active:cursor-grabbing hover:border-[#00F0FF]/40"
+            className={`absolute px-3.5 py-1.5 rounded-full bg-zinc-900/80 border border-zinc-800 text-xs font-mono font-bold text-amber-100/90 shadow-[0_0_15px_rgba(230,193,122,0.06)] select-none transition-colors z-20 touch-none ${
+              wmMode ? "pointer-events-none" : "cursor-grab active:cursor-grabbing hover:border-zinc-700/80"
             }`}
           >
             {badge.label}
@@ -1369,7 +1373,7 @@ export const PhysicsPlayground: React.FC = () => {
           {/* Status Monitor */}
           <div className="flex flex-col text-[8px] md:text-[9px] font-mono text-slate-500 gap-0.5 tracking-wider select-none text-center md:text-start leading-none uppercase">
             <div>PLAYGROUND_ENGINE: <span className={mode === "chaos" ? "text-amber-500" : "text-emerald-500"}>{mode === "chaos" ? "CHAOS_DRIFT" : "GRID_LOCK"}</span></div>
-            <div>PERFORMANCE: <span className="text-[#00F0FF]">{engineStats.fps} FPS</span> | COLS: <span className="text-pink-500">{engineStats.collisions}</span></div>
+            <div>PERFORMANCE: <span className="text-[#E6C17A]">{engineStats.fps} FPS</span> | COLS: <span className="text-pink-500">{engineStats.collisions}</span></div>
           </div>
 
           {/* Interactive buttons */}
@@ -1380,7 +1384,7 @@ export const PhysicsPlayground: React.FC = () => {
               onClick={() => setWmMode(prev => !prev)}
               className={`px-2.5 py-1.5 rounded-lg border text-[10px] font-mono font-bold uppercase tracking-wider cursor-pointer active:scale-[0.97] transition-all flex items-center gap-1 ${
                 wmMode
-                  ? "border-indigo-500/30 bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20"
+                  ? "border-[#E6C17A]/30 bg-[#E6C17A]/10 text-amber-100 hover:bg-[#E6C17A]/20"
                   : "border-slate-800 bg-slate-900/50 text-slate-400 hover:bg-slate-800"
               }`}
             >

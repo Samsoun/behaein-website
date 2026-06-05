@@ -322,8 +322,8 @@ export const TechTicker: React.FC = () => {
             {/* Left Title Accent */}
             <div className="flex items-center gap-2.5 flex-shrink-0 pl-1 pr-3 border-r border-white/10 dark:border-white/5 rtl:border-r-0 rtl:border-l rtl:pl-3 rtl:pr-1">
               <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00F0FF] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00F0FF]"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E6C17A] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#E6C17A]"></span>
               </span>
               <span className="text-[10px] sm:text-xs font-mono font-black uppercase tracking-wider text-slate-400">
                 {barTitleText}
@@ -345,7 +345,7 @@ export const TechTicker: React.FC = () => {
                     <svg
                       role="img"
                       viewBox="0 0 24 24"
-                      className="w-5 h-5 sm:w-6 sm:h-6 transition-all duration-300 pointer-events-none filter drop-shadow-[0_0_8px_rgba(0,240,255,0)] group-hover:scale-115"
+                      className="w-5 h-5 sm:w-6 sm:h-6 transition-all duration-300 pointer-events-none filter drop-shadow-[0_0_8px_rgba(230,193,122,0)] group-hover:scale-115"
                       fill={hoveredLogo?.slug === logo.slug ? logo.color : "currentColor"}
                       style={{
                         color: "rgba(148, 163, 184, 0.75)",
@@ -364,7 +364,7 @@ export const TechTicker: React.FC = () => {
               onClick={handleToggleMinimize}
               title={closeTooltipText}
               aria-label={closeTooltipText}
-              className="flex-shrink-0 p-1.5 rounded-full bg-slate-900/30 hover:bg-[#00F0FF]/10 text-slate-400 hover:text-[#00F0FF] border border-white/5 hover:border-[#00F0FF]/20 transition-all duration-300 cursor-pointer active:scale-90"
+              className="flex-shrink-0 p-1.5 rounded-full bg-slate-900/30 hover:bg-[#E6C17A]/10 text-slate-400 hover:text-[#E6C17A] border border-white/5 hover:border-[#E6C17A]/20 transition-all duration-300 cursor-pointer active:scale-90"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="12" x2="6" y2="12" />
@@ -379,7 +379,7 @@ export const TechTicker: React.FC = () => {
                   animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
                   exit={{ opacity: 0, y: 10, x: "-50%", scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                  className="absolute bottom-[125%] left-1/2 -translate-x-1/2 w-[90vw] sm:w-[400px] p-4 rounded-xl glass-panel bg-slate-950/95 border border-[#00F0FF]/15 backdrop-blur-xl shadow-[0_20px_40px_rgba(0,0,0,0.6)] z-50 text-start pointer-events-none"
+                  className="absolute bottom-[125%] left-1/2 -translate-x-1/2 w-[90vw] sm:w-[400px] p-4 rounded-xl glass-panel bg-slate-950/95 border border-[#E6C17A]/15 backdrop-blur-xl shadow-[0_20px_40px_rgba(0,0,0,0.6)] z-50 text-start pointer-events-none"
                 >
                   {/* Glowing color border accent */}
                   <div
@@ -418,13 +418,13 @@ export const TechTicker: React.FC = () => {
             exit={{ opacity: 0, scale: 0.8, y: 50 }}
             transition={{ type: "spring", stiffness: 200, damping: 18 }}
             onClick={handleToggleMinimize}
-            className="fixed bottom-6 right-6 z-40 p-3 rounded-full glass-panel bg-slate-950/80 backdrop-blur-md cursor-pointer border border-[#00F0FF]/20 shadow-[0_0_15px_rgba(0,240,255,0.15)] hover:shadow-[0_0_25px_rgba(0,240,255,0.35)] transition-all duration-300 group flex items-center justify-center pointer-events-auto hover:scale-105 active:scale-95"
+            className="fixed bottom-6 right-6 z-40 p-3 rounded-full glass-panel bg-slate-950/80 backdrop-blur-md cursor-pointer border border-[#E6C17A]/20 shadow-[0_0_15px_rgba(230,193,122,0.15)] hover:shadow-[0_0_25px_rgba(230,193,122,0.35)] transition-all duration-300 group flex items-center justify-center pointer-events-auto hover:scale-105 active:scale-95"
             title={expandTooltipText}
           >
             <div className="relative flex items-center justify-center">
               {/* Stack visual icons pulsing */}
               <svg
-                className="w-5 h-5 text-[#00F0FF] group-hover:rotate-12 transition-transform duration-300"
+                className="w-5 h-5 text-[#E6C17A] group-hover:rotate-12 transition-transform duration-300"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -437,13 +437,13 @@ export const TechTicker: React.FC = () => {
                 <polyline points="2 12 12 17 22 12" />
               </svg>
               <span className="absolute -top-1 -right-1 flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00F0FF] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00F0FF]"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E6C17A] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#E6C17A]"></span>
               </span>
             </div>
             
             {/* Slide-out text label on hover */}
-            <span className="max-w-0 overflow-hidden group-hover:max-w-xs group-hover:ml-2.5 transition-all duration-500 ease-out text-[10px] font-mono font-bold tracking-widest text-[#00F0FF] uppercase whitespace-nowrap">
+            <span className="max-w-0 overflow-hidden group-hover:max-w-xs group-hover:ml-2.5 transition-all duration-500 ease-out text-[10px] font-mono font-bold tracking-widest text-[#E6C17A] uppercase whitespace-nowrap">
               Stack
             </span>
           </motion.div>
@@ -472,7 +472,7 @@ export const TechTicker: React.FC = () => {
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 220 }}
             dir={isRtl ? "rtl" : "ltr"}
-            className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl border-t border-[#00F0FF]/15 bg-slate-950/95 p-6 pb-10 shadow-[0_-15px_40px_rgba(0,0,0,0.8)] backdrop-blur-2xl text-start select-none"
+            className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl border-t border-[#E6C17A]/15 bg-slate-950/95 p-6 pb-10 shadow-[0_-15px_40px_rgba(0,0,0,0.8)] backdrop-blur-2xl text-start select-none"
           >
             {/* Swipe handle decoration */}
             <div className="mx-auto w-12 h-1 rounded-full bg-slate-800 mb-6" />
@@ -480,7 +480,7 @@ export const TechTicker: React.FC = () => {
             {/* Close Button */}
             <button
               onClick={() => setHoveredLogo(null)}
-              className="absolute top-4 right-4 p-2 rounded-full bg-slate-900/50 hover:bg-[#00F0FF]/10 text-slate-400 hover:text-white border border-white/5 transition-colors cursor-pointer"
+              className="absolute top-4 right-4 p-2 rounded-full bg-slate-900/50 hover:bg-[#E6C17A]/10 text-slate-400 hover:text-white border border-white/5 transition-colors cursor-pointer"
               aria-label="Close sheet"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -494,7 +494,7 @@ export const TechTicker: React.FC = () => {
               <div className="flex items-center gap-3.5 pt-1">
                 {/* Logo container with radial brand glow */}
                 <div className="p-3 rounded-2xl bg-white/5 border border-white/5 relative flex items-center justify-center">
-                  <svg role="img" viewBox="0 0 24 24" className="w-8 h-8 filter drop-shadow-[0_0_12px_rgba(0,240,255,0.4)]" fill={hoveredLogo.color}>
+                  <svg role="img" viewBox="0 0 24 24" className="w-8 h-8 filter drop-shadow-[0_0_12px_rgba(230,193,122,0.4)]" fill={hoveredLogo.color}>
                     <path d={hoveredLogo.path} />
                   </svg>
                   <div className="absolute inset-0 rounded-2xl opacity-10 blur-md" style={{ backgroundColor: hoveredLogo.color }} />

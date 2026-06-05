@@ -95,7 +95,7 @@ export const TiltCard: React.FC<TiltCardProps> = ({
             background: useTransform(
               [springGlowX, springGlowY],
               ([latestX, latestY]) =>
-                `radial-gradient(400px circle at ${latestX}px ${latestY}px, rgba(0, 240, 255, 0.12), transparent 80%)`
+                `radial-gradient(400px circle at ${latestX}px ${latestY}px, rgba(230, 193, 122, 0.12), transparent 80%)`
             ),
           }}
         />
@@ -104,10 +104,10 @@ export const TiltCard: React.FC<TiltCardProps> = ({
         <motion.div
           className="absolute inset-0 pointer-events-none rounded-2xl"
           style={{
-            border: "1px solid rgba(0, 240, 255, 0.08)",
+            border: "1px solid rgba(230, 193, 122, 0.08)",
             boxShadow: isHovered 
-              ? "inset 0 0 12px rgba(0, 240, 255, 0.05)" 
-              : "inset 0 0 0px rgba(0, 240, 255, 0)",
+              ? "inset 0 0 12px rgba(230, 193, 122, 0.05)" 
+              : "inset 0 0 0px rgba(230, 193, 122, 0)",
             transition: "box-shadow 0.3s ease",
           }}
         />

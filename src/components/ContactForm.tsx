@@ -334,25 +334,25 @@ export const ContactForm: React.FC = () => {
   return (
     <div className="w-full max-w-3xl mx-auto px-4 select-none text-start">
       <motion.div
-        className="glass-panel border border-slate-800/80 rounded-3xl p-6 md:p-8 relative overflow-hidden bg-slate-950/80 shadow-[0_20px_50px_rgba(0,0,0,0.7)]"
+        className="glass-panel border border-zinc-800/80 rounded-3xl p-6 md:p-8 relative overflow-hidden bg-zinc-950/80 shadow-[0_20px_50px_rgba(0,0,0,0.7)]"
       >
         {/* Futuristic Dashboard Face Overlay */}
         <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500/30 via-indigo-500/40 to-pink-500/30" />
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-zinc-800/40 via-amber-100/30 to-zinc-800/40" />
         
         {/* Cockpit Status Header */}
-        <div className="flex justify-between items-center border-b border-slate-900 pb-4 mb-6">
+        <div className="flex justify-between items-center border-b border-zinc-900 pb-4 mb-6">
           <div className="flex items-center gap-3">
             {/* Status Indicator LED */}
             <div className="relative flex h-2.5 w-2.5">
-              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${status === "submitting" ? "bg-amber-400" : "bg-cyan-400"}`}></span>
-              <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${status === "submitting" ? "bg-amber-500" : "bg-cyan-500"}`}></span>
+              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${status === "submitting" ? "bg-amber-300" : "bg-amber-100"}`}></span>
+              <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${status === "submitting" ? "bg-amber-500" : "bg-[#E6C17A]"}`}></span>
             </div>
             <div>
-              <h3 className="text-xs font-mono font-bold tracking-widest text-slate-400 uppercase">
+              <h3 className="text-xs font-mono font-bold tracking-widest text-zinc-400 uppercase">
                 {locale === "de" ? "SYS.VERBINDUNGS_PANEL // v1.2" : (isRtl ? "پنل اتصال // v1.2" : "SYS.CONNECT_PANEL // v1.2")}
               </h3>
-              <p className="text-[10px] text-[#00F0FF] font-mono leading-none tracking-widest mt-1">
+              <p className="text-[10px] text-[#E6C17A] font-mono leading-none tracking-widest mt-1">
                 {status === "submitting" 
                   ? (locale === "de" ? "ÜBERTRAGUNG LÄUFT..." : (isRtl ? "در حال ارسال..." : "TRANSMITTING...")) 
                   : (locale === "de" ? "ONLINE // SYSTEM BEREIT" : (isRtl ? "آنلاین // سیستم آماده" : "ONLINE // SYSTEM READY"))
@@ -367,8 +367,8 @@ export const ContactForm: React.FC = () => {
             onClick={toggleMuted}
             className={`p-2 rounded-lg border transition-all duration-200 cursor-pointer ${
               muted 
-                ? "border-slate-800/80 text-slate-600 bg-slate-950/40 hover:text-slate-500" 
-                : "border-[#00F0FF]/25 text-[#00F0FF] bg-[#00F0FF]/5 hover:bg-[#00F0FF]/15"
+                ? "border-zinc-800/80 text-zinc-600 bg-zinc-950/40 hover:text-zinc-500" 
+                : "border-[#E6C17A]/25 text-[#E6C17A] bg-[#E6C17A]/5 hover:bg-[#E6C17A]/15"
             }`}
             title={
               locale === "de" 
@@ -403,7 +403,7 @@ export const ContactForm: React.FC = () => {
                 </motion.div>
               </div>
               <h4 className="text-xl font-bold font-display text-white">{t("contactSuccessTitle")}</h4>
-              <p className="text-xs text-slate-400 max-w-sm font-mono leading-relaxed bg-slate-950/60 p-4 rounded-xl border border-slate-900">
+              <p className="text-xs text-zinc-400 max-w-sm font-mono leading-relaxed bg-zinc-950/60 p-4 rounded-xl border border-zinc-900">
                 {t("contactSuccessDesc")}
               </p>
               <button
@@ -412,7 +412,7 @@ export const ContactForm: React.FC = () => {
                   setIsLidCoverOpen(false);
                   playSound("switch", muted);
                 }}
-                className="mt-4 px-6 py-2.5 rounded-lg border border-slate-800 hover:border-[#00F0FF]/40 text-xs font-mono font-bold text-slate-300 hover:text-white transition-colors cursor-pointer active:scale-95 duration-150"
+                className="mt-4 px-6 py-2.5 rounded-lg border border-zinc-800 hover:border-[#E6C17A]/40 text-xs font-mono font-bold text-zinc-300 hover:text-white transition-colors cursor-pointer active:scale-95 duration-150"
               >
                 &lt; {t("contactSuccessBtn")} /&gt;
               </button>
@@ -437,7 +437,7 @@ export const ContactForm: React.FC = () => {
                     className={`font-mono font-bold uppercase tracking-widest transition-colors duration-200 ${
                       isRtl ? "text-xs" : "text-[10px]"
                     } ${
-                      focusedField === "name" ? "text-[#00F0FF]" : "text-slate-400"
+                      focusedField === "name" ? "text-[#E6C17A]" : "text-zinc-400"
                     }`}
                   >
                     {t("contactNameLabel")}
@@ -456,9 +456,9 @@ export const ContactForm: React.FC = () => {
                       }}
                       onBlur={() => setFocusedField(null)}
                       placeholder={t("contactNamePlaceholder")}
-                      className="w-full px-4 py-3 rounded-lg bg-slate-950/60 border border-slate-800 hover:border-slate-700/80 focus:border-[#00F0FF]/60 outline-none text-sm text-white placeholder-slate-600 font-mono transition-colors shadow-inner"
+                      className="w-full px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-zinc-700/80 focus:border-[#E6C17A]/60 outline-none text-sm text-white placeholder-zinc-600 font-mono transition-colors shadow-inner"
                     />
-                    <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[8px] font-mono text-slate-600 select-none">
+                    <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[8px] font-mono text-zinc-600 select-none">
                       [STR_VAL]
                     </div>
                   </div>
@@ -471,7 +471,7 @@ export const ContactForm: React.FC = () => {
                     className={`font-mono font-bold uppercase tracking-widest transition-colors duration-200 ${
                       isRtl ? "text-xs" : "text-[10px]"
                     } ${
-                      focusedField === "email" ? "text-[#00F0FF]" : "text-slate-400"
+                      focusedField === "email" ? "text-[#E6C17A]" : "text-zinc-400"
                     }`}
                   >
                     {t("contactEmailLabel")}
@@ -490,9 +490,9 @@ export const ContactForm: React.FC = () => {
                       }}
                       onBlur={() => setFocusedField(null)}
                       placeholder={t("contactEmailPlaceholder")}
-                      className="w-full px-4 py-3 rounded-lg bg-slate-950/60 border border-slate-800 hover:border-slate-700/80 focus:border-[#00F0FF]/60 outline-none text-sm text-white placeholder-slate-600 font-mono transition-colors shadow-inner"
+                      className="w-full px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-zinc-700/80 focus:border-[#E6C17A]/60 outline-none text-sm text-white placeholder-zinc-600 font-mono transition-colors shadow-inner"
                     />
-                    <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[8px] font-mono text-slate-600 select-none">
+                    <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[8px] font-mono text-zinc-600 select-none">
                       [ADDR_VAL]
                     </div>
                   </div>
@@ -501,11 +501,11 @@ export const ContactForm: React.FC = () => {
 
               {/* 2. THE FLIP SWITCHBOARD (Project focus selections - 2-column grid layout to prevent text overflows) */}
               <div className="flex flex-col gap-2">
-                <label className={`font-mono font-bold uppercase tracking-widest text-slate-400 ${isRtl ? "text-xs" : "text-[10px]"}`}>
+                <label className={`font-mono font-bold uppercase tracking-widest text-zinc-400 ${isRtl ? "text-xs" : "text-[10px]"}`}>
                   {t("contactFocusLabel")}
                 </label>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-slate-950/50 p-4 rounded-xl border border-slate-900 shadow-inner">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-zinc-900/40 p-4 rounded-xl border border-zinc-900 shadow-inner">
                   {projectFocusOptions.map((opt) => {
                     const isSelected = formState.projectType === opt.submitVal;
                     return (
@@ -514,28 +514,28 @@ export const ContactForm: React.FC = () => {
                         onClick={() => handleSwitchToggle(opt.submitVal)}
                         className={`flex flex-row items-center justify-between p-3 rounded-lg border transition-all duration-200 cursor-pointer ${
                           isSelected 
-                            ? "bg-[#00F0FF]/5 border-[#00F0FF]/25 shadow-[0_0_15px_rgba(0,240,255,0.05)]" 
-                            : "bg-slate-900/10 border-slate-800 hover:border-slate-700 hover:bg-slate-900/30"
+                            ? "bg-[#E6C17A]/5 border-[#E6C17A]/25 shadow-[0_0_15px_rgba(230,193,122,0.05)]" 
+                            : "bg-zinc-900/10 border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/30"
                         }`}
                       >
                         {/* Switchboard Text Label */}
                         <span className={`font-mono font-bold leading-tight ${
                           isRtl ? "text-xs" : "text-[10px]"
                         } ${
-                          isSelected ? "text-[#00F0FF]" : "text-slate-500"
+                          isSelected ? "text-[#E6C17A]" : "text-zinc-500"
                         }`}>
                           {t(opt.key)}
                         </span>
                         
                         {/* Snappy Spring Cockpit Flip Toggle Switch */}
-                        <div className="relative w-12 h-6 rounded-full bg-slate-950 border border-slate-800 flex items-center p-0.5 flex-shrink-0">
+                        <div className="relative w-12 h-6 rounded-full bg-zinc-950 border border-zinc-800 flex items-center p-0.5 flex-shrink-0">
                           <motion.div
-                            animate={isSelected ? { x: isRtl ? -24 : 24, backgroundColor: "#00F0FF" } : { x: 0, backgroundColor: "#334155" }}
+                            animate={isSelected ? { x: isRtl ? -24 : 24, backgroundColor: "#E6C17A" } : { x: 0, backgroundColor: "#334155" }}
                             transition={{ type: "spring", stiffness: 350, damping: 14 }}
                             className="w-5 h-5 rounded-full shadow-md flex items-center justify-center cursor-pointer"
                           >
                             {/* Visual Toggle LED */}
-                            <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-white animate-pulse" : "bg-slate-600"}`} />
+                            <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-white animate-pulse" : "bg-zinc-600"}`} />
                           </motion.div>
                         </div>
                       </div>
@@ -545,15 +545,15 @@ export const ContactForm: React.FC = () => {
               </div>
 
               {/* 3. HORIZONTAL RANGE INSTRUMENT: PROJECT SCOPE PARAMETER (Replacing circular dial knob) */}
-              <div className="flex flex-col gap-3 p-4 rounded-xl border border-slate-900 bg-slate-950/40 relative overflow-hidden">
+              <div className="flex flex-col gap-3 p-4 rounded-xl border border-zinc-900 bg-zinc-950/40 relative overflow-hidden">
                 <div className="flex justify-between items-center mb-1">
-                  <span className={`font-mono font-bold uppercase tracking-widest text-slate-400 ${isRtl ? "text-xs" : "text-[10px]"}`}>
+                  <span className={`font-mono font-bold uppercase tracking-widest text-zinc-400 ${isRtl ? "text-xs" : "text-[10px]"}`}>
                     {locale === "de" 
                       ? "PROJEKT-SCOPE // PARAMETER" 
                       : (isRtl ? "ابعاد پروژه // مقیاس کار" : "SYS.PROJECT_SCOPE // PARAMETER")
                     }
                   </span>
-                  <span className={`font-mono font-bold text-[#00F0FF] ${isRtl ? "text-[13px]" : "text-[11px]"}`}>
+                  <span className={`font-mono font-bold text-[#E6C17A] ${isRtl ? "text-[13px]" : "text-[11px]"}`}>
                     &gt; {scopeMeta.title}
                   </span>
                 </div>
@@ -574,8 +574,8 @@ export const ContactForm: React.FC = () => {
                     }}
                     className="w-full h-2 rounded-lg appearance-none cursor-pointer focus:outline-none relative z-10"
                     style={{
-                      background: `linear-gradient(${isRtl ? "to left" : "to right"}, #00F0FF 0%, #6366f1 ${scopeSlider}%, #09090b ${scopeSlider}%, #09090b 100%)`,
-                      border: "1px solid #1e293b",
+                      background: `linear-gradient(${isRtl ? "to left" : "to right"}, #E6C17A 0%, #ffffff ${scopeSlider}%, #09090b ${scopeSlider}%, #09090b 100%)`,
+                      border: "1px solid #27272a",
                     }}
                   />
                   
@@ -588,9 +588,9 @@ export const ContactForm: React.FC = () => {
                       height: 16px;
                       border-radius: 4px;
                       background: #1e293b;
-                      border: 2px solid #00F0FF;
+                      border: 2px solid #E6C17A;
                       cursor: pointer;
-                      box-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+                      box-shadow: 0 0 10px rgba(230, 193, 122, 0.6);
                       transition: background 0.15s ease;
                     }
                     input[type="range"]::-webkit-slider-thumb:hover {
@@ -601,14 +601,14 @@ export const ContactForm: React.FC = () => {
                       height: 16px;
                       border-radius: 4px;
                       background: #1e293b;
-                      border: 2px solid #00F0FF;
+                      border: 2px solid #E6C17A;
                       cursor: pointer;
-                      box-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+                      box-shadow: 0 0 10px rgba(230, 193, 122, 0.6);
                     }
                   `}} />
 
                   {/* Range indicators/ticks */}
-                  <div className="flex justify-between text-[8px] font-mono text-slate-500 px-1 select-none">
+                  <div className="flex justify-between text-[8px] font-mono text-zinc-500 px-1 select-none">
                     <span>[01 // MVP]</span>
                     <span>[02 // STANDARD]</span>
                     <span>[03 // PREMIUM]</span>
@@ -617,7 +617,7 @@ export const ContactForm: React.FC = () => {
                 </div>
 
                 {/* Scope Description lcd display readout */}
-                <div className={`font-mono text-slate-400 bg-slate-950/80 p-2.5 rounded border border-slate-900/60 leading-normal ${isRtl ? "text-[12px] leading-relaxed" : "text-[10px]"}`}>
+                <div className={`font-mono text-zinc-400 bg-zinc-950/80 p-2.5 rounded border border-zinc-900/60 leading-normal ${isRtl ? "text-[12px] leading-relaxed" : "text-[10px]"}`}>
                   {scopeMeta.desc}
                 </div>
               </div>
@@ -629,7 +629,7 @@ export const ContactForm: React.FC = () => {
                   className={`font-mono font-bold uppercase tracking-widest transition-colors duration-200 ${
                     isRtl ? "text-xs" : "text-[10px]"
                   } ${
-                    focusedField === "message" ? "text-[#00F0FF]" : "text-slate-400"
+                    focusedField === "message" ? "text-[#E6C17A]" : "text-zinc-400"
                   }`}
                 >
                   {t("contactMessageLabel")}
@@ -648,16 +648,16 @@ export const ContactForm: React.FC = () => {
                     }}
                     onBlur={() => setFocusedField(null)}
                     placeholder={t("contactMessagePlaceholder")}
-                    className="w-full px-4 py-3 rounded-lg bg-slate-950/60 border border-slate-800 hover:border-slate-700/80 focus:border-[#00F0FF]/60 outline-none text-sm text-white placeholder-slate-600 font-mono transition-colors resize-none shadow-inner"
+                    className="w-full px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-zinc-700/80 focus:border-[#E6C17A]/60 outline-none text-sm text-white placeholder-zinc-600 font-mono transition-colors resize-none shadow-inner"
                   />
-                  <div className="absolute left-3.5 bottom-2 text-[8px] font-mono text-slate-700 select-none pointer-events-none">
+                  <div className="absolute left-3.5 bottom-2 text-[8px] font-mono text-zinc-700 select-none pointer-events-none">
                     [LOG_STREAM // MSG_BUFFER]
                   </div>
                 </div>
               </div>
 
               {/* 5. COCKPIT SUBMIT BOARD: SAFETY COVERED BUTTON */}
-              <div className="border-t border-slate-900 pt-6 mt-2 relative flex flex-col items-center gap-4">
+              <div className="border-t border-zinc-900 pt-6 mt-2 relative flex flex-col items-center gap-4">
                 
                 {/* Warning message if submit fails */}
                 {status === "error" && (
@@ -666,9 +666,9 @@ export const ContactForm: React.FC = () => {
                     <span>{t("contactErrorText")}</span>
                   </div>
                 )}
-
+ 
                 {/* The Hydraulic Lift Lid Launch Panel */}
-                <div className="relative w-full max-w-sm h-16 bg-slate-950/60 rounded-xl border border-slate-900 shadow-inner flex items-center justify-center overflow-hidden">
+                <div className="relative w-full max-w-sm h-16 bg-zinc-950/60 rounded-xl border border-zinc-900 shadow-inner flex items-center justify-center overflow-hidden">
                   
                   {/* ABSENDEN / LAUNCH BUTTON (Sits securely underneath cover) */}
                   <button
@@ -677,7 +677,7 @@ export const ContactForm: React.FC = () => {
                     className={`w-full h-full text-center relative px-6 flex items-center justify-center gap-2 font-mono font-extrabold uppercase tracking-widest transition-colors duration-200 select-none active:scale-[0.98] z-10 ${
                       isLidCoverOpen && status !== "submitting"
                         ? "text-red-500 hover:text-red-400 cursor-pointer"
-                        : "text-slate-700 cursor-not-allowed"
+                        : "text-zinc-700 cursor-not-allowed"
                     }`}
                   >
                     {isSubmittingDial ? (
@@ -721,21 +721,21 @@ export const ContactForm: React.FC = () => {
                       playSound("slide", muted);
                     }}
                     onClick={handleLidToggle}
-                    className="absolute inset-0 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl flex items-center justify-between px-5 cursor-row-resize select-none z-20 group"
+                    className="absolute inset-0 bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl flex items-center justify-between px-5 cursor-row-resize select-none z-20 group"
                   >
                     {/* Industry Safety Stripes */}
                     <div 
                       className="w-8 h-full opacity-20" 
                       style={{
-                        backgroundImage: "repeating-linear-gradient(-45deg, #facc15, #facc15 6px, #09090b 6px, #09090b 12px)"
+                        backgroundImage: "repeating-linear-gradient(-45deg, #E6C17A, #E6C17A 6px, #18181b 6px, #18181b 12px)"
                       }}
                     />
                     
                     <div className="flex items-center gap-3">
-                      {isLidCoverOpen ? <Unlock className="w-4 h-4 text-emerald-500" /> : <Lock className="w-4 h-4 text-slate-500" />}
+                      {isLidCoverOpen ? <Unlock className="w-4 h-4 text-emerald-500" /> : <Lock className="w-4 h-4 text-zinc-500" />}
                       <span className={`font-mono font-bold uppercase tracking-widest ${
                         isRtl ? "text-xs" : "text-[10px]"
-                      } ${isLidCoverOpen ? "text-emerald-500" : "text-slate-400 group-hover:text-slate-300"}`}>
+                      } ${isLidCoverOpen ? "text-emerald-500" : "text-zinc-400 group-hover:text-zinc-300"}`}>
                         {isLidCoverOpen 
                           ? (locale === "de" 
                               ? "ABDECKUNG OFFEN // STARTBEREIT" 
@@ -752,7 +752,7 @@ export const ContactForm: React.FC = () => {
                     <div 
                       className="w-8 h-full opacity-20" 
                       style={{
-                        backgroundImage: "repeating-linear-gradient(-45deg, #facc15, #facc15 6px, #09090b 6px, #09090b 12px)"
+                        backgroundImage: "repeating-linear-gradient(-45deg, #E6C17A, #E6C17A 6px, #18181b 6px, #18181b 12px)"
                       }}
                     />
                   </motion.div>

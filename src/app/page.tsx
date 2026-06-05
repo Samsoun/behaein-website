@@ -88,23 +88,23 @@ export default function Home() {
   // 2. Continuous rotating effect on scroll (one full rotation across page)
   const iconRotate = useTransform(smoothScrollProgress, [0, 1], [0, 360]);
 
-  // 3. Shifting border and glow colors during scroll (Cyan -> Purple -> Hot Pink)
+  // 3. Shifting border and glow colors during scroll (Gold -> White -> Zinc)
   const iconGlowColor = useTransform(
     smoothScrollProgress,
     [0, 0.5, 1],
     [
-      "rgba(0, 240, 255, 0.12)",
-      "rgba(189, 0, 255, 0.20)",
-      "rgba(255, 0, 128, 0.20)"
+      "rgba(230, 193, 122, 0.12)",
+      "rgba(255, 255, 255, 0.15)",
+      "rgba(63, 63, 70, 0.15)"
     ]
   );
   const iconBorderColor = useTransform(
     smoothScrollProgress,
     [0, 0.5, 1],
     [
-      "rgba(0, 240, 255, 0.25)",
-      "rgba(189, 0, 255, 0.35)",
-      "rgba(255, 0, 128, 0.35)"
+      "rgba(230, 193, 122, 0.25)",
+      "rgba(255, 255, 255, 0.3)",
+      "rgba(63, 63, 70, 0.3)"
     ]
   );
   
@@ -187,7 +187,7 @@ export default function Home() {
               <button
                 key={section.id}
                 onClick={() => handleScroll(section.id)}
-                className="hover:text-[#00F0FF] cursor-pointer transition-colors duration-200"
+                className="hover:text-[#E6C17A] cursor-pointer transition-colors duration-200"
               >
                 {t(section.key as any)}
               </button>
@@ -198,7 +198,7 @@ export default function Home() {
             <LanguageSelector />
             <button
               onClick={() => handleScroll("contact")}
-              className="hidden md:block px-3 sm:px-4 py-2 rounded-full bg-[#00F0FF]/10 hover:bg-[#00F0FF]/20 border border-[#00F0FF]/25 text-[10px] sm:text-xs font-black text-[#00F0FF] tracking-wider uppercase transition-all duration-300 shadow-[0_0_10px_rgba(0,240,255,0.05)] cursor-pointer active:scale-95"
+              className="hidden md:block px-3 sm:px-4 py-2 rounded-full bg-amber-100/10 hover:bg-amber-100/20 border border-amber-100/25 text-[10px] sm:text-xs font-black text-amber-100 tracking-wider uppercase transition-all duration-300 shadow-[0_0_10px_rgba(230,193,122,0.05)] cursor-pointer active:scale-95"
             >
               {t("navLetsBuild")}
             </button>
@@ -206,7 +206,7 @@ export default function Home() {
             {/* Mobile Hamburger Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="flex md:hidden p-2.5 rounded-full bg-slate-900/40 hover:bg-[#00F0FF]/15 border border-[#00F0FF]/25 text-slate-300 hover:text-[#00F0FF] transition-all cursor-pointer active:scale-95"
+              className="flex md:hidden p-2.5 rounded-full bg-slate-900/40 hover:bg-amber-100/15 border border-amber-100/25 text-slate-300 hover:text-amber-100 transition-all cursor-pointer active:scale-95"
               aria-label="Toggle mobile menu"
             >
               <HamburgerIcon isOpen={mobileMenuOpen} />
@@ -240,7 +240,7 @@ export default function Home() {
                         handleScroll(section.id);
                       }, 150);
                     }}
-                    className="py-2.5 text-sm font-bold uppercase tracking-wider text-slate-300 hover:text-[#00F0FF] transition-colors cursor-pointer border-b border-white/5 active:bg-[#00F0FF]/5 rounded-lg"
+                    className="py-2.5 text-sm font-bold uppercase tracking-wider text-slate-300 hover:text-amber-100 transition-colors cursor-pointer border-b border-white/5 active:bg-amber-100/5 rounded-lg"
                   >
                     {t(section.key as any)}
                   </button>
@@ -254,7 +254,7 @@ export default function Home() {
                     handleScroll("contact");
                   }, 150);
                 }}
-                className="w-full py-3.5 rounded-xl bg-[#00F0FF]/10 hover:bg-[#00F0FF]/20 border border-[#00F0FF]/25 text-xs font-black text-[#00F0FF] tracking-widest uppercase transition-all duration-300 shadow-[0_0_15px_rgba(0,240,255,0.1)] cursor-pointer active:scale-[0.98]"
+                className="w-full py-3.5 rounded-xl bg-amber-100/10 hover:bg-amber-100/20 border border-amber-100/25 text-xs font-black text-amber-100 tracking-widest uppercase transition-all duration-300 shadow-[0_0_15px_rgba(230,193,122,0.1)] cursor-pointer active:scale-[0.98]"
               >
                 {t("navLetsBuild")}
               </button>
@@ -316,44 +316,49 @@ export default function Home() {
 
             {/* Smooth transition overlays */}
             {/* Radial vignette mask (soft edges on sides) */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,#0B0F19_90%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,#09090b_90%)]" />
             {/* Vertical linear mask (fade out at top and bottom boundaries) */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0B0F19] via-transparent to-[#0B0F19]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#09090b] via-transparent to-[#09090b]" />
           </div>
 
           <PhysicsPlayground />
         </section>
 
         {/* SECTION 2: TECH-STACK BENTO GRID */}
-        <section id="stack" className="py-24 relative">
-          <div className="max-w-6xl mx-auto px-6 mb-16 text-center md:text-start">
-            <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#00F0FF]">{t("stackTagline")}</span>
-            <h2 className="text-3xl md:text-4xl font-extrabold font-display text-white tracking-tight mt-2">
+        <section id="stack" className="py-24 relative overflow-hidden">
+          {/* Grid lines background */}
+          <div className="absolute inset-0 bg-grid-pattern opacity-60 pointer-events-none" />
+          
+          <div className="max-w-6xl mx-auto px-6 mb-16 text-center md:text-start relative z-10">
+            <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#E6C17A]">{t("stackTagline")}</span>
+            <h2 className="text-3xl md:text-4xl font-extrabold font-sans text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400 tracking-tight mt-2">
               {t("stackTitle")}
             </h2>
-            <p className="text-slate-400 text-sm md:text-base max-w-xl mt-3 leading-relaxed">
+            <p className="text-zinc-400 text-sm md:text-base max-w-xl mt-3 leading-relaxed">
               {t("stackSubtitle")}
             </p>
           </div>
 
-          <BentoGrid />
+          <div className="relative z-10">
+            <BentoGrid />
+          </div>
         </section>
 
         {/* INTERACTIVE VIDEO SCROLL CASE STUDY (BARANDE) — Title is rendered inside the component */}
         <BarandeVideoScroll />
 
         {/* SECTION 3: FEATURED PROJECTS (DEEP CASE STUDIES) */}
-        <section id="projects" className="py-24 relative overflow-hidden bg-slate-950/20">
+        <section id="projects" className="py-24 relative overflow-hidden bg-zinc-950/20">
           {/* Diagonal grid lines background */}
           <div className="absolute inset-0 bg-grid-pattern opacity-60 pointer-events-none" />
           
           <div className="max-w-6xl mx-auto px-6 relative z-10">
             <div className="text-center mb-20">
-              <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#00F0FF]">{t("portfolioTagline")}</span>
-              <h2 className="text-3xl md:text-5xl font-black font-display text-white tracking-tight mt-2">
+              <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#E6C17A]">{t("portfolioTagline")}</span>
+              <h2 className="text-3xl md:text-5xl font-black font-sans text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400 tracking-tight mt-2">
                 {t("portfolioTitle")}
               </h2>
-              <p className="text-slate-400 text-sm md:text-base max-w-xl mx-auto mt-4 leading-relaxed">
+              <p className="text-zinc-400 text-sm md:text-base max-w-xl mx-auto mt-4 leading-relaxed">
                 {t("portfolioSubtitle")}
               </p>
             </div>
@@ -366,35 +371,35 @@ export default function Home() {
                 <div className="flex-1 flex flex-col gap-6 text-center lg:text-start">
                   <div className="flex flex-wrap gap-2.5 justify-center lg:justify-start">
                     {["React Native", "Expo", "Next.js", "Supabase"].map((badge) => (
-                      <span key={badge} className="px-2.5 py-1 rounded bg-[#00F0FF]/5 border border-[#00F0FF]/15 text-[10px] font-mono font-bold uppercase text-[#00F0FF]">
+                      <span key={badge} className="px-2.5 py-1 rounded bg-zinc-900/80 border border-zinc-800 text-[10px] font-mono font-bold uppercase text-amber-100/90">
                         {badge}
                       </span>
                     ))}
                   </div>
 
-                  <h3 className="text-2xl md:text-4xl font-bold font-display text-white leading-tight">
+                  <h3 className="text-2xl md:text-4xl font-bold font-sans text-zinc-50 leading-tight">
                     {t("portfolioBarandeTitle")}
                   </h3>
 
-                  <p className="text-slate-400 text-sm md:text-base leading-relaxed">
+                  <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
                     {t("portfolioBarandeDesc")}
                   </p>
 
                   {/* Bullet points */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-900 pt-6 text-start">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-zinc-900 pt-6 text-start">
                     <div className="flex gap-2.5 items-start">
                       <ShieldCheck className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
                       <div>
                         <h4 className="text-xs font-bold text-white uppercase tracking-wide">{t("portfolioEscrowTitle")}</h4>
-                        <p className="text-[11px] text-slate-500 leading-normal mt-0.5">{t("portfolioEscrowDesc")}</p>
+                        <p className="text-[11px] text-zinc-500 leading-normal mt-0.5">{t("portfolioEscrowDesc")}</p>
                       </div>
                     </div>
 
                     <div className="flex gap-2.5 items-start">
-                      <Zap className="w-5 h-5 text-[#00F0FF] flex-shrink-0 mt-0.5" />
+                      <Zap className="w-5 h-5 text-[#E6C17A] flex-shrink-0 mt-0.5" />
                       <div>
                         <h4 className="text-xs font-bold text-white uppercase tracking-wide">{t("portfolioPinTitle")}</h4>
-                        <p className="text-[11px] text-slate-500 leading-normal mt-0.5">{t("portfolioPinDesc")}</p>
+                        <p className="text-[11px] text-zinc-500 leading-normal mt-0.5">{t("portfolioPinDesc")}</p>
                       </div>
                     </div>
                   </div>
@@ -402,7 +407,7 @@ export default function Home() {
                   <div className="pt-4 flex justify-center lg:justify-start">
                     <button 
                       onClick={() => handleScroll("contact")}
-                      className="px-5 py-2.5 rounded-lg border border-slate-800 hover:border-[#00F0FF]/40 text-xs font-bold text-slate-300 transition-colors flex items-center gap-1.5"
+                      className="px-5 py-2.5 rounded-lg border border-slate-800 hover:border-[#E6C17A]/40 text-xs font-bold text-zinc-300 transition-colors flex items-center gap-1.5"
                     >
                       {t("portfolioInquireMobile")} <ChevronRight className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`} />
                     </button>
@@ -421,27 +426,27 @@ export default function Home() {
                 <div className="flex-1 flex flex-col gap-6 text-center lg:text-start">
                   <div className="flex flex-wrap gap-2.5 justify-center lg:justify-start">
                     {["Next.js 16", "Tailwind CSS", "Framer Motion", "SEO Pro Max"].map((badge) => (
-                      <span key={badge} className="px-2.5 py-1 rounded bg-amber-500/5 border border-amber-500/25 text-[10px] font-mono font-bold uppercase text-amber-500">
+                      <span key={badge} className="px-2.5 py-1 rounded bg-zinc-900/80 border border-zinc-800 text-[10px] font-mono font-bold uppercase text-amber-100/90">
                         {badge}
                       </span>
                     ))}
                   </div>
 
-                  <h3 className="text-2xl md:text-4xl font-bold font-display text-white leading-tight">
+                  <h3 className="text-2xl md:text-4xl font-bold font-sans text-zinc-50 leading-tight">
                     {t("portfolioSheenTitle")}
                   </h3>
 
-                  <p className="text-slate-400 text-sm md:text-base leading-relaxed">
+                  <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
                     {t("portfolioSheenDesc")}
                   </p>
 
                   {/* Bullet points */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-900 pt-6 text-start">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-zinc-900 pt-6 text-start">
                     <div className="flex gap-2.5 items-start">
                       <Layers className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
                       <div>
                         <h4 className="text-xs font-bold text-white uppercase tracking-wide">{t("portfolioLcpTitle")}</h4>
-                        <p className="text-[11px] text-slate-500 leading-normal mt-0.5">{t("portfolioLcpDesc")}</p>
+                        <p className="text-[11px] text-zinc-500 leading-normal mt-0.5">{t("portfolioLcpDesc")}</p>
                       </div>
                     </div>
 
@@ -449,7 +454,7 @@ export default function Home() {
                       <Globe className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
                       <div>
                         <h4 className="text-xs font-bold text-white uppercase tracking-wide">{t("portfolioSeoTitle")}</h4>
-                        <p className="text-[11px] text-slate-500 leading-normal mt-0.5">{t("portfolioSeoDesc")}</p>
+                        <p className="text-[11px] text-zinc-500 leading-normal mt-0.5">{t("portfolioSeoDesc")}</p>
                       </div>
                     </div>
                   </div>
@@ -457,7 +462,7 @@ export default function Home() {
                   <div className="pt-4 flex justify-center lg:justify-start">
                     <button 
                       onClick={() => handleScroll("contact")}
-                      className="px-5 py-2.5 rounded-lg border border-slate-800 hover:border-amber-500/40 text-xs font-bold text-slate-300 transition-colors flex items-center gap-1.5"
+                      className="px-5 py-2.5 rounded-lg border border-slate-800 hover:border-[#E6C17A]/40 text-xs font-bold text-zinc-300 transition-colors flex items-center gap-1.5"
                     >
                       {t("portfolioInquireWeb")} <ChevronRight className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`} />
                     </button>
@@ -475,42 +480,51 @@ export default function Home() {
         </section>
 
         {/* SECTION 4: THE PROCESS (TIMELINE) */}
-        <section id="process" className="py-24 relative">
-          <div className="max-w-6xl mx-auto px-6 mb-16 text-center">
-            <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#00F0FF]">{t("processTagline")}</span>
-            <h2 className="text-3xl md:text-5xl font-black font-display text-white tracking-tight mt-2">
+        <section id="process" className="py-24 relative overflow-hidden">
+          {/* Grid lines background */}
+          <div className="absolute inset-0 bg-grid-pattern opacity-60 pointer-events-none" />
+          
+          <div className="max-w-6xl mx-auto px-6 mb-16 text-center relative z-10">
+            <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#E6C17A]">{t("processTagline")}</span>
+            <h2 className="text-3xl md:text-5xl font-black font-sans text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400 tracking-tight mt-2">
               {t("processTitle")}
             </h2>
-            <p className="text-slate-400 text-sm md:text-base max-w-xl mx-auto mt-4 leading-relaxed">
+            <p className="text-zinc-400 text-sm md:text-base max-w-xl mx-auto mt-4 leading-relaxed">
               {t("processSubtitle")}
             </p>
           </div>
 
-          <ProcessTimeline />
+          <div className="relative z-10">
+            <ProcessTimeline />
+          </div>
         </section>
 
         {/* SECTION 5: CONTACT FORM */}
         <section id="contact" className="py-24 relative overflow-hidden">
+          {/* Grid lines background */}
+          <div className="absolute inset-0 bg-grid-pattern opacity-60 pointer-events-none" />
           {/* Background decorative glow elements */}
           <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-radial-accent pointer-events-none -z-10 opacity-40" />
 
-          <div className="max-w-6xl mx-auto px-6 text-center mb-12">
-            <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#00F0FF]">{t("contactTagline")}</span>
-            <h2 className="text-3xl md:text-5xl font-black font-display text-white tracking-tight mt-2">
+          <div className="max-w-6xl mx-auto px-6 text-center mb-12 relative z-10">
+            <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#E6C17A]">{t("contactTagline")}</span>
+            <h2 className="text-3xl md:text-5xl font-black font-sans text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400 tracking-tight mt-2">
               {t("contactTitle")}
             </h2>
-            <p className="text-slate-400 text-sm md:text-base max-w-xl mx-auto mt-4 leading-relaxed">
+            <p className="text-zinc-400 text-sm md:text-base max-w-xl mx-auto mt-4 leading-relaxed">
               {t("contactSubtitle")}
             </p>
           </div>
 
-          <ContactForm />
+          <div className="relative z-10">
+            <ContactForm />
+          </div>
         </section>
 
       </main>
 
       {/* FOOTER */}
-      <footer className="relative border-t border-slate-900 bg-slate-950/80 py-12 z-20">
+      <footer className="relative border-t border-zinc-900/60 bg-zinc-950 py-12 z-20">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-start select-none">
           
           <div className="flex flex-col gap-2.5 items-center md:items-start">
@@ -520,18 +534,18 @@ export default function Home() {
             >
               <Logo size={26} />
             </div>
-            <span className="text-slate-500 text-xs font-mono uppercase tracking-wider">
+            <span className="text-zinc-500 text-xs font-mono uppercase tracking-wider">
               {t("footerJobTitle")}
             </span>
           </div>
 
           {/* Social Links */}
-          <div className="flex gap-6 text-slate-400">
+          <div className="flex gap-6 text-zinc-400">
             <a 
               href="https://github.com/samsoun" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="p-2 rounded-full border border-slate-800 hover:border-[#00F0FF]/40 hover:text-[#00F0FF] transition-all bg-slate-900/50"
+              className="p-2 rounded-full border border-zinc-800 hover:border-amber-100/40 hover:text-amber-100 transition-all duration-300 bg-transparent text-zinc-400"
               aria-label="GitHub Profile"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -543,7 +557,7 @@ export default function Home() {
               href="https://linkedin.com/in/samsoun-behaein-a07aa933b" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="p-2 rounded-full border border-slate-800 hover:border-[#00F0FF]/40 hover:text-[#00F0FF] transition-all bg-slate-900/50"
+              className="p-2 rounded-full border border-zinc-800 hover:border-amber-100/40 hover:text-amber-100 transition-all duration-300 bg-transparent text-zinc-400"
               aria-label="LinkedIn Profile"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -554,14 +568,14 @@ export default function Home() {
             </a>
             <a 
               href="mailto:behaein@web.de"
-              className="p-2 rounded-full border border-slate-800 hover:border-[#00F0FF]/40 hover:text-[#00F0FF] transition-all bg-slate-900/50"
+              className="p-2 rounded-full border border-zinc-800 hover:border-amber-100/40 hover:text-amber-100 transition-all duration-300 bg-transparent text-zinc-400"
               aria-label="Email Address"
             >
               <Mail className="w-4 h-4" />
             </a>
           </div>
 
-          <div className="flex flex-col gap-1.5 items-center md:items-end text-xs text-slate-500">
+          <div className="flex flex-col gap-1.5 items-center md:items-end text-xs text-zinc-500">
             <span className="flex items-center gap-1.5">
               {(() => {
                 const parts = t("footerMadeWith").split("{icon}");
@@ -578,11 +592,11 @@ export default function Home() {
               {t("footerRights", { year: new Date().getFullYear() })}
             </span>
             <div className="flex gap-3 mt-1.5 font-mono text-[10px]">
-              <Link href="/impressum" className="hover:text-[#00F0FF] transition-colors duration-200">
+              <Link href="/impressum" className="hover:text-zinc-200 text-zinc-400 transition-colors duration-200">
                 {t("footerImpressum")}
               </Link>
-              <span className="text-slate-800 select-none">|</span>
-              <Link href="/datenschutz" className="hover:text-[#00F0FF] transition-colors duration-200">
+              <span className="text-zinc-800 select-none">|</span>
+              <Link href="/datenschutz" className="hover:text-zinc-200 text-zinc-400 transition-colors duration-200">
                 {t("footerDatenschutz")}
               </Link>
             </div>
@@ -610,7 +624,7 @@ export default function Home() {
             className="group p-2 rounded-full border backdrop-blur-md shadow-[0_4px_12px_rgba(0,0,0,0.5)] cursor-pointer hover:scale-110 active:scale-95 transition-transform duration-200"
             aria-label="GitHub Profile"
           >
-            <svg className="w-4 h-4 group-hover:text-[#00F0FF] transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg className="w-4 h-4 group-hover:text-[#E6C17A] transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
               <path d="M9 18c-4.51 2-5-2-7-2" />
             </svg>
@@ -630,7 +644,7 @@ export default function Home() {
             className="group p-2 rounded-full border backdrop-blur-md shadow-[0_4px_12px_rgba(0,0,0,0.5)] cursor-pointer hover:scale-110 active:scale-95 transition-transform duration-200"
             aria-label="LinkedIn Profile"
           >
-            <svg className="w-4 h-4 group-hover:text-[#00F0FF] transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg className="w-4 h-4 group-hover:text-[#E6C17A] transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
               <rect x="2" y="9" width="4" height="12" />
               <circle cx="4" cy="4" r="2" />
@@ -650,7 +664,7 @@ export default function Home() {
             className="group p-2 rounded-full border backdrop-blur-md shadow-[0_4px_12px_rgba(0,0,0,0.5)] cursor-pointer hover:scale-110 active:scale-95 transition-transform duration-200"
             aria-label="Email Address"
           >
-            <Mail className="w-4 h-4 group-hover:text-[#00F0FF] transition-colors" />
+            <Mail className="w-4 h-4 group-hover:text-[#E6C17A] transition-colors" />
           </motion.a>
         </div>
         
@@ -659,12 +673,12 @@ export default function Home() {
           initial={{ height: 0 }}
           animate={{ height: 96 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="relative w-[2px] bg-slate-800/40 rounded-full overflow-hidden"
+          className="relative w-[2px] bg-zinc-800/40 rounded-full overflow-hidden"
         >
           {/* Active progress indicator filled by scroll */}
           <motion.div 
             style={{ scaleY: smoothScrollProgress, transformOrigin: "top" }}
-            className="absolute inset-0 bg-gradient-to-b from-[#00F0FF] via-[#BD00FF] to-[#FF0080] w-full h-full" 
+            className="absolute inset-0 bg-gradient-to-b from-white via-[#E6C17A] to-zinc-800 w-full h-full" 
           />
         </motion.div>
       </div>
@@ -682,10 +696,10 @@ export default function Home() {
             transition={{ duration: 0.4, ease: "easeOut" }}
             className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-md lg:hidden"
           >
-            <div className={`glass-panel rounded-2xl p-4 border border-[#00F0FF]/30 bg-slate-950/90 backdrop-blur-md shadow-2xl flex items-center justify-between gap-3 text-start ${isRtl ? "flex-row-reverse text-right" : "flex-row text-left"}`}>
+            <div className={`glass-panel rounded-2xl p-4 border border-zinc-800 bg-slate-950/90 backdrop-blur-md shadow-2xl flex items-center justify-between gap-3 text-start ${isRtl ? "flex-row-reverse text-right" : "flex-row text-left"}`}>
               <div className={`flex items-start gap-3 ${isRtl ? "flex-row-reverse" : "flex-row"}`}>
                 <span className="text-base flex-shrink-0 mt-0.5 select-none" role="img" aria-label="Desktop Computer">💻</span>
-                <p className="text-[11px] text-slate-300 font-sans leading-normal">
+                <p className="text-[11px] text-zinc-300 font-sans leading-normal">
                   {t("mobileDesktopNotice")}
                 </p>
               </div>

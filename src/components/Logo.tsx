@@ -25,7 +25,7 @@ export const Logo: React.FC<LogoProps> = ({ className = "", size = 38 }) => {
     }
   } as const;
 
-  // Back Layer (Deep Indigo shadow/foundation) - Drifts Down and Left
+  // Back Layer (Deep shadow/foundation) - Drifts Down and Left
   const backLayerVariants = {
     rest: { x: 0, y: 0, opacity: 0.45, filter: "blur(0.5px)" },
     hover: { 
@@ -37,7 +37,7 @@ export const Logo: React.FC<LogoProps> = ({ className = "", size = 38 }) => {
     }
   } as const;
 
-  // Middle Layer (Hybrid Indigo-Cyan) - Remains stable as anchor point
+  // Middle Layer (Hybrid Gold-White) - Remains stable as anchor point
   const middleLayerVariants = {
     rest: { x: 0, y: 0, opacity: 0.75 },
     hover: { 
@@ -48,14 +48,14 @@ export const Logo: React.FC<LogoProps> = ({ className = "", size = 38 }) => {
     }
   } as const;
 
-  // Front Layer (Bright Electric Cyan) - Drifts Up and Right (towards the viewer)
+  // Front Layer (Champagne Gold highlight) - Drifts Up and Right (towards the viewer)
   const frontLayerVariants = {
-    rest: { x: 0, y: 0, opacity: 1, filter: "drop-shadow(0 0 0px rgba(0,240,255,0))" },
+    rest: { x: 0, y: 0, opacity: 1, filter: "drop-shadow(0 0 0px rgba(230,193,122,0))" },
     hover: { 
       x: 5, 
       y: -4, 
       opacity: 1,
-      filter: "drop-shadow(0 2px 8px rgba(0,240,255,0.4))",
+      filter: "drop-shadow(0 2px 8px rgba(230,193,122,0.45))",
       transition: { duration: 0.4, ease: "backOut" } 
     }
   } as const;
@@ -86,28 +86,27 @@ export const Logo: React.FC<LogoProps> = ({ className = "", size = 38 }) => {
           className="overflow-visible"
         >
           <defs>
-            {/* Main Gradient: Deep luxurious Indigo to hochenergetisches Electric Cyan */}
+            {/* Main Gradient: White to Champagne Gold */}
             <linearGradient id="spatial-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#4F46E5" />
-              <stop offset="50%" stopColor="#6366F1" />
-              <stop offset="100%" stopColor="#00F0FF" />
+              <stop offset="0%" stopColor="#ffffff" />
+              <stop offset="100%" stopColor="#E6C17A" />
             </linearGradient>
 
             {/* Glowing radial back-glow */}
             <radialGradient id="spatial-back-glow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#00F0FF" stopOpacity="0.25" />
-              <stop offset="100%" stopColor="#4F46E5" stopOpacity="0" />
+              <stop offset="0%" stopColor="#E6C17A" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#27272a" stopOpacity="0" />
             </radialGradient>
           </defs>
 
           {/* Ambient Glow Aura */}
           <circle cx="50%" cy="50%" r="48" fill="url(#spatial-back-glow)" className="pointer-events-none" />
 
-          {/* LAYER 1: BACK (Deep Indigo Shadow Layer) */}
+          {/* LAYER 1: BACK (Deep Zinc Shadow Layer) */}
           <motion.path
             d={logoPath}
             variants={backLayerVariants}
-            stroke="#312E81"
+            stroke="#27272a"
             strokeWidth="8.5"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -123,11 +122,11 @@ export const Logo: React.FC<LogoProps> = ({ className = "", size = 38 }) => {
             strokeLinejoin="round"
           />
 
-          {/* LAYER 3: FRONT (Electric Cyan Foreground highlight) */}
+          {/* LAYER 3: FRONT (Gold Foreground highlight) */}
           <motion.path
             d={logoPath}
             variants={frontLayerVariants}
-            stroke="#00F0FF"
+            stroke="#E6C17A"
             strokeWidth="7.5"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -146,7 +145,7 @@ export const Logo: React.FC<LogoProps> = ({ className = "", size = 38 }) => {
         >
           BEHAEIN
           <motion.span 
-            className="text-[#00F0FF]"
+            className="text-[#E6C17A]"
             animate={{ 
               scale: [1, 1.3, 1],
               opacity: [0.8, 1, 0.8]

@@ -35,7 +35,7 @@ export const LanguageSelector: React.FC = () => {
       {/* Dropdown Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="px-3.5 py-2.5 rounded-full bg-slate-900/40 hover:bg-[#00F0FF]/15 border border-[#00F0FF]/25 hover:border-[#00F0FF]/50 text-slate-300 hover:text-[#00F0FF] text-xs font-black tracking-wider flex items-center gap-2 transition-all duration-300 cursor-pointer select-none"
+        className="px-3.5 py-2.5 rounded-full bg-slate-900/40 hover:bg-amber-100/15 border border-amber-100/25 hover:border-[#E6C17A]/50 text-slate-300 hover:text-amber-100 text-xs font-black tracking-wider flex items-center gap-2 transition-all duration-300 cursor-pointer select-none"
         aria-label="Select Language"
       >
         <Globe className="w-3.5 h-3.5 animate-pulse" />
@@ -55,7 +55,7 @@ export const LanguageSelector: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className={`absolute top-full mt-2 w-32 glass-panel rounded-xl shadow-xl overflow-hidden py-1.5 backdrop-blur-md border border-[#00F0FF]/10 ${
+            className={`absolute top-full mt-2 w-32 glass-panel rounded-xl shadow-xl overflow-hidden py-1.5 backdrop-blur-md border border-[#E6C17A]/10 ${
               isRtl ? "left-0 origin-top-left" : "right-0 origin-top-right"
             }`}
           >
@@ -68,8 +68,8 @@ export const LanguageSelector: React.FC = () => {
                 }}
                 className={`w-full px-4 py-2 text-xs flex items-center justify-between transition-colors text-left cursor-pointer ${
                   locale === lang.code
-                    ? "bg-[#00F0FF]/10 text-[#00F0FF] font-black"
-                    : "text-slate-400 hover:text-white hover:bg-white/5"
+                    ? "bg-amber-100/10 text-amber-100 font-black"
+                    : "text-zinc-400 hover:text-white hover:bg-white/5"
                 } ${isRtl ? "flex-row-reverse text-right" : "flex-row"}`}
               >
                 <span>{lang.label}</span>

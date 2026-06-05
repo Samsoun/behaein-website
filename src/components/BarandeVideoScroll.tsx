@@ -49,28 +49,28 @@ export const BarandeVideoScroll: React.FC = () => {
   const phases: Phase[] = useMemo(() => [
     {
       id: 0,
-      icon: <Smartphone className="w-5 h-5 text-[#00F0FF]" />,
+      icon: <Smartphone className="w-5 h-5 text-[#E6C17A]" />,
       titleKey: "videoScrollPhase1Title",
       descKey: "videoScrollPhase1Desc",
       bulletsKey: "videoScrollPhase1Bullets",
     },
     {
       id: 1,
-      icon: <Layers className="w-5 h-5 text-[#00F0FF]" />,
+      icon: <Layers className="w-5 h-5 text-[#E6C17A]" />,
       titleKey: "videoScrollPhase2Title",
       descKey: "videoScrollPhase2Desc",
       bulletsKey: "videoScrollPhase2Bullets",
     },
     {
       id: 2,
-      icon: <Database className="w-5 h-5 text-[#00F0FF]" />,
+      icon: <Database className="w-5 h-5 text-[#E6C17A]" />,
       titleKey: "videoScrollPhase3Title",
       descKey: "videoScrollPhase3Desc",
       bulletsKey: "videoScrollPhase3Bullets",
     },
     {
       id: 3,
-      icon: <ShieldCheck className="w-5 h-5 text-[#00F0FF]" />,
+      icon: <ShieldCheck className="w-5 h-5 text-[#E6C17A]" />,
       titleKey: "videoScrollPhase4Title",
       descKey: "videoScrollPhase4Desc",
       bulletsKey: "videoScrollPhase4Bullets",
@@ -504,22 +504,22 @@ export const BarandeVideoScroll: React.FC = () => {
                 cx="48"
                 cy="48"
                 r="40"
-                stroke="#00F0FF"
+                stroke="#E6C17A"
                 strokeWidth="2.5"
                 fill="transparent"
                 strokeDasharray="251.2"
                 strokeDashoffset={251.2 - (251.2 * loadingProgress) / 100}
-                className="transition-all duration-300 drop-shadow-[0_0_6px_#00F0FF]"
+                className="transition-all duration-300 drop-shadow-[0_0_6px_#E6C17A]"
               />
             </svg>
 
             {/* Inner pulsing particle */}
-            <div className="absolute w-12 h-12 rounded-full bg-[#00F0FF]/5 border border-[#00F0FF]/20 flex items-center justify-center animate-pulse">
-              <Play className="w-4.5 h-4.5 text-[#00F0FF]" />
+            <div className="absolute w-12 h-12 rounded-full bg-[#E6C17A]/5 border border-[#E6C17A]/20 flex items-center justify-center animate-pulse">
+              <Play className="w-4.5 h-4.5 text-[#E6C17A]" />
             </div>
           </div>
           <p
-            className="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-[#00F0FF] animate-pulse"
+            className="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-[#E6C17A] animate-pulse"
           >
             Decoding Visual Engine · {loadingProgress}%
           </p>
@@ -548,20 +548,20 @@ export const BarandeVideoScroll: React.FC = () => {
         style={{ backgroundColor: "transparent" }}
       >
         {/* Background Radial Glow decoration */}
-        <div className="absolute inset-0 bg-[#00F0FF]/[0.015] z-0 pointer-events-none" />
+        <div className="absolute inset-0 bg-[#E6C17A]/[0.015] z-0 pointer-events-none" />
 
         {/* 
           Section Title — placed inside the pinned container to guarantee
           the exact same background color as the scrolling demo below.
         */}
         <div className={`w-full max-w-4xl mb-5 md:mb-6 z-10 ${isRtl ? "text-right" : "text-center md:text-start"}`}>
-          <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#00F0FF]">
+          <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#E6C17A]">
             {t("videoScrollTagline")}
           </span>
           <h2 className="text-2xl md:text-3xl font-extrabold font-display text-white tracking-tight mt-1.5">
             {t("videoScrollTitle")}
           </h2>
-          <p className="text-slate-400 text-xs md:text-sm max-w-2xl mt-2 leading-relaxed">
+          <p className="text-zinc-400 text-xs md:text-sm max-w-2xl mt-2 leading-relaxed">
             {t("videoScrollSubtitle")}
           </p>
         </div>
@@ -570,7 +570,7 @@ export const BarandeVideoScroll: React.FC = () => {
           1. Centered, Framed Cinematic Viewport (Apple-style "Zoomed-Out" look)
           Houses the canvas inside a clean, rounded, glowing viewport container 
         */}
-        <div className="relative w-full max-w-4xl h-[38vh] md:h-[42vh] rounded-3xl border border-white/10 bg-[#121826] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] overflow-hidden z-10 flex items-center justify-center">
+        <div className="relative w-full max-w-4xl h-[38vh] md:h-[42vh] rounded-3xl border border-zinc-800/80 bg-[#09090b] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] overflow-hidden z-10 flex items-center justify-center">
           
           {!isMounted ? (
             /* Premium static fallback image before mounting (instant LCP and zero layout shift) */
@@ -589,13 +589,13 @@ export const BarandeVideoScroll: React.FC = () => {
               muted
               controls={false}
               preload="auto"
-              className="absolute inset-0 w-full h-full object-cover bg-[#0B0F19]/20 pointer-events-none"
+              className="absolute inset-0 w-full h-full object-cover bg-[#09090b]/20 pointer-events-none"
             />
           ) : (
             /* Visual Canvas Element (Desktop only) */
             <canvas
               ref={canvasRef}
-              className="absolute inset-0 w-full h-full bg-[#0B0F19]/20"
+              className="absolute inset-0 w-full h-full bg-[#09090b]/20"
             />
           )}
 
@@ -619,29 +619,29 @@ export const BarandeVideoScroll: React.FC = () => {
           onDragEnd={(_, info) => handleDragEnd(info)}
           onClick={handleCardTap}
           whileTap={isMobile ? { scale: 0.992 } : undefined}
-          className={`w-full max-w-2xl min-h-[210px] md:min-h-[240px] mt-4 md:mt-5 glass-panel rounded-2xl p-5 md:p-6.5 border border-[#00F0FF]/25 bg-slate-950/95 backdrop-blur-xl shadow-2xl relative z-20 flex flex-col justify-between overflow-hidden transition-shadow duration-300 ${
-            isMobile ? "cursor-grab active:cursor-grabbing shadow-[0_0_20px_rgba(0,240,255,0.05)] hover:shadow-[0_0_30px_rgba(0,240,255,0.1)]" : ""
+          className={`w-full max-w-2xl min-h-[210px] md:min-h-[240px] mt-4 md:mt-5 glass-panel rounded-2xl p-5 md:p-6.5 border border-zinc-800 bg-[#09090b]/95 backdrop-blur-xl shadow-2xl relative z-20 flex flex-col justify-between overflow-hidden transition-shadow duration-300 ${
+            isMobile ? "cursor-grab active:cursor-grabbing shadow-[0_0_20px_rgba(230,193,122,0.03)] hover:shadow-[0_0_30px_rgba(230,193,122,0.06)]" : ""
           }`}
         >
           {/* Stories-style Segmented Progress Bar (Mobile only) */}
           {isMobile && (
-            <div className="absolute top-0 left-0 right-0 h-[3px] flex gap-1.5 z-30 px-3.5 pt-[3px] bg-slate-950/50">
+            <div className="absolute top-0 left-0 right-0 h-[3px] flex gap-1.5 z-30 px-3.5 pt-[3px] bg-[#09090b]/50">
               {phases.map((_, idx) => {
                 const isCompleted = idx < activePhaseIndex;
                 const isActive = idx === activePhaseIndex;
                 return (
                   <div key={idx} className="flex-1 h-full bg-white/10 rounded-full overflow-hidden">
                     {isCompleted && (
-                      <div className="w-full h-full bg-[#00F0FF] shadow-[0_0_4px_#00F0FF]" />
+                      <div className="w-full h-full bg-[#E6C17A] shadow-[0_0_4px_#E6C17A]" />
                     )}
                     {isActive && (
                       <div 
                         style={{ width: `${autoplayProgress}%` }}
-                        className="h-full bg-[#00F0FF] shadow-[0_0_4px_#00F0FF] transition-all duration-75 ease-linear"
+                        className="h-full bg-[#E6C17A] shadow-[0_0_4px_#E6C17A] transition-all duration-75 ease-linear"
                       />
                     )}
                     {!isCompleted && !isActive && (
-                      <div className="w-0 h-full bg-[#00F0FF]/20" />
+                      <div className="w-0 h-full bg-[#E6C17A]/20" />
                     )}
                   </div>
                 );
@@ -650,8 +650,8 @@ export const BarandeVideoScroll: React.FC = () => {
           )}
           
           {/* Subtle neon corner accents for tech premium detail */}
-          <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-[#00F0FF]/30 rounded-tl-xl" />
-          <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-[#00F0FF]/30 rounded-tr-xl" />
+          <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-[#E6C17A]/30 rounded-tl-xl" />
+          <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-[#E6C17A]/30 rounded-tr-xl" />
           
           {/* 
             Horizontal Premium Progress Stepper 
@@ -659,10 +659,10 @@ export const BarandeVideoScroll: React.FC = () => {
           */}
           <div dir="ltr" className="flex items-center justify-between w-full px-4 mb-5.5 relative">
             {/* Background track line spanning exactly between circle centers */}
-            <div className="absolute left-[27px] right-[27px] top-[11px] h-[1px] bg-slate-800/80 z-0">
+            <div className="absolute left-[27px] right-[27px] top-[11px] h-[1px] bg-zinc-800/80 z-0">
               {/* Active fill line nested inside background track for perfect 1:1 pixel alignment */}
               <div 
-                className={`absolute left-0 top-0 h-full bg-[#00F0FF] shadow-[0_0_8px_#00F0FF] z-0 ${
+                className={`absolute left-0 top-0 h-full bg-[#E6C17A] shadow-[0_0_8px_#E6C17A] z-0 ${
                   isMobile ? "transition-all duration-75 ease-linear" : "transition-all duration-300"
                 }`}
                 style={{
@@ -713,12 +713,12 @@ export const BarandeVideoScroll: React.FC = () => {
                   <div 
                     className={`w-[22px] h-[22px] rounded-full flex items-center justify-center border font-mono text-[9px] font-black transition-all duration-300 relative ${
                       isActive 
-                        ? "bg-slate-950 border-[#00F0FF] text-[#00F0FF] shadow-[0_0_10px_rgba(0,240,255,0.45)] scale-110" 
+                        ? "bg-zinc-950 border-[#E6C17A] text-[#E6C17A] shadow-[0_0_10px_rgba(230,193,122,0.45)] scale-110" 
                         : isNextNode && isMobile
-                          ? "bg-slate-950 border-[#00F0FF]/80 text-[#00F0FF]/80 shadow-[0_0_8px_rgba(0,240,255,0.25)] animate-pulse scale-105"
+                          ? "bg-zinc-950 border-[#E6C17A]/80 text-[#E6C17A]/80 shadow-[0_0_8px_rgba(230,193,122,0.25)] animate-pulse scale-105"
                           : isCompleted 
-                            ? "bg-[#00F0FF]/15 border-[#00F0FF]/60 text-[#00F0FF]" 
-                            : "bg-slate-950/40 border-dashed border-slate-700 text-slate-600 hover:border-slate-500 hover:text-slate-400"
+                            ? "bg-amber-100/10 border-amber-100/60 text-amber-100" 
+                            : "bg-zinc-950/40 border-dashed border-zinc-700 text-zinc-600 hover:border-zinc-500 hover:text-zinc-400"
                     }`}
                   >
                     {isCompleted ? (
@@ -727,7 +727,7 @@ export const BarandeVideoScroll: React.FC = () => {
                       idx + 1
                     )}
                     {isNextNode && isMobile && (
-                      <span className="absolute inset-0 rounded-full border border-[#00F0FF] animate-ping opacity-40 pointer-events-none" />
+                      <span className="absolute inset-0 rounded-full border border-[#E6C17A] animate-ping opacity-40 pointer-events-none" />
                     )}
                   </div>
                   
@@ -735,10 +735,10 @@ export const BarandeVideoScroll: React.FC = () => {
                   <span 
                     className={`hidden sm:block text-[8.5px] mt-1.5 font-mono font-bold tracking-wider uppercase text-center transition-colors duration-300 ${
                       isActive 
-                        ? "text-[#00F0FF]" 
+                        ? "text-[#E6C17A]" 
                         : isCompleted 
-                          ? "text-slate-400" 
-                          : "text-slate-600 group-hover:text-slate-400"
+                          ? "text-zinc-400" 
+                          : "text-zinc-600 group-hover:text-zinc-400"
                     }`}
                   >
                     {stepShortTitles[idx]}
@@ -746,7 +746,7 @@ export const BarandeVideoScroll: React.FC = () => {
 
                   {/* Tiny upcoming slot subtitle */}
                   {isUpcoming && (
-                    <span className="hidden sm:block text-[7.5px] text-slate-700 font-mono tracking-wide font-normal lowercase mt-0.5 text-center">
+                    <span className="hidden sm:block text-[7.5px] text-zinc-700 font-mono tracking-wide font-normal lowercase mt-0.5 text-center">
                       {locale === "fa" ? "(بعدی)" : (locale === "de" ? "(ausstehend)" : "(upcoming)")}
                     </span>
                   )}
@@ -768,18 +768,18 @@ export const BarandeVideoScroll: React.FC = () => {
                 {/* Stepper Tag & Dynamic Remaining Badge */}
                 <div className="flex justify-between items-center mb-2.5 gap-2">
                   <div className="flex flex-col gap-1 items-start">
-                    <span className="text-[9px] font-mono font-bold tracking-[0.25em] text-[#00F0FF] uppercase">
+                    <span className="text-[9px] font-mono font-bold tracking-[0.25em] text-[#E6C17A] uppercase">
                       Phase 0{displayPhaseIndex + 1} · {t("videoScrollTagline")}
                     </span>
                     
                     {/* Glowing localized badge communicating remaining phases left */}
                     <div className="flex flex-wrap items-center gap-2">
-                      <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[8.5px] font-mono font-bold border bg-[#00F0FF]/5 border-[#00F0FF]/25 text-[#00F0FF] shadow-[0_0_8px_rgba(0,240,255,0.12)]">
-                        <span className="w-1 h-1 rounded-full bg-[#00F0FF] animate-ping" />
+                      <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[8.5px] font-mono font-bold border bg-amber-100/5 border-amber-100/25 text-amber-100 shadow-[0_0_8px_rgba(230,193,122,0.12)]">
+                        <span className="w-1 h-1 rounded-full bg-[#E6C17A] animate-ping" />
                         <span>{remainingText}</span>
                       </div>
                       {isMobile && (
-                        <span className="text-[7.5px] font-mono font-black text-[#00F0FF]/60 uppercase tracking-widest animate-pulse">
+                        <span className="text-[7.5px] font-mono font-black text-[#E6C17A]/60 uppercase tracking-widest animate-pulse">
                           {locale === "fa" 
                             ? "بکشید یا ضربه بزنید" 
                             : (locale === "de" 
@@ -791,7 +791,7 @@ export const BarandeVideoScroll: React.FC = () => {
                   </div>
                   
                   {/* Phase Icon */}
-                  <div className="w-6 h-6 rounded-lg bg-[#00F0FF]/10 border border-[#00F0FF]/15 flex items-center justify-center">
+                  <div className="w-6 h-6 rounded-lg bg-amber-100/10 border border-amber-100/15 flex items-center justify-center">
                     {activePhase.icon}
                   </div>
                 </div>
@@ -802,15 +802,15 @@ export const BarandeVideoScroll: React.FC = () => {
                 </h3>
 
                 {/* Detailed description text */}
-                <p className="text-slate-300 text-xs md:text-[13px] leading-relaxed text-start mb-4.5 font-medium">
+                <p className="text-zinc-300 text-xs md:text-[13px] leading-relaxed text-start mb-4.5 font-medium">
                   {t(activePhase.descKey)}
                 </p>
 
                 {/* Checklist bullets footer */}
                 <div className="flex flex-wrap gap-x-5 gap-y-2 border-t border-white/5 pt-3.5 mt-auto">
                   {activeBullets.map((bullet, idx) => (
-                    <div key={idx} className="flex items-center gap-1.5 text-[10px] sm:text-xs font-bold text-slate-400">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#00F0FF] shadow-[0_0_3px_#00F0FF] flex-shrink-0" />
+                    <div key={idx} className="flex items-center gap-1.5 text-[10px] sm:text-xs font-bold text-zinc-500">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#E6C17A] shadow-[0_0_3px_#E6C17A] flex-shrink-0" />
                       <span>{bullet}</span>
                     </div>
                   ))}
@@ -824,14 +824,14 @@ export const BarandeVideoScroll: React.FC = () => {
                       setActivePhaseIndex((prev) => (prev + 1) % 4);
                       resetAutoplay();
                     }}
-                    className="mt-4 flex items-center justify-between w-full border-t border-[#00F0FF]/15 pt-3.5 bg-gradient-to-r from-[#00F0FF]/0 to-[#00F0FF]/[0.03] rounded-b-xl px-1"
+                    className="mt-4 flex items-center justify-between w-full border-t border-amber-100/15 pt-3.5 bg-gradient-to-r from-amber-100/0 to-amber-100/[0.03] rounded-b-xl px-1"
                   >
                     <div className="flex items-center gap-2">
-                      <div className="relative flex items-center justify-center w-6 h-6 rounded-full bg-slate-900 border border-[#00F0FF]/20">
-                        <Smartphone className="w-3.5 h-3.5 text-[#00F0FF]/80 animate-pulse" />
-                        <span className="absolute -right-0.5 -top-0.5 w-2 h-2 rounded-full bg-[#00F0FF] animate-ping" />
+                      <div className="relative flex items-center justify-center w-6 h-6 rounded-full bg-[#09090b] border border-amber-100/20">
+                        <Smartphone className="w-3.5 h-3.5 text-amber-100/80 animate-pulse" />
+                        <span className="absolute -right-0.5 -top-0.5 w-2 h-2 rounded-full bg-[#E6C17A] animate-ping" />
                       </div>
-                      <span className="text-[10px] font-mono text-slate-400 tracking-wider">
+                      <span className="text-[10px] font-mono text-zinc-500 tracking-wider">
                         {locale === "fa" 
                           ? "بکشید یا ضربه بزنید" 
                           : (locale === "de" 
@@ -840,7 +840,7 @@ export const BarandeVideoScroll: React.FC = () => {
                       </span>
                     </div>
                     
-                    <button className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[11px] font-bold font-mono tracking-wider text-[#00F0FF] border border-[#00F0FF]/40 bg-[#00F0FF]/10 shadow-[0_0_12px_rgba(0,240,255,0.2)] active:scale-95 transition-transform duration-100">
+                    <button className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[11px] font-bold font-mono tracking-wider text-amber-100 border border-amber-100/40 bg-amber-100/10 shadow-[0_0_12px_rgba(230,193,122,0.2)] active:scale-95 transition-transform duration-100">
                       <span>
                         {displayPhaseIndex === 3 
                           ? (isRtl ? "↺ فاز ۱" : "Phase 1 ↺") 
@@ -861,7 +861,7 @@ export const BarandeVideoScroll: React.FC = () => {
           <div className="h-24 w-[2px] overflow-hidden rounded-full bg-white/10">
             <motion.div
               style={{ scaleY: progressScaleY }}
-              className="h-full w-full origin-top rounded-full bg-[#00F0FF] shadow-[0_0_6px_#00F0FF]"
+              className="h-full w-full origin-top rounded-full bg-[#E6C17A] shadow-[0_0_6px_#E6C17A]"
             />
           </div>
         </div>
@@ -874,7 +874,7 @@ export const BarandeVideoScroll: React.FC = () => {
           >
             <div className="flex flex-col items-center gap-2">
               <span
-                className="text-[9px] uppercase tracking-[0.25em] text-slate-500 font-mono font-bold"
+                className="text-[9px] uppercase tracking-[0.25em] text-zinc-500 font-mono font-bold"
               >
                 Scroll to Explore
               </span>
@@ -883,7 +883,7 @@ export const BarandeVideoScroll: React.FC = () => {
                 height="24"
                 viewBox="0 0 16 24"
                 fill="none"
-                className="text-[#00F0FF] opacity-60"
+                className="text-[#E6C17A] opacity-60"
               >
                 <rect
                   x="1"
