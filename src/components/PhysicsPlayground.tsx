@@ -107,9 +107,9 @@ export const PhysicsPlayground: React.FC = () => {
   }, [mode, isHoveringCTA, wmMode, isMobile, isRtl]);
 
   // Headline word splitting helper
-  const prefixWords = t("heroHeadlinePrefix").trim().split(/\s+/);
-  const highlightWords = t("heroHeadlineHighlight").trim().split(/\s+/);
-  const suffixWords = t("heroHeadlineSuffix").trim().split(/\s+/);
+  const prefixWords = t("heroHeadlinePrefix").trim().split(" ").filter(Boolean);
+  const highlightWords = t("heroHeadlineHighlight").trim().split(" ").filter(Boolean);
+  const suffixWords = t("heroHeadlineSuffix").trim().split(" ").filter(Boolean);
 
   const headlineWordObjects = [
     ...prefixWords.map((text, idx) => ({ id: `word-prefix-${idx}`, text, type: "prefix" as const })),
@@ -1083,7 +1083,7 @@ export const PhysicsPlayground: React.FC = () => {
           </div>
 
           {/* Text */}
-          <h2 className="text-4xl md:text-7xl font-black filter drop-shadow-[0_0_20px_rgba(251,191,36,0.3)] mb-4 px-4 leading-normal flex flex-wrap items-center justify-center gap-2">
+          <h2 className="text-4xl md:text-7xl font-normal filter drop-shadow-[0_0_20px_rgba(251,191,36,0.3)] mb-4 px-4 leading-normal flex flex-wrap items-center justify-center gap-2">
             <span className={`text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-200 to-amber-500 font-display ${
               locale === "fa" ? "" : "tracking-wider uppercase"
             }`}>
@@ -1127,10 +1127,11 @@ export const PhysicsPlayground: React.FC = () => {
           </div>
 
           {/* Headline (Words split into physical spans) */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-display tracking-tight text-white leading-[1.12] mb-6 flex flex-wrap justify-center lg:justify-start gap-x-3 gap-y-1 sm:gap-y-2 select-none touch-none">
+          <h1 className="font-display text-6xl lg:text-7xl leading-[1.05] font-normal text-white mb-6 flex flex-wrap justify-center lg:justify-start gap-x-3 gap-y-1 sm:gap-y-2 select-none touch-none">
             {headlineWordObjects.map((word) => {
               const isHighlight = word.type === "highlight";
               const showBreak = locale === "fa" && word.id === "word-highlight-0";
+              const isItalic = word.id === "word-prefix-1";
               return (
                 <React.Fragment key={word.id}>
                   {showBreak && <div className="w-full h-0 pointer-events-none" />}
@@ -1139,10 +1140,12 @@ export const PhysicsPlayground: React.FC = () => {
                     ref={(el) => { refsMap.current[word.id] = el; }}
                     onPointerDown={wmMode ? undefined : (e) => handleDragStart(e, word.id)}
                     onPointerUp={wmMode ? undefined : (e) => handleDragEnd(e, word.id)}
-                    className={`inline-block select-none ${
+                    className={`inline-block select-none font-display ${
+                      isItalic ? "italic" : ""
+                    } ${
                       isHighlight
-                        ? "text-transparent bg-clip-text bg-gradient-to-r from-white via-amber-100 to-[#E6C17A] font-extrabold"
-                        : "text-white font-black"
+                        ? "text-transparent bg-clip-text bg-gradient-to-r from-white via-amber-100 to-[#E6C17A] font-normal"
+                        : "text-white font-normal"
                     } ${
                       wmMode ? "pointer-events-none" : "cursor-grab active:cursor-grabbing hover:text-[#E6C17A] transition-colors duration-150"
                     }`}
@@ -1173,7 +1176,7 @@ export const PhysicsPlayground: React.FC = () => {
               onMouseEnter={() => setIsHoveringCTA(true)}
               onMouseLeave={() => setIsHoveringCTA(false)}
               onClick={() => handleScroll("projects")}
-              className="px-7 py-3.5 rounded-lg bg-amber-100 hover:bg-white text-zinc-950 font-black text-xs uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(230,193,122,0.25)] hover:shadow-[0_0_30px_rgba(230,193,122,0.4)] cursor-pointer active:scale-95 z-30"
+              className="px-7 py-3.5 rounded-lg bg-amber-100 hover:bg-white text-zinc-950 font-body text-sm font-normal uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(230,193,122,0.25)] hover:shadow-[0_0_30px_rgba(230,193,122,0.4)] cursor-pointer active:scale-95 z-30"
             >
               {t("heroCtaWork")}
             </button>
@@ -1181,7 +1184,7 @@ export const PhysicsPlayground: React.FC = () => {
               onMouseEnter={() => setIsHoveringCTA(true)}
               onMouseLeave={() => setIsHoveringCTA(false)}
               onClick={() => handleScroll("contact")}
-              className="px-7 py-3.5 rounded-lg bg-zinc-900/30 border border-zinc-700 hover:border-amber-100/60 hover:bg-zinc-800/40 text-amber-100 font-bold text-xs uppercase tracking-wider transition-all duration-300 ease-in-out cursor-pointer active:scale-95 z-30"
+              className="px-7 py-3.5 rounded-lg bg-zinc-900/30 border border-zinc-700 hover:border-amber-100/60 hover:bg-zinc-800/40 text-amber-100 font-body text-sm font-normal uppercase tracking-wider transition-all duration-300 ease-in-out cursor-pointer active:scale-95 z-30"
             >
               {t("heroCtaBuild")}
             </button>
@@ -1261,7 +1264,7 @@ export const PhysicsPlayground: React.FC = () => {
                         <div className="absolute inset-1 rounded-full border border-dashed border-[#E6C17A]/10 animate-spin-slow" />
                         <User className="w-10 h-10 text-[#E6C17A]/60" />
                       </div>
-                      <h4 className="text-sm font-bold text-white uppercase tracking-wider font-display">Samsoun Behaein</h4>
+                      <h4 className="text-sm font-normal text-white uppercase tracking-wider font-display">Samsoun Behaein</h4>
                       <p className="text-[10px] text-slate-500 mt-1 font-mono uppercase tracking-widest text-[#E6C17A]/80">CREATIVE TECHNOLOGIST</p>
                       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1 text-[8px] font-bold text-[#E6C17A]/60 uppercase font-mono bg-slate-950/50 px-2 py-0.5 rounded">
                         <Cpu className="w-2.5 h-2.5" /> Core Simulator Active

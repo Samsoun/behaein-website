@@ -126,7 +126,7 @@ export const PortraitFrame: React.FC = () => {
                 <div className="absolute inset-1 rounded-full border border-dashed border-[#00F0FF]/10 animate-spin-slow" />
                 <User className="w-10 h-10 text-[#00F0FF]/60" />
               </div>
-              <h4 className="text-sm font-bold text-white uppercase tracking-wider font-display">Samsoun Behaein</h4>
+              <h4 className="text-sm font-normal text-white uppercase tracking-wider font-display">Samsoun Behaein</h4>
               <p className="text-[10px] text-slate-500 mt-1 font-mono uppercase tracking-widest text-[#00F0FF]/80">CREATIVE TECHNOLOGIST</p>
               
               <div className="mt-4 p-2 bg-slate-950 rounded border border-slate-800 text-[9px] text-[#94A3B8] font-mono leading-normal">

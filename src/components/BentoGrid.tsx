@@ -195,7 +195,7 @@ export const BentoGrid: React.FC = () => {
               <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800">
                 <Code2 className="w-6 h-6 text-[#E6C17A]" />
               </div>
-              <h3 className="text-xl font-bold font-display text-zinc-50">{t.frontendTitle}</h3>
+              <h3 className="font-display text-2xl leading-[1.2] font-normal text-white">{t.frontendTitle}</h3>
             </div>
             <p className="text-zinc-400 leading-relaxed max-w-lg text-sm md:text-base">
               {t.frontendDesc}
@@ -245,7 +245,7 @@ export const BentoGrid: React.FC = () => {
               <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800">
                 <Smartphone className="w-6 h-6 text-[#E6C17A]" />
               </div>
-              <h3 className="text-xl font-bold font-display text-zinc-50">{t.mobileTitle}</h3>
+              <h3 className="font-display text-2xl leading-[1.2] font-normal text-white">{t.mobileTitle}</h3>
             </div>
             <p className="text-zinc-400 text-sm leading-relaxed">
               {t.mobileDesc}
@@ -296,7 +296,7 @@ export const BentoGrid: React.FC = () => {
               <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800">
                 <Database className="w-6 h-6 text-[#E6C17A]" />
               </div>
-              <h3 className="text-xl font-bold font-display text-zinc-50">{t.backendTitle}</h3>
+              <h3 className="font-display text-2xl leading-[1.2] font-normal text-white">{t.backendTitle}</h3>
             </div>
             <p className="text-zinc-400 text-sm leading-relaxed">
               {t.backendDesc}
@@ -444,7 +444,7 @@ export const BentoGrid: React.FC = () => {
                 <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800">
                   <Wrench className="w-6 h-6 text-[#E6C17A]" />
                 </div>
-                <h3 className="text-xl font-bold font-display text-zinc-50">{t.toolsTitle}</h3>
+                <h3 className="font-display text-2xl leading-[1.2] font-normal text-white">{t.toolsTitle}</h3>
               </div>
               <p className="text-zinc-400 leading-relaxed text-sm md:text-base">
                 {t.toolsDesc}
@@ -493,7 +493,7 @@ export const BentoGrid: React.FC = () => {
               </defs>
             </svg>
             <div className="absolute flex flex-col items-center">
-              <span className="text-3xl font-black font-display text-white tracking-tighter">100</span>
+              <span className="text-3xl font-normal font-display text-white tracking-tighter">100</span>
               <span className="text-[10px] uppercase font-bold text-[#E6C17A] tracking-wider flex items-center gap-0.5">
                 <Search className="w-3 h-3" /> {t.seoScore}
               </span>

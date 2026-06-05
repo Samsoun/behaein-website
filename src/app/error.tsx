@@ -38,13 +38,13 @@ export default function ErrorBoundary({ error, reset }: ErrorProps) {
         </div>
 
         {/* Localized Header & Subtitle */}
-        <span className="text-[10px] font-mono font-bold tracking-[0.25em] text-red-500 uppercase mb-2">
+        <span className="font-body text-xs font-normal tracking-widest uppercase text-white/30 mb-2">
           System-Diagnose: Fehler 500
         </span>
-        <h2 className="text-2xl font-extrabold font-display text-white tracking-tight mb-3">
+        <h2 className="text-2xl font-normal font-display text-white tracking-tight mb-3">
           Visuelle Engine hat Schluckauf
         </h2>
-        <p className="text-slate-400 text-xs md:text-sm leading-relaxed mb-8 max-w-sm">
+        <p className="font-body text-base leading-relaxed font-normal text-white/50 mb-8 max-w-sm">
           Ein unerwarteter Laufzeitfehler ist aufgetreten. Keine Sorge, wir können das System sofort wiederherstellen.
         </p>
 
@@ -52,7 +52,7 @@ export default function ErrorBoundary({ error, reset }: ErrorProps) {
         <div className="flex flex-col sm:flex-row items-center gap-3.5 w-full">
           <button
             onClick={() => reset()}
-            className="flex items-center justify-center gap-2 w-full sm:w-auto flex-1 px-5 py-3 rounded-xl font-mono text-xs font-bold uppercase tracking-wider bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 hover:text-white transition-all shadow-[0_0_15px_rgba(239,68,68,0.08)] active:scale-[0.98] cursor-pointer"
+            className="flex items-center justify-center gap-2 w-full sm:w-auto flex-1 px-5 py-3 rounded-xl font-body text-sm font-normal uppercase tracking-wider bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 hover:text-white transition-all shadow-[0_0_15px_rgba(239,68,68,0.08)] active:scale-[0.98] cursor-pointer"
           >
             <RotateCcw className="w-4 h-4" />
             <span>Engine neustarten</span>
@@ -60,7 +60,7 @@ export default function ErrorBoundary({ error, reset }: ErrorProps) {
           
           <a
             href="/"
-            className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-xl font-mono text-xs font-bold uppercase tracking-wider bg-slate-900 border border-white/5 text-slate-400 hover:border-white/10 hover:text-white transition-all active:scale-[0.98]"
+            className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-xl font-body text-sm font-normal uppercase tracking-wider bg-slate-900 border border-white/5 text-slate-400 hover:border-white/10 hover:text-white transition-all active:scale-[0.98]"
           >
             <Home className="w-4 h-4" />
             <span>Startseite</span>

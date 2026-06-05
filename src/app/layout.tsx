@@ -1,17 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Outfit, Inter, Vazirmatn } from "next/font/google";
+import { Instrument_Serif, Inter, Vazirmatn } from "next/font/google";
 import { LanguageProvider } from "@/context/LanguageContext";
 import "./globals.css";
 
-const outfit = Outfit({
+const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
-  variable: "--font-outfit",
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-display",
   display: "swap",
 });
 
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ["300", "400", "500"],
+  variable: "--font-body",
   display: "swap",
 });
 
@@ -29,12 +32,12 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Samsoun Behaein | Creative Technologist & Full-Stack Engineer",
-  description: "Elite Full-Stack and Mobile Developer specializing in premium Next.js web applications, cross-platform React Native / Expo apps, scalable Cloud backends, and flawless SEO architectures.",
+  title: "Samsoun Behaein | Creative Technologist & Full Stack Engineer",
+  description: "Portfolio of Samsoun Behaein, a Full Stack and Mobile Software Engineer specializing in Next.js web applications, cross platform React Native and Expo apps, scalable database architectures, and search engine optimization.",
   keywords: [
     "Samsoun Behaein", 
     "Creative Technologist", 
-    "Full-Stack Developer", 
+    "Full Stack Developer", 
     "Mobile Developer", 
     "Next.js Portfolio", 
     "React Native Expert", 
@@ -44,7 +47,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Samsoun Behaein" }],
   creator: "Samsoun Behaein",
   openGraph: {
-    title: "Samsoun Behaein | Creative Technologist & Full-Stack Engineer",
+    title: "Samsoun Behaein | Creative Technologist & Full Stack Engineer",
     description: "Immersive 3D-infused digital portfolio displaying premium web architectures, custom components, and highly optimized P2P applications.",
     url: "https://github.com/samsoun",
     siteName: "Samsoun Behaein Portfolio",
@@ -53,7 +56,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Samsoun Behaein | Creative Technologist & Full-Stack Developer",
+    title: "Samsoun Behaein | Creative Technologist & Full Stack Developer",
     description: "Bridging the gap between beautiful imagination and production-ready engineering.",
   },
 };
@@ -66,9 +69,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${outfit.variable} ${inter.variable} ${vazirmatn.variable} h-full scroll-smooth antialiased`}
+      className={`${instrumentSerif.variable} ${inter.variable} ${vazirmatn.variable} h-full scroll-smooth antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#09090b] text-[#F8FAFC]">
+      <body className="font-body min-h-full flex flex-col bg-[#09090b] text-[#F8FAFC]">
         <LanguageProvider>
           {children}
         </LanguageProvider>

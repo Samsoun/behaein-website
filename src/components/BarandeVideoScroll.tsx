@@ -555,13 +555,13 @@ export const BarandeVideoScroll: React.FC = () => {
           the exact same background color as the scrolling demo below.
         */}
         <div className={`w-full max-w-4xl mb-5 md:mb-6 z-10 ${isRtl ? "text-right" : "text-center md:text-start"}`}>
-          <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#E6C17A]">
+          <span className="font-body text-xs font-normal tracking-widest uppercase text-white/30">
             {t("videoScrollTagline")}
           </span>
-          <h2 className="text-2xl md:text-3xl font-extrabold font-display text-white tracking-tight mt-1.5">
+          <h2 className="font-display text-4xl leading-[1.1] font-normal text-white mt-1.5">
             {t("videoScrollTitle")}
           </h2>
-          <p className="text-zinc-400 text-xs md:text-sm max-w-2xl mt-2 leading-relaxed">
+          <p className="font-body text-base leading-relaxed font-normal text-white/50 max-w-2xl mt-2">
             {t("videoScrollSubtitle")}
           </p>
         </div>
@@ -768,18 +768,18 @@ export const BarandeVideoScroll: React.FC = () => {
                 {/* Stepper Tag & Dynamic Remaining Badge */}
                 <div className="flex justify-between items-center mb-2.5 gap-2">
                   <div className="flex flex-col gap-1 items-start">
-                    <span className="text-[9px] font-mono font-bold tracking-[0.25em] text-[#E6C17A] uppercase">
+                    <span className="font-body text-xs font-normal tracking-widest uppercase text-white/30">
                       Phase 0{displayPhaseIndex + 1} · {t("videoScrollTagline")}
                     </span>
                     
                     {/* Glowing localized badge communicating remaining phases left */}
                     <div className="flex flex-wrap items-center gap-2">
-                      <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[8.5px] font-mono font-bold border bg-amber-100/5 border-amber-100/25 text-amber-100 shadow-[0_0_8px_rgba(230,193,122,0.12)]">
+                      <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full font-body text-xs font-normal border bg-amber-100/5 border-amber-100/25 text-amber-100 shadow-[0_0_8px_rgba(230,193,122,0.12)]">
                         <span className="w-1 h-1 rounded-full bg-[#E6C17A] animate-ping" />
                         <span>{remainingText}</span>
                       </div>
                       {isMobile && (
-                        <span className="text-[7.5px] font-mono font-black text-[#E6C17A]/60 uppercase tracking-widest animate-pulse">
+                        <span className="font-body text-xs font-normal tracking-widest uppercase text-white/30 animate-pulse">
                           {locale === "fa" 
                             ? "بکشید یا ضربه بزنید" 
                             : (locale === "de" 
@@ -797,12 +797,12 @@ export const BarandeVideoScroll: React.FC = () => {
                 </div>
 
                 {/* Headline */}
-                <h3 className="text-lg md:text-xl font-bold font-display text-white mb-1.5 text-start">
+                <h3 className="font-display text-2xl leading-[1.2] font-normal text-white mb-1.5 text-start">
                   {t(activePhase.titleKey)}
                 </h3>
 
                 {/* Detailed description text */}
-                <p className="text-zinc-300 text-xs md:text-[13px] leading-relaxed text-start mb-4.5 font-medium">
+                <p className="font-body text-base leading-relaxed font-normal text-white/50 text-start mb-4.5">
                   {t(activePhase.descKey)}
                 </p>
 
@@ -840,7 +840,7 @@ export const BarandeVideoScroll: React.FC = () => {
                       </span>
                     </div>
                     
-                    <button className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[11px] font-bold font-mono tracking-wider text-amber-100 border border-amber-100/40 bg-amber-100/10 shadow-[0_0_12px_rgba(230,193,122,0.2)] active:scale-95 transition-transform duration-100">
+                    <button className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-body text-sm font-normal text-amber-100 border border-amber-100/40 bg-amber-100/10 shadow-[0_0_12px_rgba(230,193,122,0.2)] active:scale-95 transition-transform duration-100">
                       <span>
                         {displayPhaseIndex === 3 
                           ? (isRtl ? "↺ فاز ۱" : "Phase 1 ↺") 

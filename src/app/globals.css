@@ -9,8 +9,9 @@
   --color-slate-300: #cbd5e1;
   --color-slate-100: #f1f5f9;
   
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-display: 'Inter', sans-serif;
+  --font-display: var(--font-display), Georgia, serif;
+  --font-body: var(--font-body), sans-serif;
+  --font-sans: var(--font-body), system-ui, -apple-system, sans-serif;
 
   --animate-grid-pan: grid-pan 20s linear infinite;
   --animate-neon-pulse: neon-pulse 3s ease-in-out infinite alternate;
@@ -50,7 +51,7 @@ html {
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   min-height: 100vh;
 }
 
@@ -58,6 +59,7 @@ body {
 html[dir="rtl"] {
   --font-sans: var(--font-vazirmatn), system-ui, -apple-system, sans-serif;
   --font-display: var(--font-vazirmatn), sans-serif;
+  --font-body: var(--font-vazirmatn), sans-serif;
 }
 
 html[dir="rtl"] * {

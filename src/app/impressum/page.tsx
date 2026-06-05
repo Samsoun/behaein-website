@@ -134,7 +134,7 @@ export default function Impressum() {
           
           <Link
             href="/"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-100/10 hover:bg-amber-100/20 border border-amber-100/25 text-[10px] sm:text-xs font-bold text-amber-100 uppercase tracking-wider transition-all duration-300 active:scale-95"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-100/10 hover:bg-amber-100/20 border border-amber-100/25 font-body text-sm font-normal text-amber-100 uppercase tracking-wider transition-all duration-300 active:scale-95"
           >
             <ArrowLeft className={`w-3.5 h-3.5 ${isRtl ? "rotate-180" : ""}`} />
             {t.backButton}
@@ -154,10 +154,10 @@ export default function Impressum() {
             transition={{ duration: 0.5 }}
             className={`text-center md:text-start mb-12 ${isRtl ? "md:text-right" : ""}`}
           >
-            <h1 className="text-4xl md:text-5xl font-black font-display text-white tracking-tight leading-tight">
+            <h1 className="text-4xl md:text-5xl font-normal font-display text-white tracking-tight leading-tight">
               {t.title}
             </h1>
-            <p className="text-zinc-400 text-sm md:text-base mt-2 font-mono uppercase tracking-wider">
+            <p className="font-body text-xs font-normal tracking-widest uppercase text-white/30 mt-2">
               {t.subtitle}
             </p>
           </motion.div>
@@ -174,7 +174,7 @@ export default function Impressum() {
                 key={idx} 
                 className={`flex flex-col gap-3 pb-8 last:pb-0 border-b border-zinc-900/50 last:border-0 ${isRtl ? "text-right" : "text-left"}`}
               >
-                <h2 className="text-lg sm:text-xl font-bold font-display text-[#E6C17A]">
+                <h2 className="text-lg sm:text-xl font-normal font-display text-white">
                   {section.title}
                 </h2>
                 <div className="text-zinc-300 text-sm leading-relaxed whitespace-pre-line font-sans">

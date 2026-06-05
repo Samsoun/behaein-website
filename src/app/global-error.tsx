@@ -15,7 +15,7 @@ export default function GlobalErrorBoundary({ error, reset }: GlobalErrorProps) 
 
   return (
     <html lang="de" className="h-full">
-      <body className="min-h-full flex flex-col bg-[#0B0F19] text-[#F8FAFC] font-sans antialiased">
+      <body className="font-body min-h-full flex flex-col bg-[#0B0F19] text-[#F8FAFC] antialiased">
         <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-16 relative overflow-hidden bg-[#0B0F19]">
           {/* Background Radial Glow */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#00F0FF]/[0.02] blur-[100px] pointer-events-none z-0" />
@@ -36,20 +36,20 @@ export default function GlobalErrorBoundary({ error, reset }: GlobalErrorProps) 
             </div>
 
             {/* Localized Header & Subtitle */}
-            <span className="text-[10px] font-mono font-bold tracking-[0.25em] text-red-500 uppercase mb-2">
+            <span className="font-body text-xs font-normal tracking-widest uppercase text-white/30 mb-2">
               System-Diagnose: Kritischer Ausnahmefehler
             </span>
-            <h2 className="text-2xl font-extrabold text-white tracking-tight mb-3">
+            <h2 className="font-display text-2xl font-normal text-white tracking-tight mb-3">
               Kritischer System-Ausfall
             </h2>
-            <p className="text-slate-400 text-xs md:text-sm leading-relaxed mb-8 max-w-sm">
+            <p className="font-body text-base leading-relaxed font-normal text-white/50 mb-8 max-w-sm">
               Es ist ein schwerwiegender Kernfehler aufgetreten. Keine Sorge, wir können die Engine sofort neu starten.
             </p>
 
             {/* Reload button */}
             <button
               onClick={() => reset()}
-              className="flex items-center justify-center gap-2 w-full px-5 py-3 rounded-xl font-mono text-xs font-bold uppercase tracking-wider bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 hover:text-white transition-all shadow-[0_0_15px_rgba(239,68,68,0.08)] active:scale-[0.98] cursor-pointer"
+              className="flex items-center justify-center gap-2 w-full px-5 py-3 rounded-xl font-body text-sm font-normal uppercase tracking-wider bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 hover:text-white transition-all shadow-[0_0_15px_rgba(239,68,68,0.08)] active:scale-[0.98] cursor-pointer"
             >
               <RotateCcw className="w-4 h-4" />
               <span>Core neustarten</span>

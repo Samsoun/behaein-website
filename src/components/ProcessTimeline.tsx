@@ -3,7 +3,7 @@
 import React, { useRef } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Compass, Cpu, Rocket } from "lucide-react";
-import { useLanguage } from "@/context/LanguageContext";
+import { useLanguage, getBulletsForLocale } from "@/context/LanguageContext";
 
 interface Step {
   num: string;
@@ -14,7 +14,7 @@ interface Step {
 }
 
 export const ProcessTimeline: React.FC = () => {
-  const { locale, isRtl } = useLanguage();
+  const { t, locale, isRtl } = useLanguage();
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Track scrolling within this section to fill up the timeline track
@@ -32,49 +32,25 @@ export const ProcessTimeline: React.FC = () => {
   const steps: Step[] = [
     {
       num: "01",
-      title: locale === "fa" ? "تحقیق و طراحی UI/UX" : (locale === "de" ? "Konzeption & UI/UX Design" : "Discovery & UI/UX Design"),
+      title: t("processStep1Title"),
       icon: <Compass className="w-6 h-6 text-[#E6C17A]" />,
-      desc: locale === "fa" 
-        ? "پایه‌ریزی مستحکم با تبدیل ایده‌های خام به طرح‌های تعاملی و وایرفریم‌های دقیق. خلق زبان زیبایی‌شناسی برند، پالت‌های رنگی اختصاصی و ساختارهای واکنش‌گرا در فیگما."
-        : (locale === "de" 
-          ? "Schaffung solider Grundlagen, indem abstrakte Ideen in interaktive Layouts und maßgeschneiderte Wireframes übersetzt werden. Gestaltung der Markenästhetik, Auswahl harmonischer Paletten und Aufbau responsiver Strukturen in Figma."
-          : "Laying solid groundworks by converting abstract ideas into interactive layouts and highly tailored wireframes. Designing the brand's aesthetic language, choosing harmonies, and building responsive structures in Figma."),
-      bullets: locale === "fa" 
-        ? ["پروتوتایپ‌های تعاملی با دقت بالا", "خلق پالت رنگی اختصاصی و هماهنگ", "وایرفریمینگ واکنش‌گرا و موبایل‌محور", "نقشه‌های جریان کاربر و دسترسی‌پذیری"]
-        : (locale === "de" 
-          ? ["Interaktive High-Fidelity-Prototypen", "Erstellung harmonischer Farbpaletten", "Mobile-First responsive Wireframes", "User Flows & Barrierefreiheit-Checkliste"]
-          : ["Interactive high-fidelity prototypes", "Harmonious custom color palette creation", "Mobile-first responsive wireframing", "User flow maps & accessibility checklist"])
+      desc: t("processStep1Desc"),
+      bullets: getBulletsForLocale(locale, "processStep1Bullets"),
     },
     {
       num: "02",
-      title: locale === "fa" ? "مهندسی چابک (Agile)" : (locale === "de" ? "Agile Entwicklung" : "Agile Engineering"),
+      title: t("processStep2Title"),
       icon: <Cpu className="w-6 h-6 text-[#E6C17A]" />,
-      desc: locale === "fa"
-        ? "ترجمه وایرفریم‌ها به کدهای ماژولار، تمیز و استاندارد ری‌اکت و ری‌اکت نیتیو. پیاده‌سازی دیتابیس‌ها، سیستم‌های بیومتریک و خطوط مالی امن در یک ساختار مهندسی مدرن."
-        : (locale === "de"
-          ? "Übersetzung pixelperfekter Wireframes in sauberen, standardkonformen, modularen React- und React-Native-Code. Entwicklung sicherer APIs, Treuhand-Workflows, Datenbanken und biometrischer nativer Ebenen in modernen Ausführungssystemen."
-          : "Translating pixel-perfect wireframes into clean, standard-compliant, modular React and React Native code. Developing secure APIs, escrow workflows, databases, and biometric native layers inside modern execution systems."),
-      bullets: locale === "fa"
-        ? ["مخازن کد تمیز نکست‌جی‌اس و تایپ‌اسکریپت", "اپلیکیشن‌های چندپلتفرمه اکسپو و ری‌اکت نیتیو", "پایگاه‌داده‌های سوپابیس با قوانین دسترسی امن", "پوشش کامل ساختارهای ایمنی تایپ (Type-safety)"]
-        : (locale === "de"
-          ? ["Modulare Next.js / TypeScript-Codebases", "React Native & Expo Apps für iOS & Android", "Supabase-Schemata & sichere Zeilenregeln", "Vollständige Typsicherheitsstrukturen"]
-          : ["Modular Next.js / TypeScript codebases", "React Native & Expo cross-platform apps", "Supabase schemas & secure row-level rules", "Fully covered type-safety structures"])
+      desc: t("processStep2Desc"),
+      bullets: getBulletsForLocale(locale, "processStep2Bullets"),
     },
     {
       num: "03",
-      title: locale === "fa" ? "بهینه‌سازی و راه‌اندازی" : (locale === "de" ? "Optimierung & Launch" : "Optimization & Launch"),
+      title: t("processStep3Title"),
       icon: <Rocket className="w-6 h-6 text-[#E6C17A]" />,
-      desc: locale === "fa"
-        ? "تیونینگ کامل قطعات برای سرعت فوق‌العاده و کسب امتیاز کامل ۱۰۰/۱۰۰ در ابزار بررسی Lighthouse گوگل. استقرار روی سرورهای ابری با دامنه‌های اختصاصی، نقشه‌های سایت خودکار و پروتکل‌های امنیتی SSL."
-        : (locale === "de"
-          ? "Tuning von Komponenten für extreme Leistung, Ladeprioritäten und semantische Konformität, um ein makelloses 100/100 Lighthouse-Audit zu sichern. Deployment auf Netlify mit benutzerdefinierten Routen, automatischen Sitemaps und SSL."
-          : "Tuning components for extreme performance, loading priorities, and semantic compliance to secure a flawless 100/100 Lighthouse audit. Deploying onto Netlify with custom domain routes, automated sitemaps, and SSL configs."),
-      bullets: locale === "fa"
-        ? ["امتیاز ۱۰۰/۱۰۰ عملکرد در سنجش Lighthouse", "نشانه‌گذاری‌های استاندارد Google JSON-LD Schema", "سیستم‌های پیشرفته حافظه پنهان و بارگذاری سرور", "توسعه نهایی روی هاستینگ‌های تولیدی و فرم‌ها"]
-        : (locale === "de"
-          ? ["100/100 Lighthouse Performance-Audit", "JSON-LD strukturierte Google-Schemas", "Fortgeschrittenes Client-Preloading & Cache", "Netlify Production Deployments & Formulare"]
-          : ["100/100 Lighthouse performance audit", "JSON-LD structured Google Schema markup", "Advanced client preloading & server caching", "Netlify production deployments & forms"])
-    }
+      desc: t("processStep3Desc"),
+      bullets: getBulletsForLocale(locale, "processStep3Bullets"),
+    },
   ];
 
   return (
@@ -134,17 +110,17 @@ export const ProcessTimeline: React.FC = () => {
                   <div className="p-2.5 rounded-lg bg-[#E6C17A]/15 border border-[#E6C17A]/20 md:hidden">
                     {step.icon}
                   </div>
-                  <h3 className="text-lg md:text-xl font-bold font-sans text-zinc-50">{step.title}</h3>
+                  <h3 className="font-display text-2xl leading-[1.2] font-normal text-white">{step.title}</h3>
                 </div>
 
-                <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+                <p className="font-body text-base leading-relaxed font-normal text-white/50 mb-6">
                   {step.desc}
                 </p>
 
                 {/* List items */}
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {step.bullets.map((bullet, bIdx) => (
-                    <li key={bIdx} className="flex items-start gap-2 text-xs font-semibold text-zinc-300">
+                    <li key={bIdx} className="flex items-start gap-2 text-xs font-normal text-zinc-300">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#E6C17A] mt-1.5 shadow-[0_0_4px_#E6C17A] flex-shrink-0" />
                       <span>{bullet}</span>
                     </li>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
 import { Send, CheckCircle, AlertTriangle, Volume2, VolumeX, Lock, Unlock } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -121,10 +121,13 @@ const playSound = (type: "switch" | "click" | "slide" | "success" | "hover" | "a
 
 export const ContactForm: React.FC = () => {
   const { t, isRtl, locale } = useLanguage();
+  const [formMode, setFormMode] = useState<"interactive" | "simple">("simple");
+  const dragX = useMotionValue(0);
+  const pillScaleX = useTransform(dragX, [0, 50, 100], [1, 1.35, 1]);
   const [formState, setFormState] = useState({
     name: "",
     email: "",
-    projectType: "Full-Stack Development",
+    projectType: "Full Stack Development",
     message: "",
     "bot-field": "",
   });
@@ -137,6 +140,7 @@ export const ContactForm: React.FC = () => {
   const [muted, setMuted] = useState(false);
   const [isLidCoverOpen, setIsLidCoverOpen] = useState(false);
   const [isSubmittingDial, setIsSubmittingDial] = useState(false);
+  const [btnHovered, setBtnHovered] = useState(false);
 
   // Set default sound volume settings (retrieve from localstorage if set)
   useEffect(() => {
@@ -186,7 +190,9 @@ export const ContactForm: React.FC = () => {
     formBody.append("form-name", "contact");
     
     // Custom scope description injected directly into form state message for submissions
-    const finalMessage = `[PROJEKT-DIMENSION: ${scopeSlider}%]\n\n${formState.message}`;
+    const finalMessage = formMode === "interactive"
+      ? `[PROJEKT DIMENSION: ${scopeSlider}%]\n\n${formState.message}`
+      : formState.message;
     
     formBody.append("name", formState.name);
     formBody.append("email", formState.email);
@@ -204,7 +210,7 @@ export const ContactForm: React.FC = () => {
         setFormState({
           name: "",
           email: "",
-          projectType: "Full-Stack Development",
+          projectType: "Full Stack Development",
           message: "",
           "bot-field": "",
         });
@@ -225,7 +231,7 @@ export const ContactForm: React.FC = () => {
         setFormState({
           name: "",
           email: "",
-          projectType: "Full-Stack Development",
+          projectType: "Full Stack Development",
           message: "",
           "bot-field": "",
         });
@@ -333,435 +339,921 @@ export const ContactForm: React.FC = () => {
 
   return (
     <div className="w-full max-w-3xl mx-auto px-4 select-none text-start">
-      <motion.div
-        className="glass-panel border border-zinc-800/80 rounded-3xl p-6 md:p-8 relative overflow-hidden bg-zinc-950/80 shadow-[0_20px_50px_rgba(0,0,0,0.7)]"
-      >
-        {/* Futuristic Dashboard Face Overlay */}
-        <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-zinc-800/40 via-amber-100/30 to-zinc-800/40" />
-        
-        {/* Cockpit Status Header */}
-        <div className="flex justify-between items-center border-b border-zinc-900 pb-4 mb-6">
-          <div className="flex items-center gap-3">
-            {/* Status Indicator LED */}
-            <div className="relative flex h-2.5 w-2.5">
-              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${status === "submitting" ? "bg-amber-300" : "bg-amber-100"}`}></span>
-              <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${status === "submitting" ? "bg-amber-500" : "bg-[#E6C17A]"}`}></span>
-            </div>
-            <div>
-              <h3 className="text-xs font-mono font-bold tracking-widest text-zinc-400 uppercase">
-                {locale === "de" ? "SYS.VERBINDUNGS_PANEL // v1.2" : (isRtl ? "پنل اتصال // v1.2" : "SYS.CONNECT_PANEL // v1.2")}
-              </h3>
-              <p className="text-[10px] text-[#E6C17A] font-mono leading-none tracking-widest mt-1">
-                {status === "submitting" 
-                  ? (locale === "de" ? "ÜBERTRAGUNG LÄUFT..." : (isRtl ? "در حال ارسال..." : "TRANSMITTING...")) 
-                  : (locale === "de" ? "ONLINE // SYSTEM BEREIT" : (isRtl ? "آنلاین // سیستم آماده" : "ONLINE // SYSTEM READY"))
-                }
-              </p>
-            </div>
-          </div>
-          
-          {/* Dashboard Control (Audio Mute Toggle) */}
-          <button
-            type="button"
-            onClick={toggleMuted}
-            className={`p-2 rounded-lg border transition-all duration-200 cursor-pointer ${
-              muted 
-                ? "border-zinc-800/80 text-zinc-600 bg-zinc-950/40 hover:text-zinc-500" 
-                : "border-[#E6C17A]/25 text-[#E6C17A] bg-[#E6C17A]/5 hover:bg-[#E6C17A]/15"
-            }`}
-            title={
-              locale === "de" 
-                ? (muted ? "Sound einschalten" : "Sound ausschalten") 
-                : (isRtl ? (muted ? "فعال کردن صدا" : "قطع صدا") : (muted ? "Enable sound" : "Mute sound"))
-            }
-            aria-label="Toggle Sound"
-          >
-            {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 animate-pulse" />}
-          </button>
-        </div>
-
-        <AnimatePresence mode="wait">
-          {status === "success" ? (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 200, damping: 18 }}
-              className="py-12 flex flex-col items-center justify-center text-center gap-5"
-            >
-              <div className="relative">
-                {/* Glowing check ring */}
-                <div className="absolute inset-0 bg-emerald-500/25 blur-xl rounded-full scale-125 pointer-events-none" />
-                <motion.div
-                  initial={{ rotate: -90, scale: 0.5 }}
-                  animate={{ rotate: 0, scale: 1 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 12 }}
-                  className="relative z-10 p-4 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400"
-                >
-                  <CheckCircle className="w-12 h-12" />
-                </motion.div>
-              </div>
-              <h4 className="text-xl font-bold font-display text-white">{t("contactSuccessTitle")}</h4>
-              <p className="text-xs text-zinc-400 max-w-sm font-mono leading-relaxed bg-zinc-950/60 p-4 rounded-xl border border-zinc-900">
-                {t("contactSuccessDesc")}
-              </p>
-              <button
-                onClick={() => {
-                  setStatus("idle");
-                  setIsLidCoverOpen(false);
+      {/* Glassmorphism Form Switcher Toggle */}
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: "24px" }}>
+        <div 
+          dir="ltr"
+          style={{ 
+            position: "relative",
+            display: "flex", 
+            width: "208px",
+            padding: "4px", 
+            borderRadius: "9999px", 
+            backgroundColor: "rgba(24, 24, 27, 0.4)", 
+            border: "1px solid rgba(63, 63, 70, 0.4)",
+            boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.37)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            direction: "ltr"
+          }}
+        >
+          {/* Draggable Active pill background highlight */}
+          <motion.div
+            drag="x"
+            dragConstraints={{ left: 0, right: 100 }}
+            dragElastic={0.1}
+            dragMomentum={false}
+            style={{
+              position: "absolute",
+              top: "4px",
+              bottom: "4px",
+              left: "4px",
+              width: "100px",
+              borderRadius: "9999px",
+              backgroundColor: "rgba(230, 193, 122, 0.15)",
+              border: "1px solid rgba(230, 193, 122, 0.3)",
+              boxShadow: "0 0 15px rgba(230, 193, 122, 0.2)",
+              cursor: "grab",
+              zIndex: 5,
+              x: dragX,
+              scaleX: pillScaleX,
+              transformOrigin: "center"
+            }}
+            animate={{ x: formMode === (isRtl ? "interactive" : "simple") ? 0 : 100 }}
+            onDragEnd={(event, info) => {
+              if (isRtl) {
+                if (info.offset.x > 40 && formMode === "interactive") {
+                  setFormMode("simple");
                   playSound("switch", muted);
-                }}
-                className="mt-4 px-6 py-2.5 rounded-lg border border-zinc-800 hover:border-[#E6C17A]/40 text-xs font-mono font-bold text-zinc-300 hover:text-white transition-colors cursor-pointer active:scale-95 duration-150"
-              >
-                &lt; {t("contactSuccessBtn")} /&gt;
-              </button>
-            </motion.div>
-          ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-              {/* Spam Honeypot Protection */}
-              <input type="hidden" name="form-name" value="contact" />
-              <p className="hidden">
-                <label>
-                  Don&apos;t fill this out if you&apos;re human:{" "}
-                  <input name="bot-field" value={formState["bot-field"]} onChange={handleChange} />
-                </label>
-              </p>
+                } else if (info.offset.x + 40 < 0 && formMode === "simple") {
+                  setFormMode("interactive");
+                  playSound("switch", muted);
+                }
+              } else {
+                if (info.offset.x > 40 && formMode === "simple") {
+                  setFormMode("interactive");
+                  playSound("switch", muted);
+                } else if (info.offset.x + 40 < 0 && formMode === "interactive") {
+                  setFormMode("simple");
+                  playSound("switch", muted);
+                }
+              }
+            }}
+            whileDrag={{ scale: 0.98, cursor: "grabbing" }}
+            transition={{ type: "spring", stiffness: 350, damping: 20 }}
+          />
+          
+          <motion.button
+            type="button"
+            onClick={() => { setFormMode(isRtl ? "interactive" : "simple"); playSound("click", muted); }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            style={{
+              position: "relative",
+              zIndex: 10,
+              width: "100px",
+              padding: "8px 0",
+              borderRadius: "9999px",
+              fontSize: "12px",
+              fontFamily: locale === "fa" ? "Vazirmatn, Arial" : "Inter, Arial",
+              textTransform: "uppercase",
+              letterSpacing: locale === "fa" ? "normal" : "0.05em",
+              cursor: "pointer",
+              color: formMode === (isRtl ? "interactive" : "simple") ? "#ffffff" : "rgba(255, 255, 255, 0.4)",
+              border: "none",
+              backgroundColor: "transparent",
+              transition: "color 0.2s ease",
+              pointerEvents: (isRtl ? formMode === "interactive" : formMode === "simple") ? "none" : "auto"
+            }}
+          >
+            <span style={{ position: "relative", zIndex: 20 }}>
+              {locale === "de" ? "Klassisch" : (isRtl ? "پیشرفته" : "Classic")}
+            </span>
+          </motion.button>
+          
+          <motion.button
+            type="button"
+            onClick={() => { setFormMode(isRtl ? "simple" : "interactive"); playSound("click", muted); }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            style={{
+              position: "relative",
+              zIndex: 10,
+              width: "100px",
+              padding: "8px 0",
+              borderRadius: "9999px",
+              fontSize: "12px",
+              fontFamily: locale === "fa" ? "Vazirmatn, Arial" : "Inter, Arial",
+              textTransform: "uppercase",
+              letterSpacing: locale === "fa" ? "normal" : "0.05em",
+              cursor: "pointer",
+              color: formMode === (isRtl ? "simple" : "interactive") ? "#ffffff" : "rgba(255, 255, 255, 0.4)",
+              border: "none",
+              backgroundColor: "transparent",
+              transition: "color 0.2s ease",
+              pointerEvents: (isRtl ? formMode === "simple" : formMode === "interactive") ? "none" : "auto"
+            }}
+          >
+            <span style={{ position: "relative", zIndex: 20 }}>
+              {locale === "de" ? "Cockpit" : (isRtl ? "ساده" : "Cockpit")}
+            </span>
+          </motion.button>
+        </div>
+      </div>
 
-              {/* 1. INPUT DISPLAYS (Name & E-Mail) */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Name field */}
-                <div className="flex flex-col gap-1.5">
-                  <label 
-                    htmlFor="name" 
-                    className={`font-mono font-bold uppercase tracking-widest transition-colors duration-200 ${
-                      isRtl ? "text-xs" : "text-[10px]"
-                    } ${
-                      focusedField === "name" ? "text-[#E6C17A]" : "text-zinc-400"
-                    }`}
+      <AnimatePresence mode="wait">
+        {formMode === "interactive" ? (
+          <motion.div
+            key="interactive-form"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.2 }}
+            className="glass-panel border border-zinc-800/80 rounded-3xl p-6 md:p-8 relative overflow-hidden bg-zinc-950/80 shadow-[0_20px_50px_rgba(0,0,0,0.7)]"
+          >
+            {/* Futuristic Dashboard Face Overlay */}
+            <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-zinc-800/40 via-amber-100/30 to-zinc-800/40" />
+            
+            {/* Cockpit Status Header */}
+            <div className="flex justify-between items-center border-b border-zinc-900 pb-4 mb-6">
+              <div className="flex items-center gap-3">
+                {/* Status Indicator LED */}
+                <div className="relative flex h-2.5 w-2.5">
+                  <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${status === "submitting" ? "bg-amber-300" : "bg-amber-100"}`}></span>
+                  <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${status === "submitting" ? "bg-amber-500" : "bg-[#E6C17A]"}`}></span>
+                </div>
+                <div>
+                  <h3 
+                    style={{ fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace" }}
+                    className="text-xs font-mono font-bold tracking-widest text-zinc-400 uppercase"
                   >
-                    {t("contactNameLabel")}
-                  </label>
+                    {locale === "de" ? "SYS.VERBINDUNGS_PANEL // v1.2" : (isRtl ? "پنل اتصال // v1.2" : "SYS.CONNECT_PANEL // v1.2")}
+                  </h3>
+                  <p 
+                    style={{ fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace" }}
+                    className="text-[10px] text-[#E6C17A] font-mono leading-none tracking-widest mt-1"
+                  >
+                    {status === "submitting" 
+                      ? (locale === "de" ? "ÜBERTRAGUNG LÄUFT..." : (isRtl ? "در حال ارسال..." : "TRANSMITTING...")) 
+                      : (locale === "de" ? "ONLINE // SYSTEM BEREIT" : (isRtl ? "آنلاین // سیستم آماده" : "ONLINE // SYSTEM READY"))
+                    }
+                  </p>
+                </div>
+              </div>
+              
+              {/* Dashboard Control (Audio Mute Toggle) */}
+              <button
+                type="button"
+                onClick={toggleMuted}
+                className={`p-2 rounded-lg border transition-all duration-200 cursor-pointer ${
+                  muted 
+                    ? "border-zinc-800/80 text-zinc-600 bg-zinc-950/40 hover:text-zinc-500" 
+                    : "border-[#E6C17A]/25 text-[#E6C17A] bg-[#E6C17A]/5 hover:bg-[#E6C17A]/15"
+                }`}
+                title={
+                  locale === "de" 
+                    ? (muted ? "Sound einschalten" : "Sound ausschalten") 
+                    : (isRtl ? (muted ? "فعال کردن صدا" : "قطع صدا") : (muted ? "Enable sound" : "Mute sound"))
+                }
+                aria-label="Toggle Sound"
+              >
+                {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 animate-pulse" />}
+              </button>
+            </div>
+
+            <AnimatePresence mode="wait">
+              {status === "success" ? (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 18 }}
+                  className="py-12 flex flex-col items-center justify-center text-center gap-5"
+                >
                   <div className="relative">
+                    {/* Glowing check ring */}
+                    <div className="absolute inset-0 bg-emerald-500/25 blur-xl rounded-full scale-125 pointer-events-none" />
+                    <motion.div
+                      initial={{ rotate: -90, scale: 0.5 }}
+                      animate={{ rotate: 0, scale: 1 }}
+                      transition={{ type: "spring", stiffness: 200, damping: 12 }}
+                      className="relative z-10 p-4 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400"
+                    >
+                      <CheckCircle className="w-12 h-12" />
+                    </motion.div>
+                  </div>
+                  <h4 
+                    style={{ fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace" }}
+                    className="text-xl font-bold font-display text-white"
+                  >
+                    {t("contactSuccessTitle")}
+                  </h4>
+                  <p 
+                    style={{ fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace" }}
+                    className="text-xs text-zinc-400 max-w-sm font-mono leading-relaxed bg-zinc-950/60 p-4 rounded-xl border border-zinc-900"
+                  >
+                    {t("contactSuccessDesc")}
+                  </p>
+                  <button
+                    onClick={() => {
+                      setStatus("idle");
+                      setIsLidCoverOpen(false);
+                      playSound("switch", muted);
+                    }}
+                    style={{ fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace" }}
+                    className="mt-4 px-6 py-2.5 rounded-lg border border-zinc-800 hover:border-[#E6C17A]/40 text-xs font-mono font-bold text-zinc-300 hover:text-white transition-colors cursor-pointer active:scale-95 duration-150"
+                  >
+                    &lt; {t("contactSuccessBtn")} /&gt;
+                  </button>
+                </motion.div>
+              ) : (
+                <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                  {/* Spam Honeypot Protection */}
+                  <input type="hidden" name="form-name" value="contact" />
+                  <p className="hidden">
+                    <label>
+                      Don&apos;t fill this out if you&apos;re human:{" "}
+                      <input name="bot-field" value={formState["bot-field"]} onChange={handleChange} />
+                    </label>
+                  </p>
+
+                  {/* 1. INPUT DISPLAYS (Name & E-Mail) */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Name field */}
+                    <div className="flex flex-col gap-1.5">
+                      <label 
+                        htmlFor="name" 
+                        style={{ fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace", letterSpacing: isRtl ? "normal" : "0.1em" }}
+                        className={`font-mono font-bold uppercase tracking-widest transition-colors duration-200 ${
+                          isRtl ? "text-xs" : "text-[10px]"
+                        } ${
+                          focusedField === "name" ? "text-[#E6C17A]" : "text-zinc-400"
+                        }`}
+                      >
+                        {t("contactNameLabel")}
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          required
+                          value={formState.name}
+                          onChange={handleChange}
+                          onFocus={() => {
+                            setFocusedField("name");
+                            playSound("hover", muted);
+                          }}
+                          onBlur={() => setFocusedField(null)}
+                          placeholder={t("contactNamePlaceholder")}
+                          style={{ fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace" }}
+                          className="w-full px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-zinc-700/80 focus:border-[#E6C17A]/60 outline-none text-sm text-white placeholder-zinc-600 font-mono transition-colors shadow-inner"
+                        />
+                        <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[8px] font-mono text-zinc-600 select-none">
+                          [STR_VAL]
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Email field */}
+                    <div className="flex flex-col gap-1.5">
+                      <label 
+                        htmlFor="email" 
+                        style={{ fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace", letterSpacing: isRtl ? "normal" : "0.1em" }}
+                        className={`font-mono font-bold uppercase tracking-widest transition-colors duration-200 ${
+                          isRtl ? "text-xs" : "text-[10px]"
+                        } ${
+                          focusedField === "email" ? "text-[#E6C17A]" : "text-zinc-400"
+                        }`}
+                      >
+                        {t("contactEmailLabel")}
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          required
+                          value={formState.email}
+                          onChange={handleChange}
+                          onFocus={() => {
+                            setFocusedField("email");
+                            playSound("hover", muted);
+                          }}
+                          onBlur={() => setFocusedField(null)}
+                          placeholder={t("contactEmailPlaceholder")}
+                          style={{ fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace" }}
+                          className="w-full px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-zinc-700/80 focus:border-[#E6C17A]/60 outline-none text-sm text-white placeholder-zinc-600 font-mono transition-colors shadow-inner"
+                        />
+                        <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[8px] font-mono text-zinc-600 select-none">
+                          [ADDR_VAL]
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 2. THE FLIP SWITCHBOARD (Project focus selections) */}
+                  <div className="flex flex-col gap-2">
+                    <label 
+                      style={{ fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace", letterSpacing: isRtl ? "normal" : "0.1em" }}
+                      className={`font-mono font-bold uppercase tracking-widest text-zinc-400 ${isRtl ? "text-xs" : "text-[10px]"}`}
+                    >
+                      {t("contactFocusLabel")}
+                    </label>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-zinc-900/40 p-4 rounded-xl border border-zinc-900 shadow-inner">
+                      {projectFocusOptions.map((opt) => {
+                        const isSelected = formState.projectType === opt.submitVal;
+                        return (
+                          <div 
+                            key={opt.submitVal}
+                            onClick={() => handleSwitchToggle(opt.submitVal)}
+                            className={`flex flex-row items-center justify-between p-3 rounded-lg border transition-all duration-200 cursor-pointer ${
+                              isSelected 
+                                ? "bg-[#E6C17A]/5 border-[#E6C17A]/25 shadow-[0_0_15px_rgba(230,193,122,0.05)]" 
+                                : "bg-zinc-900/10 border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/30"
+                            }`}
+                          >
+                            <span 
+                              style={{ fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace" }}
+                              className={`font-mono font-bold leading-tight ${
+                                isRtl ? "text-xs" : "text-[10px]"
+                              } ${
+                                isSelected ? "text-[#E6C17A]" : "text-zinc-500"
+                              }`}
+                            >
+                              {t(opt.key)}
+                            </span>
+                            
+                            <div className="relative w-12 h-6 rounded-full bg-zinc-950 border border-zinc-800 flex items-center p-0.5 flex-shrink-0">
+                              <motion.div
+                                animate={isSelected ? { x: isRtl ? -24 : 24, backgroundColor: "#E6C17A" } : { x: 0, backgroundColor: "#334155" }}
+                                transition={{ type: "spring", stiffness: 350, damping: 14 }}
+                                className="w-5 h-5 rounded-full shadow-md flex items-center justify-center cursor-pointer"
+                              >
+                                <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-white animate-pulse" : "bg-zinc-600"}`} />
+                              </motion.div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 3. HORIZONTAL RANGE INSTRUMENT: PROJECT SCOPE PARAMETER */}
+                  <div className="flex flex-col gap-3 p-4 rounded-xl border border-zinc-900 bg-zinc-950/40 relative overflow-hidden">
+                    <div className="flex justify-between items-center mb-1">
+                      <span 
+                        style={{ fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace", letterSpacing: isRtl ? "normal" : "0.1em" }}
+                        className={`font-mono font-bold uppercase tracking-widest text-zinc-400 ${isRtl ? "text-xs" : "text-[10px]"}`}
+                      >
+                        {locale === "de" 
+                          ? "PROJEKT-SCOPE // PARAMETER" 
+                          : (isRtl ? "ابعاد پروژه // مقیاس کار" : "SYS.PROJECT_SCOPE // PARAMETER")
+                        }
+                      </span>
+                      <span 
+                        style={{ fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace" }}
+                        className={`font-mono font-bold text-[#E6C17A] ${isRtl ? "text-[13px]" : "text-[11px]"}`}
+                      >
+                        &gt; {scopeMeta.title}
+                      </span>
+                    </div>
+                    
+                    <div className="relative py-4 flex flex-col gap-2">
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={scopeSlider}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value);
+                          setScopeSlider(val);
+                          if (Math.round(val / 5) !== Math.round(scopeSlider / 5)) {
+                            playSound("click", muted);
+                          }
+                        }}
+                        className="w-full h-2 rounded-lg appearance-none cursor-pointer focus:outline-none relative z-10"
+                        style={{
+                          background: `linear-gradient(${isRtl ? "to left" : "to right"}, #E6C17A 0%, #ffffff ${scopeSlider}%, #09090b ${scopeSlider}%, #09090b 100%)`,
+                          border: "1px solid #27272a",
+                        }}
+                      />
+                      
+                      <style dangerouslySetInnerHTML={{ __html: `
+                        input[type="range"]::-webkit-slider-thumb {
+                          -webkit-appearance: none;
+                          appearance: none;
+                          width: 24px;
+                          height: 16px;
+                          border-radius: 4px;
+                          background: #1e293b;
+                          border: 2px solid #E6C17A;
+                          cursor: pointer;
+                          box-shadow: 0 0 10px rgba(230, 193, 122, 0.6);
+                          transition: background 0.15s ease;
+                        }
+                        input[type="range"]::-webkit-slider-thumb:hover {
+                          background: #334155;
+                        }
+                        input[type="range"]::-moz-range-thumb {
+                          width: 24px;
+                          height: 16px;
+                          border-radius: 4px;
+                          background: #1e293b;
+                          border: 2px solid #E6C17A;
+                          cursor: pointer;
+                          box-shadow: 0 0 10px rgba(230, 193, 122, 0.6);
+                        }
+                      `}} />
+
+                      <div className="flex justify-between text-[8px] font-mono text-zinc-500 px-1 select-none">
+                        <span>[01 // MVP]</span>
+                        <span>[02 // STANDARD]</span>
+                        <span>[03 // PREMIUM]</span>
+                        <span>[04 // ENTERPRISE]</span>
+                      </div>
+                    </div>
+
+                    <div 
+                      style={{ fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace" }}
+                      className={`font-mono text-zinc-400 bg-zinc-950/80 p-2.5 rounded border border-zinc-900/60 leading-normal ${isRtl ? "text-[12px] leading-relaxed" : "text-[10px]"}`}
+                    >
+                      {scopeMeta.desc}
+                    </div>
+                  </div>
+
+                  {/* 4. TRANSMISSION LOG WINDOW: MESSAGE */}
+                  <div className="flex flex-col gap-1.5">
+                    <label 
+                      htmlFor="message" 
+                      style={{ fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace", letterSpacing: isRtl ? "normal" : "0.1em" }}
+                      className={`font-mono font-bold uppercase tracking-widest transition-colors duration-200 ${
+                        isRtl ? "text-xs" : "text-[10px]"
+                      } ${
+                        focusedField === "message" ? "text-[#E6C17A]" : "text-zinc-400"
+                      }`}
+                    >
+                      {t("contactMessageLabel")}
+                    </label>
+                    <div className="relative">
+                      <textarea
+                        id="message"
+                        name="message"
+                        required
+                        rows={5}
+                        value={formState.message}
+                        onChange={handleChange}
+                        onFocus={() => {
+                          setFocusedField("message");
+                          playSound("hover", muted);
+                        }}
+                        onBlur={() => setFocusedField(null)}
+                        placeholder={t("contactMessagePlaceholder")}
+                        style={{ fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace" }}
+                        className="w-full px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-zinc-700/80 focus:border-[#E6C17A]/60 outline-none text-sm text-white placeholder-zinc-600 font-mono transition-colors resize-none shadow-inner"
+                      />
+                      <div className="absolute left-3.5 bottom-2 text-[8px] font-mono text-zinc-700 select-none pointer-events-none">
+                        [LOG_STREAM // MSG_BUFFER]
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 5. COCKPIT SUBMIT BOARD: SAFETY COVERED BUTTON */}
+                  <div className="border-t border-zinc-900 pt-6 mt-2 relative flex flex-col items-center gap-4">
+                    {status === "error" && (
+                      <div className="w-full p-3 bg-red-500/10 border border-red-500/25 rounded-lg flex items-center gap-2.5 text-xs text-red-400 font-mono">
+                        <AlertTriangle className="w-4 h-4 animate-bounce" /> 
+                        <span>{t("contactErrorText")}</span>
+                      </div>
+                    )}
+     
+                    <div className="relative w-full max-w-sm h-16 bg-zinc-950/60 rounded-xl border border-zinc-900 shadow-inner flex items-center justify-center overflow-hidden">
+                      <button
+                        type="submit"
+                        disabled={status === "submitting" || !isLidCoverOpen}
+                        style={{ fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace" }}
+                        className={`w-full h-full text-center relative px-6 flex items-center justify-center gap-2 font-mono font-extrabold uppercase tracking-widest transition-colors duration-200 select-none active:scale-[0.98] z-10 ${
+                          isLidCoverOpen && status !== "submitting"
+                            ? "text-red-500 hover:text-red-400 cursor-pointer"
+                            : "text-zinc-700 cursor-not-allowed"
+                        }`}
+                      >
+                        {isSubmittingDial ? (
+                          <>
+                            <span className="w-3.5 h-3.5 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
+                            <span className="text-red-400 animate-pulse text-xs tracking-wider">
+                              {t("contactSubmitEncrypting")}
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <Send className="w-4 h-4 animate-pulse" />
+                            <span className="text-xs tracking-widest">
+                              {locale === "de" 
+                                ? "ÜBERTRAGUNG STARTEN" 
+                                : (isRtl ? "ارسال نهایی" : "LAUNCH TRANSMISSION")
+                              }
+                            </span>
+                          </>
+                        )}
+                      </button>
+                      
+                      {isLidCoverOpen && !isSubmittingDial && (
+                        <div className="absolute inset-0 bg-red-500/5 animate-pulse pointer-events-none" />
+                      )}
+
+                      <motion.div
+                        drag="y"
+                        dragConstraints={{ top: -64, bottom: 0 }}
+                        dragElastic={0.08}
+                        animate={isLidCoverOpen ? { y: -64 } : { y: 0 }}
+                        transition={{ type: "spring", stiffness: 220, damping: 18 }}
+                        onDragEnd={(event, info) => {
+                          if (info.offset.y < -20) {
+                            setIsLidCoverOpen(true);
+                          } else {
+                            setIsLidCoverOpen(false);
+                          }
+                          playSound("slide", muted);
+                        }}
+                        onClick={handleLidToggle}
+                        className="absolute inset-0 bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl flex items-center justify-between px-5 cursor-row-resize select-none z-20 group"
+                      >
+                        <div 
+                          className="w-8 h-full opacity-20" 
+                          style={{
+                            backgroundImage: "repeating-linear-gradient(-45deg, #E6C17A, #E6C17A 6px, #18181b 6px, #18181b 12px)"
+                          }}
+                        />
+                        
+                        <div className="flex items-center gap-3">
+                          {isLidCoverOpen ? <Unlock className="w-4 h-4 text-emerald-500" /> : <Lock className="w-4 h-4 text-zinc-500" />}
+                          <span className={`font-mono font-bold uppercase tracking-widest ${
+                            isRtl ? "text-xs" : "text-[10px]"
+                          } ${isLidCoverOpen ? "text-emerald-500" : "text-zinc-400 group-hover:text-zinc-300"}`}>
+                            {isLidCoverOpen 
+                              ? (locale === "de" 
+                                  ? "ABDECKUNG OFFEN // STARTBEREIT" 
+                                  : (isRtl ? "پوشش باز شد - آماده پرتاب" : "LID OPEN // SAFE ARMED")
+                                ) 
+                              : (locale === "de" 
+                                  ? "ZUM STARTEN NACH OBEN ZIEHEN" 
+                                  : (isRtl ? "پوشش محافظ را بالا بکشید" : "DRAG UP TO LAUNCH")
+                                )
+                            }
+                          </span>
+                        </div>
+
+                        <div 
+                          className="w-8 h-full opacity-20" 
+                          style={{
+                            backgroundImage: "repeating-linear-gradient(-45deg, #E6C17A, #E6C17A 6px, #18181b 6px, #18181b 12px)"
+                          }}
+                        />
+                      </motion.div>
+                    </div>
+                  </div>
+                </form>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="simpleForm"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.2 }}
+            style={{
+              position: "relative",
+              overflow: "hidden",
+              borderRadius: "24px",
+              padding: "32px",
+              backgroundColor: "rgba(9, 9, 11, 0.8)",
+              border: "1px solid rgba(39, 39, 42, 0.8)",
+              boxShadow: "0 20px 50px rgba(0, 0, 0, 0.7)"
+            }}
+          >
+            {/* Top accent gold line */}
+            <div 
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "4px",
+                backgroundColor: "rgba(230, 193, 122, 0.3)"
+              }} 
+            />
+
+            <AnimatePresence mode="wait">
+              {status === "success" ? (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 18 }}
+                  style={{
+                    padding: "48px 0",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
+                    gap: "20px"
+                  }}
+                >
+                  <div style={{ position: "relative" }}>
+                    <div 
+                      style={{ 
+                        position: "absolute", 
+                        top: 0, 
+                        left: 0, 
+                        right: 0, 
+                        bottom: 0, 
+                        backgroundColor: "rgba(16, 185, 129, 0.25)", 
+                        filter: "blur(20px)", 
+                        borderRadius: "9999px" 
+                      }} 
+                    />
+                    <motion.div
+                      initial={{ rotate: -90, scale: 0.5 }}
+                      animate={{ rotate: 0, scale: 1 }}
+                      transition={{ type: "spring", stiffness: 200, damping: 12 }}
+                      style={{
+                        position: "relative",
+                        zIndex: 10,
+                        padding: "16px",
+                        borderRadius: "9999px",
+                        backgroundColor: "rgba(16, 185, 129, 0.1)",
+                        border: "1px solid rgba(16, 185, 129, 0.3)",
+                        color: "#34d399"
+                      }}
+                    >
+                      <CheckCircle size={48} />
+                    </motion.div>
+                  </div>
+                  <h4 style={{ fontSize: "20px", fontWeight: "bold", color: "#ffffff" }}>
+                    {t("contactSuccessTitle")}
+                  </h4>
+                  <p 
+                    style={{ 
+                      fontSize: "12px", 
+                      color: "#a1a1aa", 
+                      maxWidth: "380px", 
+                      fontFamily: "monospace", 
+                      lineHeight: "1.6", 
+                      backgroundColor: "rgba(9, 9, 11, 0.6)", 
+                      padding: "16px", 
+                      borderRadius: "12px", 
+                      border: "1px solid #18181b" 
+                    }}
+                  >
+                    {t("contactSuccessDesc")}
+                  </p>
+                  <button
+                    onClick={() => {
+                      setStatus("idle");
+                      playSound("switch", muted);
+                    }}
+                    style={{
+                      marginTop: "16px",
+                      padding: "10px 24px",
+                      borderRadius: "8px",
+                      border: "1px solid #27272a",
+                      fontSize: "12px",
+                      fontFamily: "monospace",
+                      fontWeight: "bold",
+                      color: "#d4d4d8",
+                      backgroundColor: "transparent",
+                      cursor: "pointer",
+                      transition: "all 0.15s ease"
+                    }}
+                  >
+                    &lt; {t("contactSuccessBtn")} /&gt;
+                  </button>
+                </motion.div>
+              ) : (
+                <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+                  <input type="hidden" name="form-name" value="contact" />
+                  <p style={{ display: "none" }}>
+                    <label>
+                      Don&apos;t fill this out if you&apos;re human:{" "}
+                      <input name="bot-field" value={formState["bot-field"]} onChange={handleChange} />
+                    </label>
+                  </p>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label 
+                      htmlFor="simpleName" 
+                      style={{
+                        fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace",
+                        fontWeight: "bold",
+                        textTransform: "uppercase",
+                        letterSpacing: isRtl ? "normal" : "0.1em",
+                        transition: "color 0.2s ease",
+                        fontSize: isRtl ? "12px" : "10px",
+                        color: focusedField === "simpleName" ? "#E6C17A" : "#a1a1aa"
+                      }}
+                    >
+                      {t("contactNameLabel")}
+                    </label>
                     <input
                       type="text"
-                      id="name"
+                      id="simpleName"
                       name="name"
                       required
                       value={formState.name}
                       onChange={handleChange}
                       onFocus={() => {
-                        setFocusedField("name");
+                        setFocusedField("simpleName");
                         playSound("hover", muted);
                       }}
                       onBlur={() => setFocusedField(null)}
                       placeholder={t("contactNamePlaceholder")}
-                      className="w-full px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-zinc-700/80 focus:border-[#E6C17A]/60 outline-none text-sm text-white placeholder-zinc-600 font-mono transition-colors shadow-inner"
+                      style={{
+                        width: "100%",
+                        padding: "12px 16px",
+                        borderRadius: "8px",
+                        backgroundColor: "#09090b",
+                        border: focusedField === "simpleName" ? "1px solid rgba(230, 193, 122, 0.6)" : "1px solid #27272a",
+                        outline: "none",
+                        fontSize: "14px",
+                        color: "#ffffff",
+                        fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace",
+                        transition: "all 0.2s ease"
+                      }}
                     />
-                    <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[8px] font-mono text-zinc-600 select-none">
-                      [STR_VAL]
-                    </div>
                   </div>
-                </div>
 
-                {/* Email field */}
-                <div className="flex flex-col gap-1.5">
-                  <label 
-                    htmlFor="email" 
-                    className={`font-mono font-bold uppercase tracking-widest transition-colors duration-200 ${
-                      isRtl ? "text-xs" : "text-[10px]"
-                    } ${
-                      focusedField === "email" ? "text-[#E6C17A]" : "text-zinc-400"
-                    }`}
-                  >
-                    {t("contactEmailLabel")}
-                  </label>
-                  <div className="relative">
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label 
+                      htmlFor="simpleEmail" 
+                      style={{
+                        fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace",
+                        fontWeight: "bold",
+                        textTransform: "uppercase",
+                        letterSpacing: isRtl ? "normal" : "0.1em",
+                        transition: "color 0.2s ease",
+                        fontSize: isRtl ? "12px" : "10px",
+                        color: focusedField === "simpleEmail" ? "#E6C17A" : "#a1a1aa"
+                      }}
+                    >
+                      {t("contactEmailLabel")}
+                    </label>
                     <input
                       type="email"
-                      id="email"
+                      id="simpleEmail"
                       name="email"
                       required
                       value={formState.email}
                       onChange={handleChange}
                       onFocus={() => {
-                        setFocusedField("email");
+                        setFocusedField("simpleEmail");
                         playSound("hover", muted);
                       }}
                       onBlur={() => setFocusedField(null)}
                       placeholder={t("contactEmailPlaceholder")}
-                      className="w-full px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-zinc-700/80 focus:border-[#E6C17A]/60 outline-none text-sm text-white placeholder-zinc-600 font-mono transition-colors shadow-inner"
+                      style={{
+                        width: "100%",
+                        padding: "12px 16px",
+                        borderRadius: "8px",
+                        backgroundColor: "#09090b",
+                        border: focusedField === "simpleEmail" ? "1px solid rgba(230, 193, 122, 0.6)" : "1px solid #27272a",
+                        outline: "none",
+                        fontSize: "14px",
+                        color: "#ffffff",
+                        fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace",
+                        transition: "all 0.2s ease"
+                      }}
                     />
-                    <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[8px] font-mono text-zinc-600 select-none">
-                      [ADDR_VAL]
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label 
+                      htmlFor="simpleMessage" 
+                      style={{
+                        fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace",
+                        fontWeight: "bold",
+                        textTransform: "uppercase",
+                        letterSpacing: isRtl ? "normal" : "0.1em",
+                        transition: "color 0.2s ease",
+                        fontSize: isRtl ? "12px" : "10px",
+                        color: focusedField === "simpleMessage" ? "#E6C17A" : "#a1a1aa"
+                      }}
+                    >
+                      {t("contactMessageLabel")}
+                    </label>
+                    <textarea
+                      id="simpleMessage"
+                      name="message"
+                      required
+                      rows={6}
+                      value={formState.message}
+                      onChange={handleChange}
+                      onFocus={() => {
+                        setFocusedField("simpleMessage");
+                        playSound("hover", muted);
+                      }}
+                      onBlur={() => setFocusedField(null)}
+                      placeholder={t("contactMessagePlaceholder")}
+                      style={{
+                        width: "100%",
+                        padding: "12px 16px",
+                        borderRadius: "8px",
+                        backgroundColor: "#09090b",
+                        border: focusedField === "simpleMessage" ? "1px solid rgba(230, 193, 122, 0.6)" : "1px solid #27272a",
+                        outline: "none",
+                        fontSize: "14px",
+                        color: "#ffffff",
+                        fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace",
+                        transition: "all 0.2s ease",
+                        resize: "none"
+                      }}
+                    />
+                  </div>
+
+                  {status === "error" && (
+                    <div 
+                      style={{
+                        width: "100%",
+                        padding: "12px",
+                        backgroundColor: "rgba(239, 68, 68, 0.1)",
+                        border: "1px solid rgba(239, 68, 68, 0.25)",
+                        borderRadius: "8px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                        fontSize: "12px",
+                        color: "#f87171",
+                        fontFamily: "monospace"
+                      }}
+                    >
+                      <AlertTriangle size={16} /> 
+                      <span>{t("contactErrorText")}</span>
                     </div>
-                  </div>
-                </div>
-              </div>
+                  )}
 
-              {/* 2. THE FLIP SWITCHBOARD (Project focus selections - 2-column grid layout to prevent text overflows) */}
-              <div className="flex flex-col gap-2">
-                <label className={`font-mono font-bold uppercase tracking-widest text-zinc-400 ${isRtl ? "text-xs" : "text-[10px]"}`}>
-                  {t("contactFocusLabel")}
-                </label>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-zinc-900/40 p-4 rounded-xl border border-zinc-900 shadow-inner">
-                  {projectFocusOptions.map((opt) => {
-                    const isSelected = formState.projectType === opt.submitVal;
-                    return (
-                      <div 
-                        key={opt.submitVal}
-                        onClick={() => handleSwitchToggle(opt.submitVal)}
-                        className={`flex flex-row items-center justify-between p-3 rounded-lg border transition-all duration-200 cursor-pointer ${
-                          isSelected 
-                            ? "bg-[#E6C17A]/5 border-[#E6C17A]/25 shadow-[0_0_15px_rgba(230,193,122,0.05)]" 
-                            : "bg-zinc-900/10 border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/30"
-                        }`}
-                      >
-                        {/* Switchboard Text Label */}
-                        <span className={`font-mono font-bold leading-tight ${
-                          isRtl ? "text-xs" : "text-[10px]"
-                        } ${
-                          isSelected ? "text-[#E6C17A]" : "text-zinc-500"
-                        }`}>
-                          {t(opt.key)}
-                        </span>
-                        
-                        {/* Snappy Spring Cockpit Flip Toggle Switch */}
-                        <div className="relative w-12 h-6 rounded-full bg-zinc-950 border border-zinc-800 flex items-center p-0.5 flex-shrink-0">
-                          <motion.div
-                            animate={isSelected ? { x: isRtl ? -24 : 24, backgroundColor: "#E6C17A" } : { x: 0, backgroundColor: "#334155" }}
-                            transition={{ type: "spring", stiffness: 350, damping: 14 }}
-                            className="w-5 h-5 rounded-full shadow-md flex items-center justify-center cursor-pointer"
-                          >
-                            {/* Visual Toggle LED */}
-                            <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-white animate-pulse" : "bg-zinc-600"}`} />
-                          </motion.div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* 3. HORIZONTAL RANGE INSTRUMENT: PROJECT SCOPE PARAMETER (Replacing circular dial knob) */}
-              <div className="flex flex-col gap-3 p-4 rounded-xl border border-zinc-900 bg-zinc-950/40 relative overflow-hidden">
-                <div className="flex justify-between items-center mb-1">
-                  <span className={`font-mono font-bold uppercase tracking-widest text-zinc-400 ${isRtl ? "text-xs" : "text-[10px]"}`}>
-                    {locale === "de" 
-                      ? "PROJEKT-SCOPE // PARAMETER" 
-                      : (isRtl ? "ابعاد پروژه // مقیاس کار" : "SYS.PROJECT_SCOPE // PARAMETER")
-                    }
-                  </span>
-                  <span className={`font-mono font-bold text-[#E6C17A] ${isRtl ? "text-[13px]" : "text-[11px]"}`}>
-                    &gt; {scopeMeta.title}
-                  </span>
-                </div>
-                
-                {/* Horizontal range slider */}
-                <div className="relative py-4 flex flex-col gap-2">
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    value={scopeSlider}
-                    onChange={(e) => {
-                      const val = parseInt(e.target.value);
-                      setScopeSlider(val);
-                      if (Math.round(val / 5) !== Math.round(scopeSlider / 5)) {
-                        playSound("click", muted);
-                      }
-                    }}
-                    className="w-full h-2 rounded-lg appearance-none cursor-pointer focus:outline-none relative z-10"
-                    style={{
-                      background: `linear-gradient(${isRtl ? "to left" : "to right"}, #E6C17A 0%, #ffffff ${scopeSlider}%, #09090b ${scopeSlider}%, #09090b 100%)`,
-                      border: "1px solid #27272a",
-                    }}
-                  />
-                  
-                  {/* CSS styles to overwrite browser range fader handles */}
-                  <style dangerouslySetInnerHTML={{ __html: `
-                    input[type="range"]::-webkit-slider-thumb {
-                      -webkit-appearance: none;
-                      appearance: none;
-                      width: 24px;
-                      height: 16px;
-                      border-radius: 4px;
-                      background: #1e293b;
-                      border: 2px solid #E6C17A;
-                      cursor: pointer;
-                      box-shadow: 0 0 10px rgba(230, 193, 122, 0.6);
-                      transition: background 0.15s ease;
-                    }
-                    input[type="range"]::-webkit-slider-thumb:hover {
-                      background: #334155;
-                    }
-                    input[type="range"]::-moz-range-thumb {
-                      width: 24px;
-                      height: 16px;
-                      border-radius: 4px;
-                      background: #1e293b;
-                      border: 2px solid #E6C17A;
-                      cursor: pointer;
-                      box-shadow: 0 0 10px rgba(230, 193, 122, 0.6);
-                    }
-                  `}} />
-
-                  {/* Range indicators/ticks */}
-                  <div className="flex justify-between text-[8px] font-mono text-zinc-500 px-1 select-none">
-                    <span>[01 // MVP]</span>
-                    <span>[02 // STANDARD]</span>
-                    <span>[03 // PREMIUM]</span>
-                    <span>[04 // ENTERPRISE]</span>
-                  </div>
-                </div>
-
-                {/* Scope Description lcd display readout */}
-                <div className={`font-mono text-zinc-400 bg-zinc-950/80 p-2.5 rounded border border-zinc-900/60 leading-normal ${isRtl ? "text-[12px] leading-relaxed" : "text-[10px]"}`}>
-                  {scopeMeta.desc}
-                </div>
-              </div>
-
-              {/* 4. TRANSMISSION LOG WINDOW: MESSAGE */}
-              <div className="flex flex-col gap-1.5">
-                <label 
-                  htmlFor="message" 
-                  className={`font-mono font-bold uppercase tracking-widest transition-colors duration-200 ${
-                    isRtl ? "text-xs" : "text-[10px]"
-                  } ${
-                    focusedField === "message" ? "text-[#E6C17A]" : "text-zinc-400"
-                  }`}
-                >
-                  {t("contactMessageLabel")}
-                </label>
-                <div className="relative">
-                  <textarea
-                    id="message"
-                    name="message"
-                    required
-                    rows={5}
-                    value={formState.message}
-                    onChange={handleChange}
-                    onFocus={() => {
-                      setFocusedField("message");
-                      playSound("hover", muted);
-                    }}
-                    onBlur={() => setFocusedField(null)}
-                    placeholder={t("contactMessagePlaceholder")}
-                    className="w-full px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-zinc-700/80 focus:border-[#E6C17A]/60 outline-none text-sm text-white placeholder-zinc-600 font-mono transition-colors resize-none shadow-inner"
-                  />
-                  <div className="absolute left-3.5 bottom-2 text-[8px] font-mono text-zinc-700 select-none pointer-events-none">
-                    [LOG_STREAM // MSG_BUFFER]
-                  </div>
-                </div>
-              </div>
-
-              {/* 5. COCKPIT SUBMIT BOARD: SAFETY COVERED BUTTON */}
-              <div className="border-t border-zinc-900 pt-6 mt-2 relative flex flex-col items-center gap-4">
-                
-                {/* Warning message if submit fails */}
-                {status === "error" && (
-                  <div className="w-full p-3 bg-red-500/10 border border-red-500/25 rounded-lg flex items-center gap-2.5 text-xs text-red-400 font-mono">
-                    <AlertTriangle className="w-4 h-4 animate-bounce" /> 
-                    <span>{t("contactErrorText")}</span>
-                  </div>
-                )}
- 
-                {/* The Hydraulic Lift Lid Launch Panel */}
-                <div className="relative w-full max-w-sm h-16 bg-zinc-950/60 rounded-xl border border-zinc-900 shadow-inner flex items-center justify-center overflow-hidden">
-                  
-                  {/* ABSENDEN / LAUNCH BUTTON (Sits securely underneath cover) */}
                   <button
                     type="submit"
-                    disabled={status === "submitting" || !isLidCoverOpen}
-                    className={`w-full h-full text-center relative px-6 flex items-center justify-center gap-2 font-mono font-extrabold uppercase tracking-widest transition-colors duration-200 select-none active:scale-[0.98] z-10 ${
-                      isLidCoverOpen && status !== "submitting"
-                        ? "text-red-500 hover:text-red-400 cursor-pointer"
-                        : "text-zinc-700 cursor-not-allowed"
-                    }`}
+                    disabled={status === "submitting"}
+                    onMouseEnter={() => setBtnHovered(true)}
+                    onMouseLeave={() => setBtnHovered(false)}
+                    style={{
+                      width: "100%",
+                      padding: "14px 0",
+                      borderRadius: "12px",
+                      backgroundColor: btnHovered ? "rgba(230, 193, 122, 0.15)" : "rgba(255, 255, 255, 0.05)",
+                      border: btnHovered ? "1px solid rgba(230, 193, 122, 0.3)" : "1px solid rgba(255, 255, 255, 0.1)",
+                      fontFamily: isRtl ? "Vazirmatn, Arial" : "Inter, Arial",
+                      fontSize: "14px",
+                      fontWeight: "normal",
+                      color: "#E6C17A",
+                      letterSpacing: isRtl ? "normal" : "0.05em",
+                      textTransform: "uppercase",
+                      cursor: "pointer",
+                      transition: "all 0.3s ease",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "8px"
+                    }}
                   >
-                    {isSubmittingDial ? (
+                    {status === "submitting" ? (
                       <>
-                        <span className="w-3.5 h-3.5 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
-                        <span className="text-red-400 animate-pulse text-xs tracking-wider">
-                          {t("contactSubmitEncrypting")}
-                        </span>
+                        <span 
+                          style={{
+                            width: "14px",
+                            height: "14px",
+                            border: "2px solid #E6C17A",
+                            borderTopColor: "transparent",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite"
+                          }}
+                        />
+                        <style dangerouslySetInnerHTML={{__html: `
+                          @keyframes spin {
+                            from { transform: rotate(0deg); }
+                            to { transform: rotate(360deg); }
+                          }
+                        `}}/>
+                        <span>{t("contactSubmitEncrypting")}</span>
                       </>
                     ) : (
                       <>
-                        <Send className="w-4 h-4 animate-pulse" />
-                        <span className="text-xs tracking-widest">
-                          {locale === "de" 
-                            ? "ÜBERTRAGUNG STARTEN" 
-                            : (isRtl ? "ارسال نهایی" : "LAUNCH TRANSMISSION")
-                          }
-                        </span>
+                        <Send size={16} />
+                        <span>{locale === "de" ? "Nachricht Senden" : (isRtl ? "ارسال پیام" : "Send Message")}</span>
                       </>
                     )}
                   </button>
-                  
-                  {/* LCD Display backing glow */}
-                  {isLidCoverOpen && !isSubmittingDial && (
-                    <div className="absolute inset-0 bg-red-500/5 animate-pulse pointer-events-none" />
-                  )}
-
-                  {/* ROTATING ROCKET LID COVER (Hydraulic drag panel) */}
-                  <motion.div
-                    drag="y"
-                    dragConstraints={{ top: -64, bottom: 0 }}
-                    dragElastic={0.08}
-                    animate={isLidCoverOpen ? { y: -64 } : { y: 0 }}
-                    transition={{ type: "spring", stiffness: 220, damping: 18 }}
-                    onDragEnd={(event, info) => {
-                      if (info.offset.y < -20) {
-                        setIsLidCoverOpen(true);
-                      } else {
-                        setIsLidCoverOpen(false);
-                      }
-                      playSound("slide", muted);
-                    }}
-                    onClick={handleLidToggle}
-                    className="absolute inset-0 bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl flex items-center justify-between px-5 cursor-row-resize select-none z-20 group"
-                  >
-                    {/* Industry Safety Stripes */}
-                    <div 
-                      className="w-8 h-full opacity-20" 
-                      style={{
-                        backgroundImage: "repeating-linear-gradient(-45deg, #E6C17A, #E6C17A 6px, #18181b 6px, #18181b 12px)"
-                      }}
-                    />
-                    
-                    <div className="flex items-center gap-3">
-                      {isLidCoverOpen ? <Unlock className="w-4 h-4 text-emerald-500" /> : <Lock className="w-4 h-4 text-zinc-500" />}
-                      <span className={`font-mono font-bold uppercase tracking-widest ${
-                        isRtl ? "text-xs" : "text-[10px]"
-                      } ${isLidCoverOpen ? "text-emerald-500" : "text-zinc-400 group-hover:text-zinc-300"}`}>
-                        {isLidCoverOpen 
-                          ? (locale === "de" 
-                              ? "ABDECKUNG OFFEN // STARTBEREIT" 
-                              : (isRtl ? "پوشش باز شد - آماده پرتاب" : "LID OPEN // SAFE ARMED")
-                            ) 
-                          : (locale === "de" 
-                              ? "ZUM STARTEN NACH OBEN ZIEHEN" 
-                              : (isRtl ? "پوشش محافظ را بالا بکشید" : "DRAG UP TO LAUNCH")
-                            )
-                        }
-                      </span>
-                    </div>
-
-                    <div 
-                      className="w-8 h-full opacity-20" 
-                      style={{
-                        backgroundImage: "repeating-linear-gradient(-45deg, #E6C17A, #E6C17A 6px, #18181b 6px, #18181b 12px)"
-                      }}
-                    />
-                  </motion.div>
-                </div>
-              </div>
-            </form>
-          )}
-        </AnimatePresence>
-      </motion.div>
+                </form>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

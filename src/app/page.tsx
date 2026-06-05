@@ -168,21 +168,43 @@ export default function Home() {
       <GeometricBackground />
 
       {/* Floating Navbar */}
-      <header className="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl">
+      <header className="fixed top-5 z-50" style={{ left: 0, right: 0, marginLeft: "auto", marginRight: "auto", width: "90%", maxWidth: "1024px" }}>
         <nav className="glass-panel rounded-full px-4 sm:px-6 py-3 flex justify-between items-center shadow-lg border border-white/5 backdrop-blur-md">
           <div 
             onClick={() => handleScroll("hero")} 
-            className="cursor-pointer group"
+            style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer" }}
+            className="group"
           >
             <Logo size={28} />
+            <span 
+              className="hidden sm:inline" 
+              style={{ height: "16px", width: "1px", backgroundColor: "rgba(255, 255, 255, 0.1)" }} 
+            />
+            <span 
+              className="hidden sm:inline" 
+              style={{ 
+                fontSize: locale === "fa" ? "13px" : "11px", 
+                fontFamily: locale === "fa" ? "Vazirmatn, Tahoma, sans-serif" : "Inter, sans-serif", 
+                letterSpacing: locale === "fa" ? "normal" : "0.15em", 
+                color: "rgba(255, 255, 255, 0.35)", 
+                textTransform: "uppercase",
+                lineHeight: "1.3"
+              }}
+            >
+              {t("navTagline").split("\n").map((line, index) => (
+                <React.Fragment key={index}>
+                  {index > 0 && <br />}
+                  {line}
+                </React.Fragment>
+              ))}
+            </span>
           </div>
           
-          <div className="hidden md:flex gap-3 sm:gap-6 md:gap-8 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
+          <div className="hidden md:flex gap-3 sm:gap-6 md:gap-8 font-body text-sm font-normal tracking-wide text-white/45">
             {[
               { id: "stack", key: "navStack" },
               { id: "projects", key: "navProjects" },
-              { id: "process", key: "navProcess" },
-              { id: "contact", key: "navContact" }
+              { id: "process", key: "navProcess" }
             ].map((section) => (
               <button
                 key={section.id}
@@ -198,7 +220,8 @@ export default function Home() {
             <LanguageSelector />
             <button
               onClick={() => handleScroll("contact")}
-              className="hidden md:block px-3 sm:px-4 py-2 rounded-full bg-amber-100/10 hover:bg-amber-100/20 border border-amber-100/25 text-[10px] sm:text-xs font-black text-amber-100 tracking-wider uppercase transition-all duration-300 shadow-[0_0_10px_rgba(230,193,122,0.05)] cursor-pointer active:scale-95"
+              className="hidden md:block px-3 sm:px-4 py-2 rounded-full bg-amber-100/10 hover:bg-amber-100/20 border border-amber-100/25 font-body text-sm font-normal text-amber-100 tracking-wider uppercase transition-all duration-300 shadow-[0_0_10px_rgba(230,193,122,0.05)] cursor-pointer active:scale-95"
+              style={{ whiteSpace: "nowrap" }}
             >
               {t("navLetsBuild")}
             </button>
@@ -228,8 +251,7 @@ export default function Home() {
                 {[
                   { id: "stack", key: "navStack" },
                   { id: "projects", key: "navProjects" },
-                  { id: "process", key: "navProcess" },
-                  { id: "contact", key: "navContact" }
+                  { id: "process", key: "navProcess" }
                 ].map((section) => (
                   <button
                     key={section.id}
@@ -240,7 +262,7 @@ export default function Home() {
                         handleScroll(section.id);
                       }, 150);
                     }}
-                    className="py-2.5 text-sm font-bold uppercase tracking-wider text-slate-300 hover:text-amber-100 transition-colors cursor-pointer border-b border-white/5 active:bg-amber-100/5 rounded-lg"
+                    className="py-2.5 font-body text-sm font-normal tracking-wide text-white/45 hover:text-amber-100 transition-colors cursor-pointer border-b border-white/5 active:bg-amber-100/5 rounded-lg"
                   >
                     {t(section.key as any)}
                   </button>
@@ -254,7 +276,7 @@ export default function Home() {
                     handleScroll("contact");
                   }, 150);
                 }}
-                className="w-full py-3.5 rounded-xl bg-amber-100/10 hover:bg-amber-100/20 border border-amber-100/25 text-xs font-black text-amber-100 tracking-widest uppercase transition-all duration-300 shadow-[0_0_15px_rgba(230,193,122,0.1)] cursor-pointer active:scale-[0.98]"
+                className="w-full py-3.5 rounded-xl bg-amber-100/10 hover:bg-amber-100/20 border border-amber-100/25 font-body text-sm font-normal text-amber-100 tracking-widest uppercase transition-all duration-300 shadow-[0_0_15px_rgba(230,193,122,0.1)] cursor-pointer active:scale-[0.98]"
               >
                 {t("navLetsBuild")}
               </button>
@@ -330,11 +352,11 @@ export default function Home() {
           <div className="absolute inset-0 bg-grid-pattern opacity-60 pointer-events-none" />
           
           <div className="max-w-6xl mx-auto px-6 mb-16 text-center md:text-start relative z-10">
-            <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#E6C17A]">{t("stackTagline")}</span>
-            <h2 className="text-3xl md:text-4xl font-extrabold font-sans text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400 tracking-tight mt-2">
+            <span className="font-body text-xs font-normal tracking-widest uppercase text-white/30">{t("stackTagline")}</span>
+            <h2 className="font-display text-4xl leading-[1.1] font-normal text-white mt-2">
               {t("stackTitle")}
             </h2>
-            <p className="text-zinc-400 text-sm md:text-base max-w-xl mt-3 leading-relaxed">
+            <p className="font-body text-base leading-relaxed font-normal text-white/50 max-w-xl mt-3">
               {t("stackSubtitle")}
             </p>
           </div>
@@ -354,11 +376,11 @@ export default function Home() {
           
           <div className="max-w-6xl mx-auto px-6 relative z-10">
             <div className="text-center mb-20">
-              <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#E6C17A]">{t("portfolioTagline")}</span>
-              <h2 className="text-3xl md:text-5xl font-black font-sans text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400 tracking-tight mt-2">
+              <span className="font-body text-xs font-normal tracking-widest uppercase text-white/30">{t("portfolioTagline")}</span>
+              <h2 className="font-display text-4xl leading-[1.1] font-normal text-white mt-2">
                 {t("portfolioTitle")}
               </h2>
-              <p className="text-zinc-400 text-sm md:text-base max-w-xl mx-auto mt-4 leading-relaxed">
+              <p className="font-body text-base leading-relaxed font-normal text-white/50 max-w-xl mx-auto mt-4">
                 {t("portfolioSubtitle")}
               </p>
             </div>
@@ -375,13 +397,11 @@ export default function Home() {
                         {badge}
                       </span>
                     ))}
-                  </div>
-
-                  <h3 className="text-2xl md:text-4xl font-bold font-sans text-zinc-50 leading-tight">
+                  </div>                  <h3 className="font-display text-2xl leading-[1.2] font-normal text-white">
                     {t("portfolioBarandeTitle")}
                   </h3>
 
-                  <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
+                  <p className="font-body text-base leading-relaxed font-normal text-white/50">
                     {t("portfolioBarandeDesc")}
                   </p>
 
@@ -390,16 +410,16 @@ export default function Home() {
                     <div className="flex gap-2.5 items-start">
                       <ShieldCheck className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
                       <div>
-                        <h4 className="text-xs font-bold text-white uppercase tracking-wide">{t("portfolioEscrowTitle")}</h4>
-                        <p className="text-[11px] text-zinc-500 leading-normal mt-0.5">{t("portfolioEscrowDesc")}</p>
+                        <h4 className="font-body text-xs font-normal tracking-widest uppercase text-white/30">{t("portfolioEscrowTitle")}</h4>
+                        <p className="font-body text-[11px] font-normal text-white/50 leading-normal mt-0.5">{t("portfolioEscrowDesc")}</p>
                       </div>
                     </div>
 
                     <div className="flex gap-2.5 items-start">
                       <Zap className="w-5 h-5 text-[#E6C17A] flex-shrink-0 mt-0.5" />
                       <div>
-                        <h4 className="text-xs font-bold text-white uppercase tracking-wide">{t("portfolioPinTitle")}</h4>
-                        <p className="text-[11px] text-zinc-500 leading-normal mt-0.5">{t("portfolioPinDesc")}</p>
+                        <h4 className="font-body text-xs font-normal tracking-widest uppercase text-white/30">{t("portfolioPinTitle")}</h4>
+                        <p className="font-body text-[11px] font-normal text-white/50 leading-normal mt-0.5">{t("portfolioPinDesc")}</p>
                       </div>
                     </div>
                   </div>
@@ -407,7 +427,7 @@ export default function Home() {
                   <div className="pt-4 flex justify-center lg:justify-start">
                     <button 
                       onClick={() => handleScroll("contact")}
-                      className="px-5 py-2.5 rounded-lg border border-slate-800 hover:border-[#E6C17A]/40 text-xs font-bold text-zinc-300 transition-colors flex items-center gap-1.5"
+                      className="px-5 py-2.5 rounded-lg border border-slate-800 hover:border-[#E6C17A]/40 font-body text-sm font-normal text-zinc-300 transition-colors flex items-center gap-1.5"
                     >
                       {t("portfolioInquireMobile")} <ChevronRight className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`} />
                     </button>
@@ -432,11 +452,11 @@ export default function Home() {
                     ))}
                   </div>
 
-                  <h3 className="text-2xl md:text-4xl font-bold font-sans text-zinc-50 leading-tight">
+                  <h3 className="font-display text-2xl leading-[1.2] font-normal text-white">
                     {t("portfolioSheenTitle")}
                   </h3>
 
-                  <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
+                  <p className="font-body text-base leading-relaxed font-normal text-white/50">
                     {t("portfolioSheenDesc")}
                   </p>
 
@@ -445,16 +465,16 @@ export default function Home() {
                     <div className="flex gap-2.5 items-start">
                       <Layers className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
                       <div>
-                        <h4 className="text-xs font-bold text-white uppercase tracking-wide">{t("portfolioLcpTitle")}</h4>
-                        <p className="text-[11px] text-zinc-500 leading-normal mt-0.5">{t("portfolioLcpDesc")}</p>
+                        <h4 className="font-body text-xs font-normal tracking-widest uppercase text-white/30">{t("portfolioLcpTitle")}</h4>
+                        <p className="font-body text-[11px] font-normal text-white/50 leading-normal mt-0.5">{t("portfolioLcpDesc")}</p>
                       </div>
                     </div>
 
                     <div className="flex gap-2.5 items-start">
                       <Globe className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
                       <div>
-                        <h4 className="text-xs font-bold text-white uppercase tracking-wide">{t("portfolioSeoTitle")}</h4>
-                        <p className="text-[11px] text-zinc-500 leading-normal mt-0.5">{t("portfolioSeoDesc")}</p>
+                        <h4 className="font-body text-xs font-normal tracking-widest uppercase text-white/30">{t("portfolioSeoTitle")}</h4>
+                        <p className="font-body text-[11px] font-normal text-white/50 leading-normal mt-0.5">{t("portfolioSeoDesc")}</p>
                       </div>
                     </div>
                   </div>
@@ -462,7 +482,7 @@ export default function Home() {
                   <div className="pt-4 flex justify-center lg:justify-start">
                     <button 
                       onClick={() => handleScroll("contact")}
-                      className="px-5 py-2.5 rounded-lg border border-slate-800 hover:border-[#E6C17A]/40 text-xs font-bold text-zinc-300 transition-colors flex items-center gap-1.5"
+                      className="px-5 py-2.5 rounded-lg border border-slate-800 hover:border-[#E6C17A]/40 font-body text-sm font-normal text-zinc-300 transition-colors flex items-center gap-1.5"
                     >
                       {t("portfolioInquireWeb")} <ChevronRight className={`w-4 h-4 ${isRtl ? "rotate-180" : ""}`} />
                     </button>
@@ -485,11 +505,11 @@ export default function Home() {
           <div className="absolute inset-0 bg-grid-pattern opacity-60 pointer-events-none" />
           
           <div className="max-w-6xl mx-auto px-6 mb-16 text-center relative z-10">
-            <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#E6C17A]">{t("processTagline")}</span>
-            <h2 className="text-3xl md:text-5xl font-black font-sans text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400 tracking-tight mt-2">
+            <span className="font-body text-xs font-normal tracking-widest uppercase text-white/30">{t("processTagline")}</span>
+            <h2 className="font-display text-4xl leading-[1.1] font-normal text-white mt-2">
               {t("processTitle")}
             </h2>
-            <p className="text-zinc-400 text-sm md:text-base max-w-xl mx-auto mt-4 leading-relaxed">
+            <p className="font-body text-base leading-relaxed font-normal text-white/50 max-w-xl mx-auto mt-4">
               {t("processSubtitle")}
             </p>
           </div>
@@ -507,11 +527,11 @@ export default function Home() {
           <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-radial-accent pointer-events-none -z-10 opacity-40" />
 
           <div className="max-w-6xl mx-auto px-6 text-center mb-12 relative z-10">
-            <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#E6C17A]">{t("contactTagline")}</span>
-            <h2 className="text-3xl md:text-5xl font-black font-sans text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400 tracking-tight mt-2">
+            <span className="font-body text-xs font-normal tracking-widest uppercase text-white/30">{t("contactTagline")}</span>
+            <h2 className="font-display text-4xl leading-[1.1] font-normal text-white mt-2">
               {t("contactTitle")}
             </h2>
-            <p className="text-zinc-400 text-sm md:text-base max-w-xl mx-auto mt-4 leading-relaxed">
+            <p className="font-body text-base leading-relaxed font-normal text-white/50 max-w-xl mx-auto mt-4">
               {t("contactSubtitle")}
             </p>
           </div>
@@ -534,7 +554,7 @@ export default function Home() {
             >
               <Logo size={26} />
             </div>
-            <span className="text-zinc-500 text-xs font-mono uppercase tracking-wider">
+            <span className="font-body text-xs font-normal tracking-widest uppercase text-white/30">
               {t("footerJobTitle")}
             </span>
           </div>
