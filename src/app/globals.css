@@ -58,7 +58,7 @@ body {
 /* Persian typography overrides for RTL */
 html[dir="rtl"] {
   --font-sans: var(--font-vazirmatn), system-ui, -apple-system, sans-serif;
-  --font-display: var(--font-vazirmatn), sans-serif;
+  --font-display: var(--font-amiri), var(--font-vazirmatn), serif;
   --font-body: var(--font-vazirmatn), sans-serif;
 }
 
