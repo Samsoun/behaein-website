@@ -1320,7 +1320,8 @@ export const PhysicsPlayground: React.FC = () => {
                   <img
                     src="/wm_shoe.png"
                     alt="WM Shoe"
-                    className="w-full h-full object-contain pointer-events-none filter drop-shadow-[0_0_15px_rgba(230,193,122,0.4)]"
+                    className="w-full h-full object-contain pointer-events-none filter drop-shadow-[0_0_20px_rgba(218,165,32,0.55)]"
+                    style={{ transform: "rotate(80deg)" }}
                   />
                 </div>
               )}
