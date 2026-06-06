@@ -608,9 +608,9 @@ export const ContactForm: React.FC = () => {
                           onBlur={() => setFocusedField(null)}
                           placeholder={t("contactNamePlaceholder")}
                           style={{ fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace" }}
-                          className="w-full px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-zinc-700/80 focus:border-[#E6C17A]/60 outline-none text-sm text-white placeholder-zinc-600 font-mono transition-colors shadow-inner"
+                          className={`w-full py-3 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-zinc-700/80 focus:border-[#E6C17A]/60 outline-none text-sm text-white placeholder-zinc-600 font-mono transition-colors shadow-inner ${isRtl ? "px-4 pl-[70px]" : "px-4 pr-[70px]"}`}
                         />
-                        <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[8px] font-mono text-zinc-600 select-none">
+                        <div className={`absolute top-1/2 -translate-y-1/2 text-[8px] font-mono text-zinc-600 select-none ${isRtl ? "left-3.5" : "right-3.5"}`}>
                           [STR_VAL]
                         </div>
                       </div>
@@ -644,9 +644,9 @@ export const ContactForm: React.FC = () => {
                           onBlur={() => setFocusedField(null)}
                           placeholder={t("contactEmailPlaceholder")}
                           style={{ fontFamily: isRtl ? "Vazirmatn, Arial" : "monospace" }}
-                          className="w-full px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-zinc-700/80 focus:border-[#E6C17A]/60 outline-none text-sm text-white placeholder-zinc-600 font-mono transition-colors shadow-inner"
+                          className={`w-full py-3 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-zinc-700/80 focus:border-[#E6C17A]/60 outline-none text-sm text-white placeholder-zinc-600 font-mono transition-colors shadow-inner ${isRtl ? "px-4 pl-[70px]" : "px-4 pr-[70px]"}`}
                         />
-                        <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[8px] font-mono text-zinc-600 select-none">
+                        <div className={`absolute top-1/2 -translate-y-1/2 text-[8px] font-mono text-zinc-600 select-none ${isRtl ? "left-3.5" : "right-3.5"}`}>
                           [ADDR_VAL]
                         </div>
                       </div>
