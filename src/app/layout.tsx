@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Serif, Inter, Vazirmatn, Amiri } from "next/font/google";
+import { Instrument_Serif, Inter, Vazirmatn, Lalezar } from "next/font/google";
 import { LanguageProvider } from "@/context/LanguageContext";
 import "./globals.css";
 
@@ -24,11 +24,10 @@ const vazirmatn = Vazirmatn({
   display: "swap",
 });
 
-const amiri = Amiri({
+const lalezar = Lalezar({
   subsets: ["arabic"],
-  weight: ["400", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-amiri",
+  weight: "400",
+  variable: "--font-lalezar",
   display: "swap",
 });
 
@@ -77,7 +76,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${instrumentSerif.variable} ${inter.variable} ${vazirmatn.variable} ${amiri.variable} h-full scroll-smooth antialiased`}
+      className={`${instrumentSerif.variable} ${inter.variable} ${vazirmatn.variable} ${lalezar.variable} h-full scroll-smooth antialiased`}
     >
       <body className="font-body min-h-full flex flex-col bg-[#09090b] text-[#F8FAFC]">
         <LanguageProvider>
