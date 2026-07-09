@@ -45,49 +45,50 @@ export const AboutMe: React.FC = () => {
   const compileTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    let lineIdx = 0;
-    let charIdx = 0;
-    let currentLine = "";
-    
-    const typeNextChar = () => {
-      if (lineIdx < codeSnippet.length) {
-        const fullLine = codeSnippet[lineIdx];
-        if (charIdx < fullLine.length) {
-          currentLine += fullLine[charIdx];
-          setCompilerLines((prev) => {
-            const next = [...prev];
-            if (next[lineIdx] !== undefined) {
-              next[lineIdx] = currentLine;
-            } else {
-              next.push(currentLine);
-            }
-            return next;
-          });
-          charIdx++;
-          compileTimerRef.current = setTimeout(typeNextChar, 35);
-        } else {
-          // Line completed, move to next
-          lineIdx++;
-          charIdx = 0;
-          currentLine = "";
-          compileTimerRef.current = setTimeout(typeNextChar, 300);
-        }
-      } else {
-        // Typing complete, trigger compilation
-        setCompilerState("compiling");
-        compileTimerRef.current = setTimeout(() => {
-          setCompilerState("success");
-          // Reset cycle after 4 seconds
-          compileTimerRef.current = setTimeout(() => {
-            setCompilerLines([]);
-            setCompilerState("typing");
-          }, 4000);
-        }, 1500);
-      }
-    };
-
     if (compilerState === "typing") {
+      let lineIdx = 0;
+      let charIdx = 0;
+      let currentLine = "";
+      
+      const typeNextChar = () => {
+        if (lineIdx < codeSnippet.length) {
+          const fullLine = codeSnippet[lineIdx];
+          if (charIdx < fullLine.length) {
+            currentLine += fullLine[charIdx];
+            setCompilerLines((prev) => {
+              const next = [...prev];
+              if (next[lineIdx] !== undefined) {
+                next[lineIdx] = currentLine;
+              } else {
+                next.push(currentLine);
+              }
+              return next;
+            });
+            charIdx++;
+            compileTimerRef.current = setTimeout(typeNextChar, 35);
+          } else {
+            // Line completed, move to next
+            lineIdx++;
+            charIdx = 0;
+            currentLine = "";
+            compileTimerRef.current = setTimeout(typeNextChar, 300);
+          }
+        } else {
+          // Typing complete, trigger compilation
+          setCompilerState("compiling");
+        }
+      };
+
       typeNextChar();
+    } else if (compilerState === "compiling") {
+      compileTimerRef.current = setTimeout(() => {
+        setCompilerState("success");
+      }, 1500);
+    } else if (compilerState === "success") {
+      compileTimerRef.current = setTimeout(() => {
+        setCompilerLines([]);
+        setCompilerState("typing");
+      }, 4000);
     }
 
     return () => {
