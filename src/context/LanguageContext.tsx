@@ -8,6 +8,7 @@ export interface Translations {
   // Navigation & General
   navStack: string;
   navProjects: string;
+  navAbout: string;
   navProcess: string;
   navContact: string;
   navLetsBuild: string;
@@ -150,6 +151,16 @@ export interface Translations {
   videoScrollPhase4Desc: string;
   videoScrollPhase4Bullets: string[];
 
+  // About Me Section
+  aboutTagline: string;
+  aboutTitle: string;
+  aboutParagraph1: string;
+  aboutParagraph2: string;
+  aboutParagraph3: string;
+  aboutBadgeJourney: string;
+  aboutBadgePhilosophy: string;
+  aboutBadgeAchievement: string;
+
   // Footer & Metadata
   footerJobTitle: string;
   footerMadeWith: string;
@@ -165,6 +176,7 @@ const translations: Record<Locale, Translations> = {
   en: {
     navStack: "stack",
     navProjects: "projects",
+    navAbout: "about",
     navProcess: "process",
     navContact: "contact",
     navLetsBuild: "Let's Build",
@@ -314,6 +326,16 @@ const translations: Record<Locale, Translations> = {
     videoScrollPhase4Desc: "Running automated end to end tests and Lighthouse diagnostics to verify security, performance, and accessibility.",
     videoScrollPhase4Bullets: ["PIN Handshake Verification", "Google Lighthouse Audits", "Automated Playwright Suite", "Optimized Search Indexing"],
 
+    // About Me Section
+    aboutTagline: "03 / HISTORY & PHILOSOPHY",
+    aboutTitle: "Behind the Code",
+    aboutParagraph1: "My journey with the web began back in the year 2000. Back then, I taught myself HTML and CSS and built my very first simple websites. Over the years, that early fascination turned into a deep-seated passion. As a self-taught developer, I relentlessly expanded my skillset through platforms like Udemy, mastering modern high-end technologies like TypeScript, React, and Next.js.",
+    aboutParagraph2: "To me, software engineering feels like magic. There’s nothing better than staring at a completely blank screen and conjuring a living, breathing product out of a single idea. I believe everything matters: from pixel-perfect interfaces and fluid user experiences to robust backend architectures—every single detail needs to be flawless.",
+    aboutParagraph3: "My proudest achievement to date is 'Barande'—a highly complex full-stack application that pushes the boundaries of my technical capabilities. I am constantly looking to connect with teams managing large-scale projects who need someone with my drive and skillset. If you are looking for someone who doesn’t just write code, but lives it—let’s build something incredible.",
+    aboutBadgeJourney: "The Journey",
+    aboutBadgePhilosophy: "Philosophy",
+    aboutBadgeAchievement: "Masterpiece",
+
     footerJobTitle: "Creative Technologist & Full Stack Engineer",
     footerMadeWith: "Made with {icon} in Berlin",
     footerRights: "© {year} Samsoun Behaein. All rights compiled.",
@@ -326,6 +348,7 @@ const translations: Record<Locale, Translations> = {
   de: {
     navStack: "expertise",
     navProjects: "projekte",
+    navAbout: "story",
     navProcess: "ablauf",
     navContact: "kontakt",
     navLetsBuild: "Lass uns bauen",
@@ -475,6 +498,16 @@ const translations: Record<Locale, Translations> = {
     videoScrollPhase4Desc: "Durchführung automatisierter End to End Tests und Lighthouse Diagnosen zur Überprüfung von Sicherheit, Performance und Barrierefreiheit.",
     videoScrollPhase4Bullets: ["PIN Handshake Verifizierung", "Lighthouse Performance Audits", "Automatisierte Test Suiten", "Optimierte Suchmaschinen Indizierung"],
 
+    // About Me Section
+    aboutTagline: "03 / GESCHICHTE & PHILOSOPHIE",
+    aboutTitle: "Hinter dem Code",
+    aboutParagraph1: "Meine Reise mit dem Web begann im Jahr 2000. Damals habe ich mir HTML und CSS komplett selbst beigebracht und die ersten einfachen Webseiten ins Internet gestellt. Aus dieser frühen Faszination ist über die Jahre eine tiefe Leidenschaft geworden: Als Quereinsteiger habe ich mein Wissen durch Plattformen wie Udemy intensiv vertieft und beherrsche heute moderne High-End-Technologien wie TypeScript, React und Next.js blind.",
+    aboutParagraph2: "Für mich ist Softwareentwicklung wie Magie – ich liebe es, vor einem komplett leeren Bildschirm zu sitzen und aus einer bloßen Idee ein lebendiges, funktionierendes Produkt zu zaubern. Dabei mache ich keine halben Sachen: Von der pixelgenauen Oberfläche über eine flüssige User Experience bis hin zur stabilen Backend-Infrastruktur muss jedes Zahnrad perfekt ineinandergreifen.",
+    aboutParagraph3: "Mein bisher stolzestes Meisterstück ist die App 'Barande' – ein hochkomplexes Full-Stack-Projekt, das mein gesamtes technologisches Spektrum fordert. Ich bin immer auf der Suche nach großen Projekten und Teams, die außergewöhnliche Ideen auf die Straße bringen wollen. Wenn du nach jemandem suchst, der Code nicht nur schreibt, sondern lebt – lass uns etwas Großes bauen.",
+    aboutBadgeJourney: "Der Werdegang",
+    aboutBadgePhilosophy: "Philosophie",
+    aboutBadgeAchievement: "Meisterwerk",
+
     footerJobTitle: "Creative Technologist und Full Stack Entwickler",
     footerMadeWith: "Mit {icon} in Berlin gemacht",
     footerRights: "© {year} Samsoun Behaein. Alle Rechte zusammengestellt.",
@@ -487,6 +520,7 @@ const translations: Record<Locale, Translations> = {
   fa: {
     navStack: "تخصص‌ها",
     navProjects: "پروژه‌ها",
+    navAbout: "درباره من",
     navProcess: "روند کار",
     navContact: "ارتباط با من",
     navLetsBuild: "آغاز همکاری",
@@ -635,6 +669,16 @@ const translations: Record<Locale, Translations> = {
     videoScrollPhase4Title: "فاز ۴: تست و اعتبارسنجی همه‌جانبه",
     videoScrollPhase4Desc: "اجرای سناریوهای تست خودکار و بررسی شاخص‌های Lighthouse. اطمینان از صحت عملکرد امنیت تراکنش و بهینه‌سازی برای موتورهای جستجو.",
     videoScrollPhase4Bullets: ["اعتبارسنجی امن تحویل با پین‌کد دوطرفه", "ارزیابی مستمر با ابزار گوگل Lighthouse", "اجرای مجموعه تست‌های خودکار با Playwright", "بهبود ساختاری سئو جهت ایندکس بهینه توسط خزنده‌ها"],
+
+    // About Me Section
+    aboutTagline: "۰۳ / تاریخچه و فلسفه کاری",
+    aboutTitle: "پشت پرده‌ی کدها",
+    aboutParagraph1: "مسیر من در دنیای وب از سال ۲۰۰۰ آغاز شد؛ زمانی که به صورت خودآموز HTML و CSS را یاد گرفتم و اولین صفحات ساده‌ی اینترنتی‌ام را ساختم. آن شیفتگیِ اولیه، در طول سال‌ها به یک اشتیاق عمیق تبدیل شد. به عنوان یک توسعه‌دهنده مسیر خلاق و خودآموز، دانش خود را از طریق پلتفرم‌هایی مثل Udemy به‌روز کردم و امروز تسلط کاملی بر فناوری‌های مدرن و پیشرفته‌ای چون TypeScript، React و Next.js دارم.",
+    aboutParagraph2: "برای من، برنامه‌نویسی مثل خلق کردن جادوست؛ شیفته‌ی این هستم که مقابل یک صفحه‌ی کاملاً خالی بنشینم و از یک ایده‌ی خام، محصولی زنده و کاربردی خلق کنم. در این مسیر، من به تمام ابعاد اهمیت می‌دهم: از طراحی پیکسل‌به‌پیکسلِ رابط کاربری و تجربه‌ی روان کاربر گرفته تا زیرساخت‌های پایدار بک‌اند؛ همه‌چیز باید بی‌نقص در کنار هم کار کند.",
+    aboutParagraph3: "افتخارآمیزترین شاهکار من تا به امروز اپلیکیشن «بارانده» (Barande) است؛ یک پروژه‌ی فوق‌العاده پیچیده و فول‌استک که تمام توان فنی مرا به چالش کشید. من همیشه مشتاق همکاری با تیم‌ها و پروژه‌های بزرگی هستم که می‌خواهند ایده‌های استثنایی را به واقعیت تبدیل کنند. اگر به دنبال کسی هستید که کدنویسی را فقط یک کار نمی‌داند، بلکه با آن زندگی می‌کند، بیایید با هم اثری ماندگار بسازیم.",
+    aboutBadgeJourney: "مسیر توسعه",
+    aboutBadgePhilosophy: "فلسفه کاری",
+    aboutBadgeAchievement: "افتخار من",
 
     footerJobTitle: "مهندس فول‌استک و فناور خلاق",
     footerMadeWith: "ساخته‌شده با {icon} در برلین",

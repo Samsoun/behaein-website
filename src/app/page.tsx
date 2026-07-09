@@ -25,6 +25,7 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 import { Logo } from "@/components/Logo";
 import { BarandeVideoScroll } from "@/components/BarandeVideoScroll";
 import { TechTicker } from "@/components/TechTicker";
+import { AboutMe } from "@/components/AboutMe";
 
 
 // Premium animated Hamburger Menu Icon component using Framer Motion
@@ -201,17 +202,18 @@ export default function Home() {
           </div>
           
           <div className="hidden md:flex gap-3 sm:gap-6 md:gap-8 font-body text-sm font-normal tracking-wide text-white/45">
-            {[
+            {([
               { id: "stack", key: "navStack" },
               { id: "projects", key: "navProjects" },
+              { id: "about", key: "navAbout" },
               { id: "process", key: "navProcess" }
-            ].map((section) => (
+            ] as const).map((section) => (
               <button
                 key={section.id}
                 onClick={() => handleScroll(section.id)}
                 className="hover:text-[#E6C17A] cursor-pointer transition-colors duration-200"
               >
-                {t(section.key as any)}
+                {t(section.key)}
               </button>
             ))}
           </div>
@@ -248,11 +250,12 @@ export default function Home() {
               className="absolute top-full left-0 right-0 mt-3 glass-panel rounded-3xl p-6 border border-white/10 bg-slate-950/95 backdrop-blur-xl shadow-2xl z-40 overflow-hidden flex flex-col gap-6 md:hidden"
             >
               <div className="flex flex-col gap-4 text-center">
-                {[
+                {([
                   { id: "stack", key: "navStack" },
                   { id: "projects", key: "navProjects" },
+                  { id: "about", key: "navAbout" },
                   { id: "process", key: "navProcess" }
-                ].map((section) => (
+                ] as const).map((section) => (
                   <button
                     key={section.id}
                     onClick={() => {
@@ -264,7 +267,7 @@ export default function Home() {
                     }}
                     className="py-2.5 font-body text-sm font-normal tracking-wide text-white/45 hover:text-amber-100 transition-colors cursor-pointer border-b border-white/5 active:bg-amber-100/5 rounded-lg"
                   >
-                    {t(section.key as any)}
+                    {t(section.key)}
                   </button>
                 ))}
               </div>
@@ -498,6 +501,9 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* SECTION: ABOUT ME (BEHIND THE CODE) */}
+        <AboutMe />
 
         {/* SECTION 4: THE PROCESS (TIMELINE) */}
         <section id="process" className="py-24 relative overflow-hidden">
