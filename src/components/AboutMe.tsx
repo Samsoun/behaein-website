@@ -273,61 +273,68 @@ export const AboutMe: React.FC = () => {
 
         {/* CARD 4: Masterpiece & CTA - Spans 2 columns on large screens */}
         <TiltCard maxRotation={0} className="lg:col-span-2 min-h-[380px] h-auto flex flex-col justify-between group">
-          <div className={`flex flex-col md:flex-row gap-8 items-stretch h-full justify-between ${isRtl ? "md:flex-row-reverse" : ""}`}>
-            {/* Left Side: Content & CTA */}
-            <div className="flex-1 flex flex-col justify-between h-full">
-              <div className="flex-1">
-                {/* Badge & Icon */}
-                <div className={`flex items-center gap-3 mb-4 ${isRtl ? "flex-row-reverse" : "flex-row"}`}>
-                  <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800">
-                    <Award className="w-5 h-5 text-[#E6C17A]" />
-                  </div>
-                  <span className="px-2.5 py-1 rounded bg-zinc-900/80 border border-zinc-800 text-[10px] font-mono font-bold uppercase text-amber-100/90">
-                    {t("aboutBadgeAchievement")}
-                  </span>
+          <div className="flex flex-col justify-between h-full w-full">
+            
+            {/* Top Part: Content */}
+            <div>
+              {/* Badge & Icon */}
+              <div className={`flex items-center gap-3 mb-4 ${isRtl ? "flex-row-reverse" : "flex-row"}`}>
+                <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800">
+                  <Award className="w-5 h-5 text-[#E6C17A]" />
                 </div>
-
-                {/* Content */}
-                <p className={`font-body text-sm md:text-base leading-relaxed text-zinc-400 font-normal ${isRtl ? "text-right" : "text-left"}`}>
-                  {t("aboutParagraph3")}
-                </p>
+                <span className="px-2.5 py-1 rounded bg-zinc-900/80 border border-zinc-800 text-[10px] font-mono font-bold uppercase text-amber-100/90">
+                  {t("aboutBadgeAchievement")}
+                </span>
               </div>
 
-              {/* CTA Interaction Block */}
-              <div className="mt-8 border-t border-zinc-900 pt-6">
-                <div className={`flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 ${isRtl ? "sm:flex-row-reverse" : ""}`}>
-                  <div className={`flex flex-col ${isRtl ? "items-start sm:items-end text-right" : "items-start text-left"}`}>
-                    <span className="text-xs font-bold text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
-                      <Rocket className="w-3.5 h-3.5 text-[#E6C17A] animate-pulse" /> Barande Full-Stack App
-                    </span>
-                    <span className="text-[10px] text-zinc-500 font-mono mt-0.5">Secure Escrow • Realtime Matching • Mobile & Web UI</span>
-                  </div>
-
-                  <button
-                    onClick={handleContactScroll}
-                    className="relative z-50 pointer-events-auto px-6 py-3 rounded-xl bg-amber-100/10 hover:bg-amber-100/20 border border-amber-100/25 hover:border-[#E6C17A]/50 font-body text-sm font-normal text-amber-100 tracking-wider uppercase transition-all duration-300 shadow-[0_0_15px_rgba(230,193,122,0.05)] cursor-pointer active:scale-95 flex items-center justify-center gap-2"
-                  >
-                    <span>{t("navLetsBuild")}</span>
-                    {isRtl ? (
-                      <ChevronLeft className="w-4 h-4" />
-                    ) : (
-                      <ChevronRight className="w-4 h-4" />
-                    )}
-                  </button>
-                </div>
-              </div>
+              {/* Content */}
+              <p className={`font-body text-sm md:text-base leading-relaxed text-zinc-400 font-normal ${isRtl ? "text-right" : "text-left"}`}>
+                {t("aboutParagraph3")}
+              </p>
             </div>
 
-            {/* Right Side: App Logo Frame */}
-            <div className="w-full md:w-auto flex justify-center items-center mt-6 md:mt-0">
-              <div className="w-[180px] h-[180px] sm:w-[200px] sm:h-[200px] rounded-2xl overflow-hidden border border-zinc-800 bg-white/95 p-5 shadow-2xl flex items-center justify-center hover:scale-102 transition-transform duration-300 relative group/logo">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img 
-                  src="/barande_logo.jpg" 
-                  alt="Barande Logo" 
-                  className="w-full h-full object-contain select-none pointer-events-none"
-                />
-                <div className="absolute inset-0 border border-black/5 rounded-2xl pointer-events-none" />
+            {/* Middle Part: App Logo Link (centered below text) */}
+            <div className="flex justify-center items-center my-6">
+              <a 
+                href="https://www.barande.app" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="block hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 relative group/logo cursor-pointer"
+                aria-label="Visit Barande App"
+              >
+                <div className="w-[220px] h-[110px] sm:w-[260px] sm:h-[130px] rounded-2xl overflow-hidden border border-zinc-800 bg-white/95 p-4 shadow-2xl flex items-center justify-center relative">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img 
+                    src="/barande_logo.jpg" 
+                    alt="Barande Logo" 
+                    className="w-full h-full object-contain select-none pointer-events-none"
+                  />
+                  <div className="absolute inset-0 border border-black/5 rounded-2xl pointer-events-none" />
+                </div>
+              </a>
+            </div>
+
+            {/* Bottom Part: CTA Interaction Block */}
+            <div className="mt-4 border-t border-zinc-900 pt-6">
+              <div className={`flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 ${isRtl ? "sm:flex-row-reverse" : ""}`}>
+                <div className={`flex flex-col ${isRtl ? "items-start sm:items-end text-right" : "items-start text-left"}`}>
+                  <span className="text-xs font-bold text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
+                    <Rocket className="w-3.5 h-3.5 text-[#E6C17A] animate-pulse" /> Barande Full-Stack App
+                  </span>
+                  <span className="text-[10px] text-zinc-500 font-mono mt-0.5">Secure Escrow • Realtime Matching • Mobile & Web UI</span>
+                </div>
+
+                <button
+                  onClick={handleContactScroll}
+                  className="relative z-50 pointer-events-auto px-6 py-3 rounded-xl bg-amber-100/10 hover:bg-amber-100/20 border border-amber-100/25 hover:border-[#E6C17A]/50 font-body text-sm font-normal text-amber-100 tracking-wider uppercase transition-all duration-300 shadow-[0_0_15px_rgba(230,193,122,0.05)] cursor-pointer active:scale-95 flex items-center justify-center gap-2"
+                >
+                  <span>{t("navLetsBuild")}</span>
+                  {isRtl ? (
+                    <ChevronLeft className="w-4 h-4" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4" />
+                  )}
+                </button>
               </div>
             </div>
           </div>
