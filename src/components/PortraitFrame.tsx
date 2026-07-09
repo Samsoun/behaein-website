@@ -4,7 +4,11 @@ import React, { useState, useEffect } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { User, Cpu, Sparkles } from "lucide-react";
 
-export const PortraitFrame: React.FC = () => {
+interface PortraitFrameProps {
+  maxRotation?: number;
+}
+
+export const PortraitFrame: React.FC<PortraitFrameProps> = ({ maxRotation = 15 }) => {
   const [imgExists, setImgExists] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -25,8 +29,8 @@ export const PortraitFrame: React.FC = () => {
   const springY = useSpring(y, springConfig);
 
   // Tilt rotation ratios
-  const rotateX = useTransform(springY, [0, 1], [15, -15]);
-  const rotateY = useTransform(springX, [0, 1], [-15, 15]);
+  const rotateX = useTransform(springY, [0, 1], [maxRotation, -maxRotation]);
+  const rotateY = useTransform(springX, [0, 1], [-maxRotation, maxRotation]);
 
   // Spotlight coordinates
   const glowX = useMotionValue(0);
@@ -99,8 +103,8 @@ export const PortraitFrame: React.FC = () => {
         <div 
           className="w-full h-full rounded-2xl overflow-hidden relative border border-slate-800 bg-slate-900/50 flex flex-col items-center justify-center"
           style={{
-            transform: "translateZ(30px)",
-            transformStyle: "preserve-3d",
+            transform: maxRotation === 0 ? "none" : "translateZ(30px)",
+            transformStyle: maxRotation === 0 ? "flat" : "preserve-3d",
           }}
         >
           {imgExists ? (

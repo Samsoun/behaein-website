@@ -120,7 +120,7 @@ export const AboutMe: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto px-4 relative z-10 items-stretch">
         
         {/* CARD 1: The Journey - Spans 2 columns on large screens */}
-        <TiltCard className="lg:col-span-2 min-h-[380px] h-auto flex flex-col justify-between group">
+        <TiltCard maxRotation={0} className="lg:col-span-2 min-h-[380px] h-auto flex flex-col justify-between group">
           <div className="flex flex-col justify-between h-full">
             <div>
               {/* Badge & Icon */}
@@ -193,11 +193,11 @@ export const AboutMe: React.FC = () => {
 
         {/* CARD 2: Interactive Portrait Frame - Spans 1 column */}
         <div className="flex justify-center items-center py-2 h-full">
-          <PortraitFrame />
+          <PortraitFrame maxRotation={0} />
         </div>
 
         {/* CARD 3: Magic & Philosophy - Spans 1 column */}
-        <TiltCard className="min-h-[380px] h-auto flex flex-col justify-between group">
+        <TiltCard maxRotation={0} className="min-h-[380px] h-auto flex flex-col justify-between group">
           <div className="flex flex-col justify-between h-full">
             <div>
               {/* Badge & Icon */}
@@ -271,7 +271,7 @@ export const AboutMe: React.FC = () => {
         </TiltCard>
 
         {/* CARD 4: Masterpiece & CTA - Spans 2 columns on large screens */}
-        <TiltCard className="lg:col-span-2 min-h-[380px] h-auto flex flex-col justify-between group">
+        <TiltCard maxRotation={0} className="lg:col-span-2 min-h-[380px] h-auto flex flex-col justify-between group">
           <div className="flex flex-col justify-between h-full">
             <div>
               {/* Badge & Icon */}
@@ -302,7 +302,7 @@ export const AboutMe: React.FC = () => {
 
                 <button
                   onClick={handleContactScroll}
-                  className="px-6 py-3 rounded-xl bg-amber-100/10 hover:bg-amber-100/20 border border-amber-100/25 hover:border-[#E6C17A]/50 font-body text-sm font-normal text-amber-100 tracking-wider uppercase transition-all duration-300 shadow-[0_0_15px_rgba(230,193,122,0.05)] cursor-pointer active:scale-95 flex items-center justify-center gap-2"
+                  className="relative z-50 pointer-events-auto px-6 py-3 rounded-xl bg-amber-100/10 hover:bg-amber-100/20 border border-amber-100/25 hover:border-[#E6C17A]/50 font-body text-sm font-normal text-amber-100 tracking-wider uppercase transition-all duration-300 shadow-[0_0_15px_rgba(230,193,122,0.05)] cursor-pointer active:scale-95 flex items-center justify-center gap-2"
                 >
                   <span>{t("navLetsBuild")}</span>
                   {isRtl ? (
