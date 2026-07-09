@@ -323,7 +323,7 @@ export const AboutMe: React.FC = () => {
               <div className="w-[180px] h-[180px] sm:w-[200px] sm:h-[200px] rounded-2xl overflow-hidden border border-zinc-800 bg-white/95 p-5 shadow-2xl flex items-center justify-center hover:scale-102 transition-transform duration-300 relative group/logo">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
-                  src="/barande.jpg" 
+                  src="/barande_logo.jpg" 
                   alt="Barande Logo" 
                   className="w-full h-full object-contain select-none pointer-events-none"
                 />
