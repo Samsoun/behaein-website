@@ -294,20 +294,20 @@ export const AboutMe: React.FC = () => {
             </div>
 
             {/* Middle Part: App Logo Link (centered below text) */}
-            <div className="flex justify-center items-center my-6">
+            <div className="flex justify-center items-center my-6 w-full">
               <a 
                 href="https://www.barande.app" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="block hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 relative group/logo cursor-pointer"
+                className="w-[90%] max-w-[500px] block hover:scale-[1.02] active:scale-[0.99] transition-all duration-300 relative group/logo cursor-pointer"
                 aria-label="Visit Barande App"
               >
-                <div className="w-[220px] h-[110px] sm:w-[260px] sm:h-[130px] rounded-2xl overflow-hidden border border-zinc-800 bg-white/95 p-4 shadow-2xl flex items-center justify-center relative">
+                <div className="w-full h-[120px] sm:h-[150px] rounded-2xl overflow-hidden border border-zinc-800 bg-white/95 p-4 shadow-2xl flex items-center justify-center relative">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img 
                     src="/barande_logo.jpg" 
                     alt="Barande Logo" 
-                    className="w-full h-full object-contain select-none pointer-events-none"
+                    className="w-[90%] h-[90%] object-contain select-none pointer-events-none"
                   />
                   <div className="absolute inset-0 border border-black/5 rounded-2xl pointer-events-none" />
                 </div>
