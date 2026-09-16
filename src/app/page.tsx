@@ -12,7 +12,10 @@ import {
   ShieldCheck, 
   Zap, 
   Layers, 
-  Heart 
+  Heart,
+  UserCheck,
+  FileCheck,
+  KeyRound
 } from "lucide-react";
 import { GeometricBackground } from "@/components/GeometricBackground";
 import { BentoGrid } from "@/components/BentoGrid";
@@ -66,11 +69,16 @@ export default function Home() {
   useEffect(() => {
     const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 1024;
     if (isMobileDevice) {
-      setShowMobileBanner(true);
-      const timer = setTimeout(() => {
+      const showTimer = setTimeout(() => {
+        setShowMobileBanner(true);
+      }, 0);
+      const hideTimer = setTimeout(() => {
         setShowMobileBanner(false);
       }, 10000);
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(showTimer);
+        clearTimeout(hideTimer);
+      };
     }
   }, []);
 
@@ -395,12 +403,14 @@ export default function Home() {
                 {/* Details side */}
                 <div className="flex-1 flex flex-col gap-6 text-center lg:text-start">
                   <div className="flex flex-wrap gap-2.5 justify-center lg:justify-start">
-                    {["React Native", "Expo", "Next.js", "Supabase"].map((badge) => (
+                    {["React Native 0.81", "Expo SDK 54", "Supabase RLS", "OpenAI GPT-4o", "Aviationstack", "Deno Edge"].map((badge) => (
                       <span key={badge} className="px-2.5 py-1 rounded bg-zinc-900/80 border border-zinc-800 text-[10px] font-mono font-bold uppercase text-amber-100/90">
                         {badge}
                       </span>
                     ))}
-                  </div>                  <h3 className="font-display text-2xl leading-[1.2] font-normal text-white">
+                  </div>
+
+                  <h3 className="font-display text-2xl leading-[1.2] font-normal text-white">
                     {t("portfolioBarandeTitle")}
                   </h3>
 
@@ -408,7 +418,7 @@ export default function Home() {
                     {t("portfolioBarandeDesc")}
                   </p>
 
-                  {/* Bullet points */}
+                  {/* 4 Feature Architecture Matrix */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-zinc-900 pt-6 text-start">
                     <div className="flex gap-2.5 items-start">
                       <ShieldCheck className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
@@ -419,10 +429,26 @@ export default function Home() {
                     </div>
 
                     <div className="flex gap-2.5 items-start">
-                      <Zap className="w-5 h-5 text-[#E6C17A] flex-shrink-0 mt-0.5" />
+                      <KeyRound className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
                       <div>
                         <h4 className="font-body text-xs font-normal tracking-widest uppercase text-white/30">{t("portfolioPinTitle")}</h4>
                         <p className="font-body text-[11px] font-normal text-white/50 leading-normal mt-0.5">{t("portfolioPinDesc")}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2.5 items-start">
+                      <UserCheck className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="font-body text-xs font-normal tracking-widest uppercase text-white/30">{t("portfolioKycTitle")}</h4>
+                        <p className="font-body text-[11px] font-normal text-white/50 leading-normal mt-0.5">{t("portfolioKycDesc")}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2.5 items-start">
+                      <FileCheck className="w-5 h-5 text-[#E6C17A] flex-shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="font-body text-xs font-normal tracking-widest uppercase text-white/30">{t("portfolioManifestTitle")}</h4>
+                        <p className="font-body text-[11px] font-normal text-white/50 leading-normal mt-0.5">{t("portfolioManifestDesc")}</p>
                       </div>
                     </div>
                   </div>

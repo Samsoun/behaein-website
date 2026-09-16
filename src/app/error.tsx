@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
+import Link from "next/link";
 import { AlertOctagon, RotateCcw, Home } from "lucide-react";
 
 interface ErrorProps {
@@ -58,13 +59,13 @@ export default function ErrorBoundary({ error, reset }: ErrorProps) {
             <span>Engine neustarten</span>
           </button>
           
-          <a
+          <Link
             href="/"
             className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-xl font-body text-sm font-normal uppercase tracking-wider bg-slate-900 border border-white/5 text-slate-400 hover:border-white/10 hover:text-white transition-all active:scale-[0.98]"
           >
             <Home className="w-4 h-4" />
             <span>Startseite</span>
-          </a>
+          </Link>
         </div>
 
         {/* Tech Details disclosure */}

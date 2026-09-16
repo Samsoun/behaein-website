@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useSyncExternalStore } from "react";
 
 export type Locale = "en" | "de" | "fa";
 
@@ -23,6 +23,17 @@ export interface Translations {
   heroCtaWork: string;
   heroCtaBuild: string;
   heroScrollDown: string;
+  heroRouteLabel: string;
+  heroRouteSub: string;
+  heroEscrowLabel: string;
+  heroEscrowSub: string;
+  heroPinLabel: string;
+  heroPinSub: string;
+  heroKycLabel: string;
+  heroKycSub: string;
+  heroManifestLabel: string;
+  heroManifestSub: string;
+  heroSoloBadge: string;
 
   // Stack/Bento Section
   stackTagline: string;
@@ -60,6 +71,10 @@ export interface Translations {
   portfolioEscrowDesc: string;
   portfolioPinTitle: string;
   portfolioPinDesc: string;
+  portfolioKycTitle: string;
+  portfolioKycDesc: string;
+  portfolioManifestTitle: string;
+  portfolioManifestDesc: string;
   portfolioInquireMobile: string;
   portfolioLcpTitle: string;
   portfolioLcpDesc: string;
@@ -182,14 +197,25 @@ const translations: Record<Locale, Translations> = {
     navLetsBuild: "Let's Build",
     navTagline: "Web and Mobile\nEngineering",
 
-    heroTagline: "🚀 Software Engineering, Web & Mobile Development",
-    heroHeadlinePrefix: "Designed for users. ",
-    heroHeadlineHighlight: "Engineered to scale",
+    heroTagline: "100% Solo-Engineered • P2P Crowd Shipping",
+    heroHeadlinePrefix: "From concept to full ecosystem. ",
+    heroHeadlineHighlight: "Solo built: Barande",
     heroHeadlineSuffix: ".",
-    heroSubline: "Software engineer specializing in web and mobile applications. Focused on bridging the gap between design and technical execution by combining structured UI design with solid software architecture optimized for load times, accessibility, and performance.",
-    heroCtaWork: "View My Work",
-    heroCtaBuild: "Let's Build Something",
+    heroSubline: "The mobile P2P crowdshipping platform for express deliveries between Germany and Iran – 100% solo-engineered from system architecture to native app.",
+    heroCtaWork: "Explore Case Study",
+    heroCtaBuild: "Get in Touch",
     heroScrollDown: "Scroll Down",
+    heroRouteLabel: "Route: Germany ⇄ Iran",
+    heroRouteSub: "Express delivery via flight luggage in 24–48h vs. costly DHL/FedEx",
+    heroEscrowLabel: "100% Escrow Vault",
+    heroEscrowSub: "Funds locked in Barande vault until in-person verified delivery",
+    heroPinLabel: "4-Digit PIN Handshake",
+    heroPinSub: "Cryptographic code with 5x brute-force lock verified at destination",
+    heroKycLabel: "AI Biometric KYC",
+    heroKycSub: "OpenAI GPT-4o Vision passport & live selfie verification with blue badge",
+    heroManifestLabel: "Customs Manifest",
+    heroManifestSub: "Official BRD-2026-XXXXXX digital code & § 10 UStG compliant PDF invoices",
+    heroSoloBadge: "100% Solo Engineered",
 
     stackTagline: "DESIGN SYSTEM",
     stackTitle: "Capabilities Bento Grid",
@@ -217,14 +243,18 @@ const translations: Record<Locale, Translations> = {
     portfolioTagline: "PORTFOLIO showcase",
     portfolioTitle: "Featured Case Studies",
     portfolioSubtitle: "A selection of web and mobile applications focused on performance, accessibility, and clean architecture.",
-    portfolioBarandeTitle: "Barande P2P Crowd Shipping Marketplace",
-    portfolioBarandeDesc: "Connecting international travelers and senders between Europe and Tehran. Travelers utilize their unused baggage allowance to deliver packages, earning rewards. Senders experience a transparent crowd-shipped workflow backed by secure escrow smart accounts, real-time geolocation matching, and delivery handshake safety validations.",
+    portfolioBarandeTitle: "Barande – P2P Crowdshipping & Luggage Marketplace",
+    portfolioBarandeDesc: "A full-scale mobile peer-to-peer crowdshipping marketplace connecting international travelers with senders between Germany and Iran. Travelers monetize unused luggage allowances per kg, while senders receive same-day/next-day express delivery for important documents and packages at a fraction of commercial courier rates. Architected with end-to-end security: AI-driven biometric KYC, a 100% escrow vault, pre-flight visual inspections, and a 4-digit PIN delivery handshake.",
     portfolioSheenTitle: "Sheen Berlin Premium Beauty Studio Platform",
     portfolioSheenDesc: "A custom web platform for a premium beauty salon. Built using Next.js Server Components to optimize image preloading and asset delivery, achieving a 100/100 performance score on Google Lighthouse. Structured schema integration provides search engines with clean metadata for organic indexing.",
-    portfolioEscrowTitle: "Secure Escrow API",
-    portfolioEscrowDesc: "Funds are secured in escrow vaults and released only on correct delivery validation.",
-    portfolioPinTitle: "PIN Handshake",
-    portfolioPinDesc: "Dual PIN synchronization verifies matching handshake delivery without central authority dependency.",
+    portfolioEscrowTitle: "100% Escrow Vault",
+    portfolioEscrowDesc: "Zero upfront risk. Payments held in secure vaults until recipient confirms delivery.",
+    portfolioPinTitle: "4-Digit PIN Handshake",
+    portfolioPinDesc: "Cryptographic token with 5-attempt brute-force protection for in-person handover.",
+    portfolioKycTitle: "AI Biometric KYC",
+    portfolioKycDesc: "OpenAI GPT-4o Vision matches ID/passport with live selfie for verified badges.",
+    portfolioManifestTitle: "Digital Customs Manifest",
+    portfolioManifestDesc: "Tamper-proof BRD-2026-XXXXXX airport travel document & automated § 10 UStG PDF invoicing.",
     portfolioInquireMobile: "Inquire about Mobile engineering",
     portfolioLcpTitle: "Image Fetch Prioritization",
     portfolioLcpDesc: "Critical layout images preload natively, resolving slow largest-contentful-paint (LCP) delays.",
@@ -354,14 +384,25 @@ const translations: Record<Locale, Translations> = {
     navLetsBuild: "Lass uns bauen",
     navTagline: "Web und Mobile\nEntwicklung",
 
-    heroTagline: "🚀 Softwareentwicklung für Web und Mobile",
-    heroHeadlinePrefix: "Durchdachtes Design. ",
-    heroHeadlineHighlight: "Skalierbarer\u00A0Code",
+    heroTagline: "100% Solo-Entwickelt • P2P Crowd Shipping",
+    heroHeadlinePrefix: "Von der Idee zum App-Ökosystem. ",
+    heroHeadlineHighlight: "Allein gebaut: Barande",
     heroHeadlineSuffix: ".",
-    heroSubline: "Softwareentwickler mit Fokus auf Webanwendungen sowie mobile Apps. Spezialisiert auf die Verbindung von strukturiertem UI Design mit solider Softwarearchitektur, optimiert auf Ladezeiten, Barrierefreiheit und flüssige Performance.",
-    heroCtaWork: "Meine Arbeiten sehen",
-    heroCtaBuild: "Lass uns etwas bauen",
+    heroSubline: "Die mobile P2P-Crowdshipping-Plattform für Express-Sendungen zwischen Deutschland und Iran – von der Systemarchitektur bis zur nativen App zu 100% in Eigenregie entwickelt.",
+    heroCtaWork: "Case Study ansehen",
+    heroCtaBuild: "Projekt anfragen",
     heroScrollDown: "Nach unten scrollen",
+    heroRouteLabel: "Route: Deutschland ⇄ Iran",
+    heroRouteSub: "Express per Fluggepäck in 24–48h statt teurer DHL/FedEx Kuriere",
+    heroEscrowLabel: "100% Escrow-Treuhand",
+    heroEscrowSub: "Gelder geschützt im Barande-Vault bis zur bestätigten Zielübergabe",
+    heroPinLabel: "4-stelliger PIN-Handshake",
+    heroPinSub: "Sicherheitscode mit 5x Fehlversuchs-Sperre direkt vor Ort geprüft",
+    heroKycLabel: "KI-Biometrie KYC",
+    heroKycSub: "OpenAI GPT-4o Vision Ausweis- & Live-Selfie-Check mit blauem Haken",
+    heroManifestLabel: "Digitales Zollmanifest",
+    heroManifestSub: "Offizieller BRD-2026-XXXXXX Code & steuerkonforme PDF-Rechnungen (§ 10 UStG)",
+    heroSoloBadge: "100% Solo-Entwickelt",
 
     stackTagline: "DESIGN SYSTEM",
     stackTitle: "Fähigkeiten-Bento-Grid",
@@ -389,14 +430,18 @@ const translations: Record<Locale, Translations> = {
     portfolioTagline: "PORTFOLIO-Showcase",
     portfolioTitle: "Ausgewählte Fallstudien",
     portfolioSubtitle: "Eine Auswahl an Webanwendungen sowie mobilen Apps mit Fokus auf Performance, Barrierefreiheit und saubere Architektur.",
-    portfolioBarandeTitle: "Barande P2P Crowd Shipping Marktplatz",
-    portfolioBarandeDesc: "Verbindung zwischen internationalen Reisenden und Absendern zwischen Europa und Teheran. Reisende nutzen ihre ungenutzte Freigepäckmenge für die Paketzustellung und verdienen Belohnungen. Absender erleben einen transparenten Crowd-Shipping-Ablauf, der durch sichere Treuhandkonten, Geolocation-Matching in Echtzeit und PIN-Zustellungsprüfungen geschützt ist.",
+    portfolioBarandeTitle: "Barande – P2P Crowdshipping & Reisegepäck-Marktplatz",
+    portfolioBarandeDesc: "Internationale Peer-to-Peer Crowdshipping-Plattform, die Flugreisende mit freiem Freigepäck direkt mit Absendern zwischen Deutschland und Iran verbindet. Reisende refinanzieren ihre Flugtickets durch den Verkauf freier Kilo-Kapazitäten, während Absender Same-Day / Next-Day Expresslieferungen für Dokumente und Pakete zu einem Bruchteil gewerblicher Kurierdienste erhalten. Konzipiert mit kompromissloser Sicherheitsarchitektur: KI-Biometrie-KYC, 100% Treuhand-Vault, Pflicht-Sichtprüfung vor Abflug und 4-stelligem PIN-Handshake.",
     portfolioSheenTitle: "Sheen Berlin Premium Kosmetikstudio Plattform",
     portfolioSheenDesc: "Eine maßgeschneiderte Web Plattform für einen Premium Salon. Entwickelt mit Next.js Server Components zur Optimierung von Bild Preloading und Ressourcenzustellung, um ein 100/100 Performance Ergebnis bei Google Lighthouse zu erreichen. Die Integration strukturierter Schema Daten sorgt für saubere Metadaten zur organischen Indizierung.",
-    portfolioEscrowTitle: "Sichere Treuhand-API",
-    portfolioEscrowDesc: "Die Gelder werden in Treuhand-Tresoren gesichert und erst nach erfolgreicher Lieferungsbestätigung freigegeben.",
-    portfolioPinTitle: "PIN Handshake",
-    portfolioPinDesc: "Die duale PIN-Synchronisierung verifiziert die übereinstimmende Handshake-Lieferung ohne Abhängigkeit von zentralen Instanzen.",
+    portfolioEscrowTitle: "100% Treuhand-Schutz (Escrow)",
+    portfolioEscrowDesc: "Null Vorkasse-Risiko. Gelder liegen im gesicherten Vault, bis der Empfänger am Zielort bestätigt.",
+    portfolioPinTitle: "4-stelliger PIN-Handshake",
+    portfolioPinDesc: "Kryptografischer Übergabecode mit 5-Versuchs-Brute-Force-Sperre für die persönliche Übergabe.",
+    portfolioKycTitle: "KI-Biometrie KYC",
+    portfolioKycDesc: "OpenAI GPT-4o Vision gleicht Ausweis und Live-Selfie biometrisch ab für verifizierte Profile.",
+    portfolioManifestTitle: "Digitales Zollmanifest",
+    portfolioManifestDesc: "Manipulationssicherer BRD-2026-Code für Flughafenkontrollen & § 10 UStG PDF-Rechnungsstellung.",
     portfolioInquireMobile: "Mobile Entwicklung anfragen",
     portfolioLcpTitle: "Bildabruf-Priorisierung",
     portfolioLcpDesc: "Wichtige Layout-Bilder werden nativ vorgeladen, was langsame Largest-Contentful-Paint-Verzögerungen (LCP) behebt.",
@@ -526,14 +571,25 @@ const translations: Record<Locale, Translations> = {
     navLetsBuild: "آغاز همکاری",
     navTagline: "توسعه وب و موبایل",
 
-    heroTagline: "🚀 مهندسی نرم‌افزار، توسعه وب و موبایل",
-    heroHeadlinePrefix: "طراحی برای کاربر. ",
-    heroHeadlineHighlight: "مهندسی پایدار",
+    heroTagline: "توسعه ۱۰۰٪ مستقل • ارسال بار همتا به همتا (P2P)",
+    heroHeadlinePrefix: "از ایده تا یک اکوسیستم کامل. ",
+    heroHeadlineHighlight: "توسعه مستقل: برنده",
     heroHeadlineSuffix: ".",
-    heroSubline: "به عنوان یک توسعه‌دهنده فول‌استک و موبایل، تخصصم تبدیل ایده‌های شما از اولین مرحله تا انتشار نهایی روی استور به یک محصول واقعی است. چه به دنبال یک پلتفرم وب اختصاصی باشید، چه یک اپلیکیشن روان و حرفه‌ای برای آی‌او‌اس و اندروید، همراهتان هستم تا نتیجه‌ای پایدار، قدرتمند و ماندگار تحویل دهم.",
-    heroCtaWork: "مشاهده پروژه‌ها",
+    heroSubline: "پلتفرم جامع کرادشیپینگ و ارسال سریع بار مسافری بین آلمان و ایران — طراحی و توسعه کامل صفر تا صد توسط یک مهندس نرم‌افزار.",
+    heroCtaWork: "مشاهده کیس استادی",
     heroCtaBuild: "آغاز همکاری",
     heroScrollDown: "حرکت به پایین",
+    heroRouteLabel: "مسیر: آلمان ⇄ ایران",
+    heroRouteSub: "ارسال فوق سریع با پرواز در ۲۴ تا ۴۸ ساعت به جای پست پرهزینه",
+    heroEscrowLabel: "حساب امانی ۱۰۰٪ امن",
+    heroEscrowSub: "وجه در صندوق امن برنده تا زمان تحویل فیزیکی قفل می‌ماند",
+    heroPinLabel: "تاییدیه پین‌کد ۴ رقمی",
+    heroPinSub: "کد امن با قفل ضد تخلف پس از ۵ تلاش، بررسی حضوری در مقصد",
+    heroKycLabel: "احراز هویت بیومتریک با هوش مصنوعی",
+    heroKycSub: "تطبیق گذرنامه و سلفی زنده با OpenAI GPT-4o Vision با نشان آبی",
+    heroManifestLabel: "مانیفست دیجیتال گمرک",
+    heroManifestSub: "کد رسمی BRD-2026-XXXXXX و صدور فاکتورهای رسمی مالیاتی",
+    heroSoloBadge: "توسعه ۱۰۰٪ مستقل",
 
     stackTagline: "سیستم طراحی",
     stackTitle: "تخصص‌های فنی و ابزارها",
@@ -561,14 +617,18 @@ const translations: Record<Locale, Translations> = {
     portfolioTagline: "گزیده آثار",
     portfolioTitle: "پروژه‌های شاخص و مطالعات موردی",
     portfolioSubtitle: "مجموعه‌ای گزینش‌شده از محصولات چندپلتفرمه مدرن و پیاده‌سازی‌های دیجیتال بر پایه استانداردهای مهندسی روز دنیا.",
-    portfolioBarandeTitle: "برنده – بازارچه ارسال بار همتا به همتا (P2P)",
-    portfolioBarandeDesc: "پل ارتباطی میان مسافران بین‌المللی و فرستندگان بار در مسیرهای اروپا و تهران. مسافران از ظرفیت بلااستفاده بار خود برای جابجایی بسته‌ها استفاده کرده و درآمد کسب می‌کنند، در حالی که فرستندگان فرآیندی کاملاً شفاف را تجربه می‌کنند که به واسطه حساب‌های امانی امن، تطبیق جغرافیایی هوشمند و تاییدیه امن تحویل دوطرفه پشتیبانی می‌شود.",
+    portfolioBarandeTitle: "برنده – بازارچه ارسال بار همتا به همتا (P2P) و بار مسافری",
+    portfolioBarandeDesc: "بازارچه بین‌المللی ارسال بار مسافری میان آلمان و ایران. مسافران با به اشتراک گذاشتن کیلویی ظرفیت خالی چمدان خود، هزینه‌های پرواز را جبران کرده و فرستندگان بسته‌ها و مدارک مهم را در همان روز یا روز بعد با هزینه‌ای بسیار کمتر از پست اکسپرس به مقصد می‌رسانند. معماری با امنیت بی‌نقص: احراز هویت با GPT-4o Vision، حساب امانی ۱۰۰٪ امن، بازرسی پیش از پرواز و پین‌کد ۴ رقمی تحویل.",
     portfolioSheenTitle: "شین برلین – پلتفرم دیجیتال سالن زیبایی لوکس",
     portfolioSheenDesc: "پلتفرم وب اختصاصی برای یک سالن زیبایی. توسعه‌یافته با کامپوننت‌های سرور نکست‌جی‌اس جهت پیش‌بارگذاری منابع کلیدی و بهبود سرعت نمایش تصاویر. استفاده از داده‌های ساختاریافته استاندارد سئو برای ایندکس بهینه در موتورهای جستجو.",
-    portfolioEscrowTitle: "API امانی امن",
-    portfolioEscrowDesc: "هزینه پرداختی در صندوقی امن نگهداری شده و پس از تایید نهایی تحویل صحیح، برای مسافر آزاد می‌شود.",
-    portfolioPinTitle: "تاییدیه دست‌دهی با پین‌کد",
-    portfolioPinDesc: "همگام‌سازی و راستی‌آزمایی دوطرفه پین‌کد برای تایید تحویل کالا، بدون تکیه بر مرجع واسط متمرکز.",
+    portfolioEscrowTitle: "صندوق امانی ۱۰۰٪ امن (Escrow)",
+    portfolioEscrowDesc: "ریسک پیش‌پرداخت به صفر می‌رسد. وجه تا زمان تایید نهایی گیرنده در صندوق امن محفوظ است.",
+    portfolioPinTitle: "تاییدیه پین‌کد ۴ رقمی",
+    portfolioPinDesc: "کد رمزنگاری‌شده با قفل ۵ تلاشه ضد بروت‌فورس جهت تحویل حضوری و بدون واسطه.",
+    portfolioKycTitle: "احراز هویت بیومتریک با هوش مصنوعی",
+    portfolioKycDesc: "بررسی مدارک هویتی و سلفی با GPT-4o Vision جهت اعطای نشان تایید آبی.",
+    portfolioManifestTitle: "مانیفست دیجیتال گمرک",
+    portfolioManifestDesc: "سند معتبر دیجیتال فرودگاهی با کد BRD-2026 و فاکتورهای رسمی خودکار.",
     portfolioInquireMobile: "درخواست مشاوره معماری موبایل",
     portfolioLcpTitle: "اولویت‌دهی به بارگذاری تصاویر (LCP)",
     portfolioLcpDesc: "پیش‌بارگذاری نیتیو تصاویر کلیدی صفحه، جهت برطرف کردن تاخیر در لود و بهبود شاخص عملکرد (LCP).",
@@ -700,27 +760,49 @@ interface LanguageContextProps {
 
 const LanguageContext = createContext<LanguageContextProps | undefined>(undefined);
 
-export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [locale, setLocaleState] = useState<Locale>("en");
+let localeListeners: Array<() => void> = [];
 
-  useEffect(() => {
+const subscribeLocale = (listener: () => void) => {
+  localeListeners.push(listener);
+  window.addEventListener("storage", listener);
+  return () => {
+    localeListeners = localeListeners.filter((l) => l !== listener);
+    window.removeEventListener("storage", listener);
+  };
+};
+
+const getLocaleSnapshot = (): Locale => {
+  if (typeof window === "undefined") return "en";
+  try {
     const savedLocale = localStorage.getItem("preferred_locale") as Locale;
     if (savedLocale && ["en", "de", "fa"].includes(savedLocale)) {
-      setLocaleState(savedLocale);
-    } else {
-      // Auto-detect browser language if available and supported
-      const browserLang = navigator.language.split("-")[0];
-      if (browserLang === "de") {
-        setLocaleState("de");
-      } else if (browserLang === "fa" || browserLang === "ar") {
-        setLocaleState("fa");
-      }
+      return savedLocale;
     }
-  }, []);
+    const browserLang = navigator.language.split("-")[0];
+    if (browserLang === "de") return "de";
+    if (browserLang === "fa" || browserLang === "ar") return "fa";
+  } catch {
+    // fallback
+  }
+  return "en";
+};
+
+const getLocaleServerSnapshot = (): Locale => "en";
+
+export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const storeLocale = useSyncExternalStore(subscribeLocale, getLocaleSnapshot, getLocaleServerSnapshot);
+  const [overrideLocale, setOverrideLocale] = useState<Locale | null>(null);
+
+  const locale = overrideLocale || storeLocale;
 
   const setLocale = (newLocale: Locale) => {
-    setLocaleState(newLocale);
-    localStorage.setItem("preferred_locale", newLocale);
+    setOverrideLocale(newLocale);
+    try {
+      localStorage.setItem("preferred_locale", newLocale);
+      localeListeners.forEach((l) => l());
+    } catch {
+      // ignore
+    }
   };
 
   const isRtl = locale === "fa";
@@ -739,7 +821,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, [locale, isRtl]);
 
-  const t = (key: keyof Translations, params?: Record<string, string | number>): string => {
+  const t = useCallback((key: keyof Translations, params?: Record<string, string | number>): string => {
     let text = translations[locale][key];
     if (Array.isArray(text)) {
       // Return first bullet or serialized string fallback (bullets handled in component rendering)
@@ -754,13 +836,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       });
     }
     return text as string;
-  };
-
-  // Helper function to expose raw array of translations (for bullets)
-  const getBullets = (key: keyof Translations): string[] => {
-    const text = translations[locale][key];
-    return Array.isArray(text) ? text : [];
-  };
+  }, [locale]);
 
   return (
     <LanguageContext.Provider value={{ locale, setLocale, t, isRtl }}>

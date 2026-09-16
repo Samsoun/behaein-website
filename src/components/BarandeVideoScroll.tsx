@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useRef, useEffect, useState, useCallback, useMemo } from "react";
+import React, { useRef, useEffect, useState, useCallback, useMemo, useSyncExternalStore } from "react";
 import { motion, useScroll, useTransform, useSpring, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import { Smartphone, Layers, Database, ShieldCheck, Play } from "lucide-react";
 import { useLanguage, getBulletsForLocale } from "@/context/LanguageContext";
 
 const TOTAL_FRAMES = 90; // Optimized frame count for background GPU pre-decoding
+const emptySubscribe = () => () => {};
 
 interface Phase {
   id: number;
@@ -21,7 +22,7 @@ export const BarandeVideoScroll: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [extractedFrames, setExtractedFrames] = useState<ImageBitmap[]>([]);
@@ -283,8 +284,6 @@ export const BarandeVideoScroll: React.FC = () => {
 
   // Window resize observer and mobile state checker on mount
   useEffect(() => {
-    setIsMounted(true);
-
     const checkMobile = () => {
       const hasMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       const isTouchDevice = typeof navigator !== "undefined" && (
@@ -366,8 +365,9 @@ export const BarandeVideoScroll: React.FC = () => {
 
     const timer = setInterval(() => {
       setAutoplayProgress((prev) => {
-        if (prev >= 100) {
-          return 100;
+        if (prev + increment >= 100) {
+          setActivePhaseIndex((idx) => (idx + 1) % 4);
+          return 0;
         }
         return prev + increment;
       });
@@ -375,14 +375,6 @@ export const BarandeVideoScroll: React.FC = () => {
 
     return () => clearInterval(timer);
   }, [isMobile, inView, isPaused, autoplayKey]);
-
-  // Synchronize phase advancement and progress reset in a single React batch commit to avoid out-of-sync jumps
-  useEffect(() => {
-    if (isMobile && autoplayProgress >= 100) {
-      setActivePhaseIndex((prev) => (prev + 1) % 4);
-      setAutoplayProgress(0);
-    }
-  }, [autoplayProgress, isMobile]);
 
   // Swipe / Tap gesture handlers for Mobile Cards
   const handleDragEnd = useCallback((info: { offset: { x: number } }) => {

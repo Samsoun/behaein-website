@@ -227,10 +227,13 @@ export const TechTicker: React.FC = () => {
   // Load minimized state from local storage on mount
   useEffect(() => {
     const saved = localStorage.getItem("ticker_minimized");
-    if (saved === "true") {
-      setIsMinimized(true);
-    }
-    setHasLoaded(true);
+    const timer = setTimeout(() => {
+      if (saved === "true") {
+        setIsMinimized(true);
+      }
+      setHasLoaded(true);
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleToggleMinimize = (e: React.MouseEvent) => {
