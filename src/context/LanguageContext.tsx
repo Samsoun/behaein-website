@@ -81,6 +81,17 @@ export interface Translations {
   portfolioSeoTitle: string;
   portfolioSeoDesc: string;
   portfolioInquireWeb: string;
+  portfolioYoutubeTitle: string;
+  portfolioYoutubeDesc: string;
+  portfolioYoutubeFilterTitle: string;
+  portfolioYoutubeFilterDesc: string;
+  portfolioYoutubeExportTitle: string;
+  portfolioYoutubeExportDesc: string;
+  portfolioYoutubeSortTitle: string;
+  portfolioYoutubeSortDesc: string;
+  portfolioYoutubeMonetizationTitle: string;
+  portfolioYoutubeMonetizationDesc: string;
+  portfolioInquireExtension: string;
 
   // Process Section
   processTagline: string;
@@ -148,6 +159,11 @@ export interface Translations {
   mockupBrowserPerformance: string;
   mockupBrowserSeoPractices: string;
   mockupBrowserFooterNote: string;
+  mockupExtensionTabFilter: string;
+  mockupExtensionTabResults: string;
+  mockupExtensionTabBanner: string;
+  mockupExtensionActiveBadge: string;
+  mockupExtensionChannelExample: string;
 
   // Video Scroll Section
   videoScrollTagline: string;
@@ -261,6 +277,17 @@ const translations: Record<Locale, Translations> = {
     portfolioSeoTitle: "Page 1 Rank SEO",
     portfolioSeoDesc: "Automatic micro-formatting schemas feed search engines contextual structures flawlessly.",
     portfolioInquireWeb: "Inquire about Web UI engineering",
+    portfolioYoutubeTitle: "YouTube Date Filter – Chrome Extension (Manifest V3)",
+    portfolioYoutubeDesc: "A production-grade Chrome Extension (Manifest V3) that brings custom date range filtering to YouTube channels—a feature long missing from the platform. Engineered with native dark-mode chip injection ('📅 Nach Datum filtern'), robust SPA navigation handling via MutationObserver, multi-layer channel ID extraction, instant 1-click Excel/CSV data export, view-count metrics, and a turnkey freemium monetization system integrated with Stripe.",
+    portfolioYoutubeFilterTitle: "Native UI & SPA Integration",
+    portfolioYoutubeFilterDesc: "Seamless chip injection into YouTube channel tabs with debounced MutationObserver handling dynamic SPA route transitions.",
+    portfolioYoutubeExportTitle: "1-Click Excel / CSV Export",
+    portfolioYoutubeExportDesc: "Generates formatted spreadsheet downloads with UTF-8 BOM, video titles, dates, durations, and view counts.",
+    portfolioYoutubeSortTitle: "Advanced Sorting Engine",
+    portfolioYoutubeSortDesc: "Sorts channel video archives by total view count, newest, oldest, or alphabetically in milliseconds.",
+    portfolioYoutubeMonetizationTitle: "Freemium & Stripe Paywall",
+    portfolioYoutubeMonetizationDesc: "ExtensionPay monetization architecture with IP-based free daily search quotas, blurred teaser cards, and recurring Stripe subscriptions.",
+    portfolioInquireExtension: "Inquire about Chrome Extension engineering",
 
     processTagline: "WORKFLOW STRUCTURE",
     processTitle: "The Engineering Process",
@@ -339,6 +366,11 @@ const translations: Record<Locale, Translations> = {
     mockupBrowserPerformance: "Performance",
     mockupBrowserSeoPractices: "SEO Best Practices",
     mockupBrowserFooterNote: "* Next.js App Router dynamic sitemap.xml & robot.txt loaded successfully.",
+    mockupExtensionTabFilter: "Filter Dialog",
+    mockupExtensionTabResults: "Results & Export",
+    mockupExtensionTabBanner: "Store Banner",
+    mockupExtensionActiveBadge: "MV3 ACTIVE",
+    mockupExtensionChannelExample: "youtube.com/@veritasium/videos",
 
     videoScrollTagline: "02 / INTERACTIVE DECONSTRUCTION",
     videoScrollTitle: "Barande – Scrollytelling Case Study",
@@ -448,6 +480,17 @@ const translations: Record<Locale, Translations> = {
     portfolioSeoTitle: "Platz 1 Google SEO",
     portfolioSeoDesc: "Automatische Formatierungsschemata versorgen Suchmaschinen fehlerfrei mit kontextuellen Strukturen.",
     portfolioInquireWeb: "Web UI Entwicklung anfragen",
+    portfolioYoutubeTitle: "YouTube Date Filter – Chrome Extension (Manifest V3)",
+    portfolioYoutubeDesc: "Eine produktionsreife Chrome-Erweiterung (Manifest V3), die ein seit Jahren vermisstes Feature auf YouTube nachrüstet: Das gezielte Filtern von Kanal-Uploads nach frei wählbaren Datumszeiträumen und Einzeltagen. Die Extension integriert sich nahtlos in das native Dark-Design von YouTube ('📅 Nach Datum filtern'-Chip), synchronisiert sich zuverlässig mit dynamischen SPA-Seitenwechseln via MutationObserver und bietet 1-Klick-Exporte nach Excel/CSV sowie erweiterte Sortierung nach Aufrufen und Datum. Vollständig monetarisiert über ein integriertes Freemium-Modell mit Stripe/ExtensionPay.",
+    portfolioYoutubeFilterTitle: "Native UI & SPA-Handling",
+    portfolioYoutubeFilterDesc: "Nahtlose Chip-Injektion in YouTube-Kanal-Menüs mit debounced MutationObserver für reibungslose Single-Page-App-Seitenwechsel.",
+    portfolioYoutubeExportTitle: "1-Klick Excel- / CSV-Export",
+    portfolioYoutubeExportDesc: "Generiert tabellarische Downloads mit UTF-8-BOM, Videotiteln, Upload-Daten, Laufzeiten und echten View-Counts.",
+    portfolioYoutubeSortTitle: "Erweiterte Sortier-Engine",
+    portfolioYoutubeSortDesc: "Blitzschnelles Sortieren von Kanal-Videoarchiven nach Meiste Aufrufe (Beliebtheit), Älteste zuerst oder alphabetisch.",
+    portfolioYoutubeMonetizationTitle: "Freemium & Stripe Paywall",
+    portfolioYoutubeMonetizationDesc: "ExtensionPay-Abrechnungsarchitektur mit IP-basiertem Tageslimit, Blur-Teaserkarten und automatisierten Stripe-Abonnements.",
+    portfolioInquireExtension: "Chrome Extension Entwicklung anfragen",
 
     processTagline: "WORKFLOW-STRUKTUR",
     processTitle: "Der Engineering-Prozess",
@@ -526,6 +569,11 @@ const translations: Record<Locale, Translations> = {
     mockupBrowserPerformance: "Leistung",
     mockupBrowserSeoPractices: "SEO Best Practices",
     mockupBrowserFooterNote: "* Next.js App Router dynamische sitemap.xml & robot.txt erfolgreich geladen.",
+    mockupExtensionTabFilter: "Filter-Dialog",
+    mockupExtensionTabResults: "Ergebnisse & Export",
+    mockupExtensionTabBanner: "Store-Banner",
+    mockupExtensionActiveBadge: "MV3 AKTIV",
+    mockupExtensionChannelExample: "youtube.com/@veritasium/videos",
 
     videoScrollTagline: "02 / INTERAKTIVE DEKONSTRUKTION",
     videoScrollTitle: "Barande – Scrollytelling Case-Study",
@@ -635,6 +683,17 @@ const translations: Record<Locale, Translations> = {
     portfolioSeoTitle: "سئو و کسب رتبه اول گوگل",
     portfolioSeoDesc: "تولید خودکار داده‌های ساختاریافته (Schema Markup) برای درک بهینه محتوا توسط موتورهای جستجو.",
     portfolioInquireWeb: "درخواست مشاوره رابط‌های کاربری وب",
+    portfolioYoutubeTitle: "افزونه یوتیوب دیت فیلتر (YouTube Date Filter) – اکستنشن کروم",
+    portfolioYoutubeDesc: "یک اکستنشن آماده انتشار برای مرورگر گوگل کروم (بر پایه معماری مدرن Manifest V3) که قابلیت فیلتر کردن ویدیوهای کانال یوتیوب بر اساس بازه زمانی دلخواه یا یک روز معین را به این پلتفرم اضافه می‌کند. این ابزار با طراحی دارک‌مود یوتیوب هماهنگ بوده و یک دکمه چیپ بومی به منوی کانال اضافه می‌کند، ناوبری تک‌صفحه‌ای (SPA) را از طریق MutationObserver مدیریت نموده و خروجی مستقیم اکسل/CSV و مرتب‌سازی بر اساس تعداد بازدید را فراهم می‌سازد؛ همراه با سیستم درآمدزایی Freemium و درگاه پرداخت Stripe.",
+    portfolioYoutubeFilterTitle: "تزریق بومی و مدیریت SPA",
+    portfolioYoutubeFilterDesc: "تزریق مستقیم دکمه فیلتر به منوهای تب یوتیوب و هماهنگی کامل با چرخه حیات ناوبری SPA با ابزار MutationObserver.",
+    portfolioYoutubeExportTitle: "خروجی ۱ کلیکه به اکسل و CSV",
+    portfolioYoutubeExportDesc: "تولید فایل‌های دانلودی استاندارد با انکودینگ UTF-8 BOM شامل عنوان، تاریخ انتشار، مدت زمان و آمار بازدید.",
+    portfolioYoutubeSortTitle: "موتور مرتب‌سازی پیشرفته",
+    portfolioYoutubeSortDesc: "مرتب‌سازی آنی آرشیو ویدیوهای کانال بر اساس بیشترین بازدید، قدیمی‌ترین، جدیدترین یا به ترتیب حروف الفبا.",
+    portfolioYoutubeMonetizationTitle: "سیستم اشتراک Freemium با Stripe",
+    portfolioYoutubeMonetizationDesc: "معماری درآمدزایی با ExtensionPay، محدودیت روزانه بر پایه آی‌پی، کارت‌های پیش‌نمایش مات و اشتراک ماهانه Stripe.",
+    portfolioInquireExtension: "درخواست مشاوره توسعه افزونه‌های کروم",
 
     processTagline: "ساختار روند توسعه",
     processTitle: "فرآیند مهندسی و اجرای پروژه",
@@ -713,6 +772,11 @@ const translations: Record<Locale, Translations> = {
     mockupBrowserPerformance: "کارایی و سرعت",
     mockupBrowserSeoPractices: "اصول و استانداردهای سئو",
     mockupBrowserFooterNote: "* تولید خودکار و بارگذاری موفقیت‌آمیز نقشه‌های سایت sitemap.xml و robots.txt بر پایه Next.js",
+    mockupExtensionTabFilter: "دیالوگ فیلتر",
+    mockupExtensionTabResults: "نتایج و خروجی اکسل",
+    mockupExtensionTabBanner: "بنر وب‌استور",
+    mockupExtensionActiveBadge: "فعال در MV3",
+    mockupExtensionChannelExample: "youtube.com/@veritasium/videos",
 
     videoScrollTagline: "۰۲ / بررسی تعاملی معماری",
     videoScrollTitle: "برنده – مستند توسعه تعاملی (Scrollytelling)",

@@ -197,3 +197,129 @@ export const BrowserMockup: React.FC = () => {
     </motion.div>
   );
 };
+
+// Component 3: ExtensionMockup (YouTube Date Filter Chrome Extension)
+export const ExtensionMockup: React.FC = () => {
+  const { t } = useLanguage();
+  const [extTab, setExtTab] = useState<"filter" | "results" | "banner">("filter");
+
+  return (
+    <motion.div
+      whileHover={{ 
+        rotateY: 8, 
+        rotateX: -4,
+        scale: 1.02,
+        z: 30
+      }}
+      transition={{ type: "spring", stiffness: 150, damping: 20 }}
+      className="w-full max-w-lg h-[340px] rounded-2xl glass-panel relative overflow-hidden flex flex-col border border-white/10 shadow-[0_20px_50px_rgba(230,193,122,0.08)] [transformStyle:preserve-3d] select-none"
+      style={{
+        transform: "rotateY(-10deg) rotateX(8deg) rotateZ(-1deg)",
+      }}
+    >
+      {/* Browser Bar */}
+      <div className="h-10 border-b border-zinc-800/80 bg-zinc-950/80 flex items-center justify-between px-4 z-20">
+        <div className="flex gap-1.5 items-center">
+          <div className="w-3 h-3 rounded-full bg-red-500/80" />
+          <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+          <div className="w-3 h-3 rounded-full bg-green-500/80" />
+        </div>
+
+        {/* Address Bar with Extension Pin */}
+        <div className="flex items-center gap-2 px-3 py-1 rounded bg-zinc-900 border border-zinc-800 w-[180px] sm:w-[220px] md:w-[240px] h-6 justify-between overflow-hidden">
+          <div className="flex items-center gap-1.5 truncate">
+            <Lock className="w-3 h-3 text-[#E6C17A] shrink-0" />
+            <span className="text-[10px] text-zinc-300 font-mono tracking-tight font-sans truncate">
+              {t("mockupExtensionChannelExample")}
+            </span>
+          </div>
+          <div className="flex items-center gap-1 pl-1.5 border-l border-zinc-800 shrink-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src="/youtube_date_filter_icon.png" 
+              alt="Extension Icon" 
+              className="w-3.5 h-3.5 rounded"
+            />
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          </div>
+        </div>
+
+        {/* Tab Switcher Controls */}
+        <div className="flex gap-1 sm:gap-1.5">
+          <button 
+            onClick={() => setExtTab("filter")}
+            className={`px-2 py-0.5 rounded text-[8px] font-bold tracking-wide uppercase transition-all cursor-pointer ${
+              extTab === "filter" ? "bg-amber-100/10 text-amber-100 border border-amber-100/20" : "text-zinc-500 hover:text-zinc-300"
+            }`}
+          >
+            {t("mockupExtensionTabFilter")}
+          </button>
+          <button 
+            onClick={() => setExtTab("results")}
+            className={`px-2 py-0.5 rounded text-[8px] font-bold tracking-wide uppercase transition-all cursor-pointer ${
+              extTab === "results" ? "bg-amber-100/10 text-amber-100 border border-amber-100/20" : "text-zinc-500 hover:text-zinc-300"
+            }`}
+          >
+            {t("mockupExtensionTabResults")}
+          </button>
+          <button 
+            onClick={() => setExtTab("banner")}
+            className={`hidden sm:block px-2 py-0.5 rounded text-[8px] font-bold tracking-wide uppercase transition-all cursor-pointer ${
+              extTab === "banner" ? "bg-amber-100/10 text-amber-100 border border-amber-100/20" : "text-zinc-500 hover:text-zinc-300"
+            }`}
+          >
+            {t("mockupExtensionTabBanner")}
+          </button>
+        </div>
+      </div>
+
+      {/* Screen Body */}
+      <div className="flex-1 bg-[#09090b] relative overflow-hidden group">
+        {extTab === "filter" && (
+          <div className="absolute inset-0 block w-full h-full overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src="/youtube_date_filter_modal.png" 
+              alt="YouTube Date Filter Modal Screenshot" 
+              className="w-full h-full object-cover object-center animate-fade-in group-hover:scale-[1.03] transition-transform duration-500"
+              draggable={false}
+            />
+            {/* Status badge */}
+            <div className="absolute bottom-2.5 right-2.5 bg-zinc-950/85 backdrop-blur-md border border-zinc-800 px-2 py-1 rounded text-[8px] font-mono text-amber-100/90 flex items-center gap-1.5 shadow-lg pointer-events-none">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              <span>{t("mockupExtensionActiveBadge")}</span>
+            </div>
+          </div>
+        )}
+
+        {extTab === "results" && (
+          <div className="absolute inset-0 block w-full h-full overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src="/youtube_date_filter_results.png" 
+              alt="YouTube Date Filter Results Screenshot" 
+              className="w-full h-full object-cover object-center animate-fade-in group-hover:scale-[1.03] transition-transform duration-500"
+              draggable={false}
+            />
+            {/* Feature badge */}
+            <div className="absolute bottom-2.5 right-2.5 bg-zinc-950/85 backdrop-blur-md border border-emerald-500/30 px-2 py-1 rounded text-[8px] font-mono text-emerald-400 flex items-center gap-1.5 shadow-lg pointer-events-none">
+              <span>📊 1-Click Excel / CSV Export</span>
+            </div>
+          </div>
+        )}
+
+        {extTab === "banner" && (
+          <div className="absolute inset-0 block w-full h-full overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src="/youtube_date_filter_banner.png" 
+              alt="YouTube Date Filter Store Banner" 
+              className="w-full h-full object-cover object-left sm:object-center animate-fade-in group-hover:scale-[1.03] transition-transform duration-500"
+              draggable={false}
+            />
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+};
