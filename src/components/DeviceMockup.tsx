@@ -323,3 +323,133 @@ export const ExtensionMockup: React.FC = () => {
     </motion.div>
   );
 };
+
+// Component 4: DidArzMockup (DidArz Chrome Extension)
+export const DidArzMockup: React.FC = () => {
+  const { t } = useLanguage();
+  const [activeTab, setActiveTab] = useState<"selection" | "popup" | "persian">("selection");
+
+  return (
+    <motion.div
+      whileHover={{ 
+        rotateY: -8, 
+        rotateX: -4,
+        scale: 1.02,
+        z: 30
+      }}
+      transition={{ type: "spring", stiffness: 150, damping: 20 }}
+      className="w-full max-w-lg h-[340px] rounded-2xl glass-panel relative overflow-hidden flex flex-col border border-white/10 shadow-[0_20px_50px_rgba(230,193,122,0.08)] [transformStyle:preserve-3d] select-none"
+      style={{
+        transform: "rotateY(10deg) rotateX(8deg) rotateZ(1deg)",
+      }}
+    >
+      {/* Browser Bar */}
+      <div className="h-10 border-b border-zinc-800/80 bg-zinc-950/80 flex items-center justify-between px-4 z-20">
+        <div className="flex gap-1.5 items-center">
+          <div className="w-3 h-3 rounded-full bg-red-500/80" />
+          <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+          <div className="w-3 h-3 rounded-full bg-green-500/80" />
+        </div>
+
+        {/* Address Bar with Extension Pin */}
+        <div className="flex items-center gap-2 px-3 py-1 rounded bg-zinc-900 border border-zinc-800 w-[170px] sm:w-[210px] md:w-[230px] h-6 justify-between overflow-hidden">
+          <div className="flex items-center gap-1.5 truncate">
+            <Lock className="w-3 h-3 text-[#E6C17A] shrink-0" />
+            <span className="text-[10px] text-zinc-300 font-mono tracking-tight font-sans truncate">
+              {t("mockupDidarzAddress")}
+            </span>
+          </div>
+          <div className="flex items-center gap-1 pl-1.5 border-l border-zinc-800 shrink-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src="/didarz/icon.png" 
+              alt="Didarz Extension Icon" 
+              className="w-3.5 h-3.5 rounded"
+            />
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+          </div>
+        </div>
+
+        {/* Tab Switcher Controls */}
+        <div className="flex gap-1 sm:gap-1.5">
+          <button 
+            onClick={() => setActiveTab("selection")}
+            className={`px-2 py-0.5 rounded text-[8px] font-bold tracking-wide uppercase transition-all cursor-pointer ${
+              activeTab === "selection" ? "bg-amber-100/10 text-amber-100 border border-amber-100/20" : "text-zinc-500 hover:text-zinc-300"
+            }`}
+          >
+            {t("mockupDidarzTabPill")}
+          </button>
+          <button 
+            onClick={() => setActiveTab("popup")}
+            className={`px-2 py-0.5 rounded text-[8px] font-bold tracking-wide uppercase transition-all cursor-pointer ${
+              activeTab === "popup" ? "bg-amber-100/10 text-amber-100 border border-amber-100/20" : "text-zinc-500 hover:text-zinc-300"
+            }`}
+          >
+            {t("mockupDidarzTabPopup")}
+          </button>
+          <button 
+            onClick={() => setActiveTab("persian")}
+            className={`hidden sm:block px-2 py-0.5 rounded text-[8px] font-bold tracking-wide uppercase transition-all cursor-pointer ${
+              activeTab === "persian" ? "bg-amber-100/10 text-amber-100 border border-amber-100/20" : "text-zinc-500 hover:text-zinc-300"
+            }`}
+          >
+            {t("mockupDidarzTabPersian")}
+          </button>
+        </div>
+      </div>
+
+      {/* Screen Body */}
+      <div className="flex-1 bg-[#09090b] relative overflow-hidden group">
+        {activeTab === "selection" && (
+          <div className="absolute inset-0 block w-full h-full overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src="/didarz/2-screenshot-1-shopping-selection.png" 
+              alt="Didarz Shopping Floating Pill Selection" 
+              className="w-full h-full object-cover object-center animate-fade-in group-hover:scale-[1.03] transition-transform duration-500"
+              draggable={false}
+            />
+            {/* Status badge */}
+            <div className="absolute bottom-2.5 right-2.5 bg-zinc-950/85 backdrop-blur-md border border-amber-500/30 px-2 py-1 rounded text-[8px] font-mono text-amber-100/90 flex items-center gap-1.5 shadow-lg pointer-events-none">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              <span>⚡ {t("mockupDidarzBadgeFloating")}</span>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "popup" && (
+          <div className="absolute inset-0 block w-full h-full overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src="/didarz/3-screenshot-2-popup-dashboard.png" 
+              alt="Didarz Popup Dashboard and Calculator" 
+              className="w-full h-full object-cover object-center animate-fade-in group-hover:scale-[1.03] transition-transform duration-500"
+              draggable={false}
+            />
+            {/* Feature badge */}
+            <div className="absolute bottom-2.5 right-2.5 bg-zinc-950/85 backdrop-blur-md border border-zinc-800 px-2 py-1 rounded text-[8px] font-mono text-amber-100/90 flex items-center gap-1.5 shadow-lg pointer-events-none">
+              <span>🧮 {t("mockupDidarzBadgePopup")}</span>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "persian" && (
+          <div className="absolute inset-0 block w-full h-full overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src="/didarz/4-screenshot-3-persian-multipliers.png" 
+              alt="Didarz Persian Digits and Multipliers" 
+              className="w-full h-full object-cover object-center animate-fade-in group-hover:scale-[1.03] transition-transform duration-500"
+              draggable={false}
+            />
+            {/* Feature badge */}
+            <div className="absolute bottom-2.5 right-2.5 bg-zinc-950/85 backdrop-blur-md border border-emerald-500/30 px-2 py-1 rounded text-[8px] font-mono text-emerald-400 flex items-center gap-1.5 shadow-lg pointer-events-none">
+              <span>🇮🇷 {t("mockupDidarzBadgePersian")}</span>
+            </div>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+};

@@ -92,6 +92,16 @@ export interface Translations {
   portfolioYoutubeMonetizationTitle: string;
   portfolioYoutubeMonetizationDesc: string;
   portfolioInquireExtension: string;
+  portfolioDidarzTitle: string;
+  portfolioDidarzDesc: string;
+  portfolioDidarzRateTitle: string;
+  portfolioDidarzRateDesc: string;
+  portfolioDidarzPillTitle: string;
+  portfolioDidarzPillDesc: string;
+  portfolioDidarzPersianTitle: string;
+  portfolioDidarzPersianDesc: string;
+  portfolioDidarzShadowTitle: string;
+  portfolioDidarzShadowDesc: string;
 
   // Process Section
   processTagline: string;
@@ -164,6 +174,13 @@ export interface Translations {
   mockupExtensionTabBanner: string;
   mockupExtensionActiveBadge: string;
   mockupExtensionChannelExample: string;
+  mockupDidarzTabPill: string;
+  mockupDidarzTabPopup: string;
+  mockupDidarzTabPersian: string;
+  mockupDidarzBadgeFloating: string;
+  mockupDidarzBadgePopup: string;
+  mockupDidarzBadgePersian: string;
+  mockupDidarzAddress: string;
 
   // Video Scroll Section
   videoScrollTagline: string;
@@ -191,6 +208,10 @@ export interface Translations {
   aboutBadgeJourney: string;
   aboutBadgePhilosophy: string;
   aboutBadgeAchievement: string;
+  aboutTimeline1Sub: string;
+  aboutTimeline2Title: string;
+  aboutTimeline2Sub: string;
+  aboutTimeline3Sub: string;
 
   // Footer & Metadata
   footerJobTitle: string;
@@ -288,6 +309,16 @@ const translations: Record<Locale, Translations> = {
     portfolioYoutubeMonetizationTitle: "Freemium & Stripe Paywall",
     portfolioYoutubeMonetizationDesc: "ExtensionPay monetization architecture with IP-based free daily search quotas, blurred teaser cards, and recurring Stripe subscriptions.",
     portfolioInquireExtension: "Inquire about Chrome Extension engineering",
+    portfolioDidarzTitle: "Didarz (دیدارز) – Live Currency & Toman Converter (Manifest V3)",
+    portfolioDidarzDesc: "A modern Chrome Extension (Manifest V3) that solves a critical problem for Iranian e-commerce shoppers: traditional converters rely on theoretical central bank rates that are completely detached from real life. Didarz delivers real-time free-market exchange rates (Bazar-e Azad / نرخ بازار آزاد) through a resilient multi-provider failover engine. Engineered with WXT, Shadow DOM isolation, native parsing of Persian numerals and linguistic multipliers (thousand, million, billion), 1-click clipboard copy, and an interactive popup calculator.",
+    portfolioDidarzRateTitle: "Free-Market Rate Engine (Bazar-e Azad)",
+    portfolioDidarzRateDesc: "Multi-provider failover across Nobitex, TetherLand, Wallex, and Ramzinex with local caching for real-world street exchange rates.",
+    portfolioDidarzPillTitle: "Instant Selection Floating Pill",
+    portfolioDidarzPillDesc: "Highlighting any price on international stores (e.g. Amazon, eBay) summons a sleek glassmorphic pill with 1-click copy.",
+    portfolioDidarzPersianTitle: "Native Persian Numerals & Linguistic Parsing",
+    portfolioDidarzPersianDesc: "Parses Eastern Arabic numerals (۰-۹) and multipliers (هزار, میلیون, میلیارد) with automated Rial-to-Toman normalization.",
+    portfolioDidarzShadowTitle: "Shadow DOM & Zero-Leak Isolation",
+    portfolioDidarzShadowDesc: "Built with WXT createShadowRootUi and scoped Tailwind CSS, ensuring 100% zero style conflicts with any host website.",
 
     processTagline: "WORKFLOW STRUCTURE",
     processTitle: "The Engineering Process",
@@ -371,6 +402,13 @@ const translations: Record<Locale, Translations> = {
     mockupExtensionTabBanner: "Store Banner",
     mockupExtensionActiveBadge: "MV3 ACTIVE",
     mockupExtensionChannelExample: "youtube.com/@veritasium/videos",
+    mockupDidarzTabPill: "Floating Pill",
+    mockupDidarzTabPopup: "Popup & Calculator",
+    mockupDidarzTabPersian: "Persian Numbers",
+    mockupDidarzBadgeFloating: "LIVE BAZAR-E AZAD",
+    mockupDidarzBadgePopup: "CALCULATOR & SETTINGS",
+    mockupDidarzBadgePersian: "PERSIAN DIGITS & MULTIPLIERS",
+    mockupDidarzAddress: "amazon.de/s?k=macbook-pro",
 
     videoScrollTagline: "02 / INTERACTIVE DECONSTRUCTION",
     videoScrollTitle: "Barande – Scrollytelling Case Study",
@@ -391,12 +429,16 @@ const translations: Record<Locale, Translations> = {
     // About Me Section
     aboutTagline: "03 / HISTORY & PHILOSOPHY",
     aboutTitle: "Behind the Code",
-    aboutParagraph1: "My journey with the web began back in the year 2000. Back then, I taught myself HTML and CSS and built my very first simple websites. Over the years, that early fascination turned into a deep-seated passion. As a self-taught developer, I relentlessly expanded my skillset through platforms like Udemy, mastering modern high-end technologies like TypeScript, React, and Next.js.",
+    aboutParagraph1: "My journey with the web began back in the year 2000 with professional, formal training in HTML and CSS. Building upon this solid foundation, I launched my first web projects. Over the years, that early fascination evolved into a deep passion: through continuous learning, rigorous practice, and advanced deep dives, I relentlessly honed my craft and today master modern high-end technologies like TypeScript, React, and Next.js.",
     aboutParagraph2: "To me, software engineering feels like magic. There’s nothing better than staring at a completely blank screen and conjuring a living, breathing product out of a single idea. I believe everything matters: from pixel-perfect interfaces and fluid user experiences to robust backend architectures—every single detail needs to be flawless.",
     aboutParagraph3: "My proudest achievement to date is 'Barande'—a highly complex full-stack application that pushes the boundaries of my technical capabilities. I am constantly looking to connect with teams managing large-scale projects who need someone with my drive and skillset. If you are looking for someone who doesn’t just write code, but lives it—let’s build something incredible.",
     aboutBadgeJourney: "The Journey",
     aboutBadgePhilosophy: "Philosophy",
     aboutBadgeAchievement: "Masterpiece",
+    aboutTimeline1Sub: "Professional Training",
+    aboutTimeline2Title: "Advanced Deep Dive",
+    aboutTimeline2Sub: "Continuous Mastery",
+    aboutTimeline3Sub: "Expert Mastery",
 
     footerJobTitle: "Creative Technologist & Full Stack Engineer",
     footerMadeWith: "Made with {icon} in Berlin",
@@ -491,6 +533,16 @@ const translations: Record<Locale, Translations> = {
     portfolioYoutubeMonetizationTitle: "Freemium & Stripe Paywall",
     portfolioYoutubeMonetizationDesc: "ExtensionPay-Abrechnungsarchitektur mit IP-basiertem Tageslimit, Blur-Teaserkarten und automatisierten Stripe-Abonnements.",
     portfolioInquireExtension: "Chrome Extension Entwicklung anfragen",
+    portfolioDidarzTitle: "Didarz (دیدارز) – Smarter Live-Währungsrechner & Toman-Converter",
+    portfolioDidarzDesc: "Eine moderne Chrome-Erweiterung (Manifest V3), die ein zentrales Problem für Online-Käufer im iranischen Markt löst: Herkömmliche Währungsrechner greifen fast ausnahmslos auf theoretische Zentralbankkurse zurück, die meilenweit an der Realität vorbeigehen. Didarz bringt echte Live-Wechselkurse des freien Markts (Bazar-e Azad / نرخ بازار آزاد) direkt in den Browser. Entwickelt mit dem WXT-Framework, isoliertem Shadow DOM für absolute Styling-Konfliktfreiheit auf jeder Website, nativer Erkennung persischer Ziffern (۰-۹) und Multiplikatoren (هزار, میلیون, میلیارد), automatischer Rial/Toman-Normalisierung, 1-Klick-Kopieren und einem integrierten Schnellrechner-Dashboard.",
+    portfolioDidarzRateTitle: "Freier Markt Live-Engine (Bazar-e Azad)",
+    portfolioDidarzRateDesc: "Multi-Provider-Failover über Nobitex, TetherLand, Wallex & Ramzinex mit intelligentem Caching für reale Straßenwechselkurse statt unrealistischer Staatskurse.",
+    portfolioDidarzPillTitle: "Floating Pill bei Textmarkierung",
+    portfolioDidarzPillDesc: "Einfaches Markieren eines Preises auf beliebigen E-Commerce-Seiten (z. B. Amazon, eBay) öffnet ein minimalistisches Glassmorphism-Overlay mit 1-Klick-Kopieren.",
+    portfolioDidarzPersianTitle: "Persische Ziffern & Sprachlogik",
+    portfolioDidarzPersianDesc: "Verarbeitet persische Zahlen (۰-۹) und Wörter wie هزار, میلیون, میلیارد mit automatischer Rial/Toman-Normalisierung.",
+    portfolioDidarzShadowTitle: "Shadow DOM & Zero-Leak Isolation",
+    portfolioDidarzShadowDesc: "Entwickelt mit WXT und isoliertem Shadow Root: Schließt CSS-Kollisionen mit Host-Seiten komplett aus und garantiert höchste Performance.",
 
     processTagline: "WORKFLOW-STRUKTUR",
     processTitle: "Der Engineering-Prozess",
@@ -574,6 +626,13 @@ const translations: Record<Locale, Translations> = {
     mockupExtensionTabBanner: "Store-Banner",
     mockupExtensionActiveBadge: "MV3 AKTIV",
     mockupExtensionChannelExample: "youtube.com/@veritasium/videos",
+    mockupDidarzTabPill: "Floating Pill",
+    mockupDidarzTabPopup: "Popup & Rechner",
+    mockupDidarzTabPersian: "Persische Ziffern",
+    mockupDidarzBadgeFloating: "LIVE BAZAR-E AZAD",
+    mockupDidarzBadgePopup: "RECHNER & EINSTELLUNGEN",
+    mockupDidarzBadgePersian: "PERSISCHE ZIFFERN & MULTIPLIKATOREN",
+    mockupDidarzAddress: "amazon.de/s?k=macbook-pro",
 
     videoScrollTagline: "02 / INTERAKTIVE DEKONSTRUKTION",
     videoScrollTitle: "Barande – Scrollytelling Case-Study",
@@ -594,12 +653,16 @@ const translations: Record<Locale, Translations> = {
     // About Me Section
     aboutTagline: "03 / GESCHICHTE & PHILOSOPHIE",
     aboutTitle: "Hinter dem Code",
-    aboutParagraph1: "Meine Reise mit dem Web begann im Jahr 2000. Damals habe ich mir HTML und CSS komplett selbst beigebracht und die ersten einfachen Webseiten ins Internet gestellt. Aus dieser frühen Faszination ist über die Jahre eine tiefe Leidenschaft geworden: Als Quereinsteiger habe ich mein Wissen durch Plattformen wie Udemy intensiv vertieft und beherrsche heute moderne High-End-Technologien wie TypeScript, React und Next.js blind.",
+    aboutParagraph1: "Meine Reise mit dem Web begann im Jahr 2000 mit einer fundierten, professionellen Ausbildung in HTML und CSS. Auf diesem soliden Fundament habe ich meine ersten Webseiten aufgebaut. Aus dieser frühen Faszination ist über die Jahre eine tiefe Leidenschaft geworden: Mit kontinuierlicher Weiterbildung und gezielten Deep Dives habe ich mein Know-how stetig erweitert und beherrsche heute moderne High-End-Technologien wie TypeScript, React und Next.js blind.",
     aboutParagraph2: "Für mich ist Softwareentwicklung wie Magie – ich liebe es, vor einem komplett leeren Bildschirm zu sitzen und aus einer bloßen Idee ein lebendiges, funktionierendes Produkt zu zaubern. Dabei mache ich keine halben Sachen: Von der pixelgenauen Oberfläche über eine flüssige User Experience bis hin zur stabilen Backend-Infrastruktur muss jedes Zahnrad perfekt ineinandergreifen.",
     aboutParagraph3: "Mein bisher stolzestes Meisterstück ist die App 'Barande' – ein hochkomplexes Full-Stack-Projekt, das mein gesamtes technologisches Spektrum fordert. Ich bin immer auf der Suche nach großen Projekten und Teams, die außergewöhnliche Ideen auf die Straße bringen wollen. Wenn du nach jemandem suchst, der Code nicht nur schreibt, sondern lebt – lass uns etwas Großes bauen.",
     aboutBadgeJourney: "Der Werdegang",
     aboutBadgePhilosophy: "Philosophie",
     aboutBadgeAchievement: "Meisterwerk",
+    aboutTimeline1Sub: "Professionelle Ausbildung",
+    aboutTimeline2Title: "Technologie-Deep-Dive",
+    aboutTimeline2Sub: "Kontinuierliche Spezialisierung",
+    aboutTimeline3Sub: "Expert Mastery",
 
     footerJobTitle: "Creative Technologist und Full Stack Entwickler",
     footerMadeWith: "Mit {icon} in Berlin gemacht",
@@ -694,6 +757,16 @@ const translations: Record<Locale, Translations> = {
     portfolioYoutubeMonetizationTitle: "سیستم اشتراک Freemium با Stripe",
     portfolioYoutubeMonetizationDesc: "معماری درآمدزایی با ExtensionPay، محدودیت روزانه بر پایه آی‌پی، کارت‌های پیش‌نمایش مات و اشتراک ماهانه Stripe.",
     portfolioInquireExtension: "درخواست مشاوره توسعه افزونه‌های کروم",
+    portfolioDidarzTitle: "دیدارز (Didarz) – افزونه هوشمند تبدیل ارز و تومان با نرخ بازار آزاد",
+    portfolioDidarzDesc: "یک اکستنشن مدرن برای مرورگر گوگل کروم (Manifest V3) که چالش بزرگ تبدیل نرخ ارز برای کاربران ایرانی را حل می‌کند: بر خلاف مبدل‌های سنتی که نرخ‌های دولتی و غیرواقعی را ملاک قرار می‌دهند، دیدارز نرخ‌های زنده و لحظه‌ای بازار آزاد (تتر و دلار آزاد) را مستقیماً به صفحه وب می‌آورد. ساخته‌شده با فریم‌ورک WXT، ایزولاسیون کامل استایل با Shadow DOM، پشتیبانی از ارقام فارسی (۰-۹) و عبارات مقیاسی (هزار، میلیون، میلیارد)، تبدیل خودکار ریال به تومان، کپی سریع با یک کلیک و داشبورد محاسباتی در پاپ‌آپ.",
+    portfolioDidarzRateTitle: "موتور هوشمند نرخ زنده بازار آزاد",
+    portfolioDidarzRateDesc: "سیستم تاب‌آور با اتصال چندگانه به نوبیتکس، تترلند، والکس و رمزینکس همراه با کش هوشمند برای دریافت نرخ‌های واقعی و خیابانی ارز.",
+    portfolioDidarzPillTitle: "پنجره شناور هنگام انتخاب قیمت",
+    portfolioDidarzPillDesc: "تنها با هایلایت کردن هر مبلغ در سایت‌های بین‌المللی مانند آمازون و ای‌بی، مقدار معادل با قابلیت کپی سریع با یک کلیک نمایش داده می‌شود.",
+    portfolioDidarzPersianTitle: "پشتیبانی از اعداد فارسی و پسوندهای زبانی",
+    portfolioDidarzPersianDesc: "تشخیص هوشمند اعداد فارسی و پسوندهایی مانند «هزار»، «میلیون» و «میلیارد» به همراه نرمال‌سازی خودکار ضریب ۱۰ برابری ریال و تومان.",
+    portfolioDidarzShadowTitle: "معماری Shadow DOM و عدم تداخل استایل",
+    portfolioDidarzShadowDesc: "توسعه‌یافته با WXT و Shadow DOM که باعث می‌شود استایل‌های افزونه با ساختار هیچ وب‌سایتی تداخل نداشته و فوق‌العاده سریع اجرا شود.",
 
     processTagline: "ساختار روند توسعه",
     processTitle: "فرآیند مهندسی و اجرای پروژه",
@@ -777,6 +850,13 @@ const translations: Record<Locale, Translations> = {
     mockupExtensionTabBanner: "بنر وب‌استور",
     mockupExtensionActiveBadge: "فعال در MV3",
     mockupExtensionChannelExample: "youtube.com/@veritasium/videos",
+    mockupDidarzTabPill: "پنجره شناور قیمت",
+    mockupDidarzTabPopup: "پاپ‌آپ و ماشین‌حساب",
+    mockupDidarzTabPersian: "اعداد و ضرایب فارسی",
+    mockupDidarzBadgeFloating: "نرخ زنده بازار آزاد",
+    mockupDidarzBadgePopup: "ماشین‌حساب و تنظیمات",
+    mockupDidarzBadgePersian: "ارقام فارسی و واحدهای زبانی",
+    mockupDidarzAddress: "amazon.de/s?k=macbook-pro",
 
     videoScrollTagline: "۰۲ / بررسی تعاملی معماری",
     videoScrollTitle: "برنده – مستند توسعه تعاملی (Scrollytelling)",
@@ -797,12 +877,16 @@ const translations: Record<Locale, Translations> = {
     // About Me Section
     aboutTagline: "۰۳ / تاریخچه و فلسفه کاری",
     aboutTitle: "پشت پرده‌ی کدها",
-    aboutParagraph1: "مسیر من در دنیای وب از سال ۲۰۰۰ آغاز شد؛ زمانی که به صورت خودآموز HTML و CSS را یاد گرفتم و اولین صفحات ساده‌ی اینترنتی‌ام را ساختم. آن شیفتگیِ اولیه، در طول سال‌ها به یک اشتیاق عمیق تبدیل شد. به عنوان یک توسعه‌دهنده مسیر خلاق و خودآموز، دانش خود را از طریق پلتفرم‌هایی مثل Udemy به‌روز کردم و امروز تسلط کاملی بر فناوری‌های مدرن و پیشرفته‌ای چون TypeScript، React و Next.js دارم.",
+    aboutParagraph1: "مسیر من در دنیای وب از سال ۲۰۰۰ با یک دوره‌ی آموزشی حرفه‌ای و تخصصی در زمینه‌ی HTML و CSS آغاز شد. بر پایه‌ی این آموزش استاندارد و اصولی، اولین پروژه‌ها و وب‌سایت‌هایم را پیاده‌سازی کردم. در گذر سال‌ها، آن علاقه و اشتیاق بنیادین به مهارتی عمیق تبدیل شد: با یادگیری مستمر و کاوش عمیق در استانداردهای نوین نرم‌افزار، دانش خود را ارتقا دادم و امروز تسلط کاملی بر فناوری‌های مدرن و پیشرفته‌ای چون TypeScript، React و Next.js دارم.",
     aboutParagraph2: "برای من، برنامه‌نویسی مثل خلق کردن جادوست؛ شیفته‌ی این هستم که مقابل یک صفحه‌ی کاملاً خالی بنشینم و از یک ایده‌ی خام، محصولی زنده و کاربردی خلق کنم. در این مسیر، من به تمام ابعاد اهمیت می‌دهم: از طراحی پیکسل‌به‌پیکسلِ رابط کاربری و تجربه‌ی روان کاربر گرفته تا زیرساخت‌های پایدار بک‌اند؛ همه‌چیز باید بی‌نقص در کنار هم کار کند.",
     aboutParagraph3: "افتخارآمیزترین شاهکار من تا به امروز اپلیکیشن «بارانده» (Barande) است؛ یک پروژه‌ی فوق‌العاده پیچیده و فول‌استک که تمام توان فنی مرا به چالش کشید. من همیشه مشتاق همکاری با تیم‌ها و پروژه‌های بزرگی هستم که می‌خواهند ایده‌های استثنایی را به واقعیت تبدیل کنند. اگر به دنبال کسی هستید که کدنویسی را فقط یک کار نمی‌داند، بلکه با آن زندگی می‌کند، بیایید با هم اثری ماندگار بسازیم.",
     aboutBadgeJourney: "مسیر توسعه",
     aboutBadgePhilosophy: "فلسفه کاری",
     aboutBadgeAchievement: "افتخار من",
+    aboutTimeline1Sub: "آموزش حرفه‌ای و اصولی",
+    aboutTimeline2Title: "یادگیری و تخصص مستمر",
+    aboutTimeline2Sub: "تسلط بر استانداردهای روز",
+    aboutTimeline3Sub: "تسلط کامل و ارشد",
 
     footerJobTitle: "مهندس فول‌استک و فناور خلاق",
     footerMadeWith: "ساخته‌شده با {icon} در برلین",

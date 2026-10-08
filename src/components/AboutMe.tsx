@@ -151,7 +151,7 @@ export const AboutMe: React.FC = () => {
                   </div>
                   <div className={`${isRtl ? "text-right" : "text-left"}`}>
                     <div className="text-xs font-bold text-zinc-200">HTML / CSS</div>
-                    <div className="text-[10px] text-zinc-500">First Website built</div>
+                    <div className="text-[10px] text-zinc-500">{t("aboutTimeline1Sub")}</div>
                   </div>
                 </div>
 
@@ -160,14 +160,14 @@ export const AboutMe: React.FC = () => {
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-zinc-700" />
                 </div>
 
-                {/* Udemy Milestone */}
+                {/* Milestone 2 */}
                 <div className={`flex items-center gap-3 ${isRtl ? "flex-row-reverse" : "flex-row"}`}>
                   <div className="w-8 h-8 rounded-full border border-zinc-800 flex items-center justify-center bg-zinc-900/80 text-[10px] font-mono text-zinc-400 font-bold">
                     <BookOpen className="w-3.5 h-3.5" />
                   </div>
                   <div className={`${isRtl ? "text-right" : "text-left"}`}>
-                    <div className="text-xs font-bold text-zinc-200">Udemy Deep Dive</div>
-                    <div className="text-[10px] text-zinc-500">Self-Taught Scaling</div>
+                    <div className="text-xs font-bold text-zinc-200">{t("aboutTimeline2Title")}</div>
+                    <div className="text-[10px] text-zinc-500">{t("aboutTimeline2Sub")}</div>
                   </div>
                 </div>
 
@@ -183,7 +183,7 @@ export const AboutMe: React.FC = () => {
                   </div>
                   <div className={`${isRtl ? "text-right" : "text-left"}`}>
                     <div className="text-xs font-bold text-[#E6C17A]">Next.js / TS</div>
-                    <div className="text-[10px] text-amber-100/60 font-mono">Expert Mastery</div>
+                    <div className="text-[10px] text-amber-100/60 font-mono">{t("aboutTimeline3Sub")}</div>
                   </div>
                 </div>
 
