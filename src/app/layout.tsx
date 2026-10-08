@@ -32,8 +32,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Samsoun Behaein | Creative Technologist & Full Stack Engineer",
-  description: "Portfolio of Samsoun Behaein, a Full Stack and Mobile Software Engineer specializing in Next.js web applications, cross platform React Native and Expo apps, scalable database architectures, and search engine optimization.",
+  title: "Samsoun Behaein | Creative Technologist & Full Stack Developer",
+  description: "Portfolio of Samsoun Behaein, a Full Stack and Mobile Software Developer specializing in Next.js web applications, cross platform React Native and Expo apps, scalable database architectures, and search engine optimization.",
   keywords: [
     "Samsoun Behaein", 
     "Creative Technologist", 
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Samsoun Behaein" }],
   creator: "Samsoun Behaein",
   openGraph: {
-    title: "Samsoun Behaein | Creative Technologist & Full Stack Engineer",
+    title: "Samsoun Behaein | Creative Technologist & Full Stack Developer",
     description: "Immersive 3D-infused digital portfolio displaying premium web architectures, custom components, and highly optimized P2P applications.",
     url: "https://github.com/samsoun",
     siteName: "Samsoun Behaein Portfolio",
